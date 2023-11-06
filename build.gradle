@@ -10,7 +10,8 @@ group = 'de.swtpro'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 configurations {
@@ -33,20 +34,19 @@ dependencies {
 test {
     finalizedBy jacocoTestReport // report is always generated after tests run
 }
+jacoco {
+    toolVersion = "0.8.9"
+}
 jacocoTestReport {
-    jacocoTestReport {
-        reports {
-            xml.required = false
-            csv.required = false
-            html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
-        }
+    dependsOn test
+    reports {
+        xml.required = true
     }
 }
 sonar {
     properties {
         property "sonar.token", "sqa_af763199e18b0464b22abe66260a70cbb6c39114"
-        property "sonar.host.url",
-                "http://localhost:8443/sonar"
+        property "sonar.host.url", "http://localhost:8443/sonar"
     }
 }
 
