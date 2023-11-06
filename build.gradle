@@ -45,9 +45,8 @@ jacocoTestReport {
 }
 sonar {
     properties {
-        property 'sonar.gradle.skipCompile', true
-        property "sonar.host.url", "http://localhost:8443/sonar"
         property "sonar.token", "sqa_af763199e18b0464b22abe66260a70cbb6c39114"
+        property "sonar.host.url", "http://localhost:8443/sonar"
     }
 }
 
