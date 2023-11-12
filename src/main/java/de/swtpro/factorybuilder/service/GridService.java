@@ -6,5 +6,5 @@ public interface GridService {
 
     String addCubeToGrid(String gridID, Cube cube);
 
-    // parseCubeJSON implementieren
+    // JSON-Parser parseCubeJSON implementieren
 }
