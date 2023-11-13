@@ -79,3 +79,11 @@ export const updateHighlight = (highlight, activeLayer, intersections) => {
     highlight.position.set(pos.x, pos.y, intersection.object.position.z + 0.5)
   }
 }
+
+export const placeEntity = (scene, pos, entity) => {
+  entity.position.set(pos.x, pos.y, pos.z)
+  scene.add(entity)
+  
+  // In the future, this is the place for validations like
+  // - is there a cube in the way ... 
+}

@@ -2,13 +2,13 @@
 import { ref, onMounted } from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createGrids, updateHighlight } from "../utils/factory.js"
+import { createGrids, updateHighlight, placeEntity } from "../utils/factory.js"
 import { getIntersectionsMouse } from "../utils/3d.js"
 
-const { 
+const {
   grid_width,
   grid_lenght,
-  grid_height 
+  grid_height
 } = defineProps(['grid_width', "grid_lenght", "grid_height"])
 
 /*******************************/
@@ -49,6 +49,9 @@ camera.lookAt(0, 0, 0);
 // OrbitControlls 
 const controls = new OrbitControls(camera, renderer.domElement);
 
+// Start Items
+const items = []
+
 /*****************************/
 /******* START OBJECTS *******/
 /*****************************/
@@ -57,8 +60,8 @@ const controls = new OrbitControls(camera, renderer.domElement);
 createGrids(GRID.x, GRID.y, GRID.z, scene)
 
 // Add axis helper
-const axesHelper = new THREE.AxesHelper(10);
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(10);
+// scene.add(axesHelper);
 
 // Add Highlight cube
 const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -80,6 +83,23 @@ addEventListener("mousemove", (event) => {
 
   // Update the highlighter
   updateHighlight(highlightCube, ACTIVE_LAYER, intersections)
+});
+
+addEventListener("click", (event) => {
+
+  /**
+   * Hardcoding an Entity 
+   * This will be the "Selected Entity" in the future
+   * For now its just a cube.
+   */
+  const my_current_entity = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1), 
+    new THREE.MeshBasicMaterial({ color: new THREE.Color("red") })
+  );
+  highlightCube.name = "entity_cube";
+
+  // Place cube
+  placeEntity(scene, highlightCube.position, my_current_entity)
 });
 
 // onRezise
