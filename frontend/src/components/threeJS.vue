@@ -15,9 +15,7 @@ const {
 /*********** COFIG *************/
 /*******************************/
 
-const BLOCK_SIZE = 1;
 const ACTIVE_LAYER = 2;
-
 const GRID = {
   x: grid_width,
   y: grid_lenght,
