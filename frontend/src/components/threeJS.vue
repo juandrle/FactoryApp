@@ -9,7 +9,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 /*******************************/
 
 const BLOCK_SIZE = 1;
-const ACTIVE_LAYER = 2; // possible between 0 and (GRID.z -1)
+const ACTIVE_LAYER = 0; // possible between 0 and (GRID.z -1)
 const GRID = {
   x: 20,
   y: 20,
@@ -31,10 +31,28 @@ const createGrids = (x, y, z, scene) => {
     grid.position.z = zStart;
 
     // Set name
-    grid.name = `layer ${i}`
+    grid.name = `grid ${i}`
 
     // Add to scene
     scene.add(grid)
+
+    //Create Layer
+    const layer = new THREE.Mesh(
+      new THREE.PlaneGeometry(x,y),
+      new THREE.MeshBasicMaterial({
+        side: THREE.DoubleSide,
+        visible: false
+      })
+    )
+
+    // Position Grid
+    layer.position.z = zStart;
+
+    //Set name
+    layer.name = `layer ${i}`
+
+    // Add to scene
+    scene.add(layer)
 
     // Calc new position for next grid
     zStart += BLOCK_SIZE
