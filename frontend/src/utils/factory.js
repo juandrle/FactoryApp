@@ -9,11 +9,24 @@ export const getGridZ = (gridID, scene) => {
 }
 
 export const createGrids = (x, y, z, scene) => {
-  let zStart = (0.5 * z - 0.5) * -1
+  // The Color settings of the First layer
+  const colorFirst = new THREE.Color('white')
+
+  // The Color settings of all layers on top
+  const colorRest = new THREE.Color('#5d81cf')
+
+  let zStart = 0
   for (let i = 0; i < z; i++) {
     // Create Grid
     const grid = new THREE.GridHelper(x, y)
     grid.rotateX(Math.PI / 2)
+
+    // Set color based on the layer
+    if (i === 0) {
+      grid.material.color.set(colorFirst)
+    } else {
+      grid.material.color.set(colorRest)
+    }
 
     // Position Grid
     grid.position.z = zStart
@@ -54,13 +67,11 @@ export const getIntersectionWithGrid = (gridID, intersections) => {
 }
 
 export const updateHighlight = (highlight, activeLayer, intersections) => {
-
-  // "Trim" intersctions to only geht intersection with the grid 
+  // "Trim" intersctions to only geht intersection with the grid
   const intersection = getIntersectionWithGrid(activeLayer, intersections)
-  
+
   // Now we got the intersection with the activ grid, and can set the highlight
   if (intersection) {
-
     // Get the exact position of the Intersection and Make it snapping with the grid (floor, addScalar)
     const pos = new THREE.Vector3().copy(intersection.point).floor().addScalar(0.5)
 

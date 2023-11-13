@@ -15,7 +15,7 @@ const {
 /*********** COFIG *************/
 /*******************************/
 
-const ACTIVE_LAYER = 2;
+const ACTIVE_LAYER = 0;
 const GRID = {
   x: grid_width,
   y: grid_lenght,
@@ -38,6 +38,7 @@ let sizes = {
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(sizes.width, sizes.height);
+scene.background = new THREE.Color("black")
 
 // Create camera an position it
 const camera = new THREE.PerspectiveCamera(50, sizes.ratio);
