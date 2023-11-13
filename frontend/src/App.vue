@@ -9,7 +9,7 @@ import threeJS from './components/threeJS.vue'
   </header>
 
   <div class="wrapper">
-    <threeJS />
+    <threeJS grid_width="20" grid_lenght="20" grid_height="3" />
   </div>
 </template>
 

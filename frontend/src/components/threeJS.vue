@@ -2,84 +2,31 @@
 import { ref, onMounted } from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { createGrids, updateHighlight } from "../utils/factory.js"
+import { getIntersectionsMouse } from "../utils/3d.js"
 
+const { 
+  grid_width,
+  grid_lenght,
+  grid_height 
+} = defineProps(['grid_width', "grid_lenght", "grid_height"])
 
 /*******************************/
 /*********** COFIG *************/
 /*******************************/
 
 const BLOCK_SIZE = 1;
-const ACTIVE_LAYER = 0; // possible between 0 and (GRID.z -1)
+const ACTIVE_LAYER = 2;
+
 const GRID = {
-  x: 20,
-  y: 20,
-  z: 3
+  x: grid_width,
+  y: grid_lenght,
+  z: grid_height
 };
 
-/*******************************/
-/****** FUNCTIONAL UTILS *******/
-/*******************************/
-
-const createGrids = (x, y, z, scene) => {
-  let zStart = ((BLOCK_SIZE / 2 * z) - BLOCK_SIZE / 2) * -1
-  for (let i = 0; i < z; i++) {
-    // Create Grid
-    const grid = new THREE.GridHelper(x, y);
-    grid.rotateX(Math.PI / 2);
-
-    // Position Grid
-    grid.position.z = zStart;
-
-    // Set name
-    grid.name = `grid ${i}`
-
-    // Add to scene
-    scene.add(grid)
-
-    //Create Layer
-    const layer = new THREE.Mesh(
-      new THREE.PlaneGeometry(x,y),
-      new THREE.MeshBasicMaterial({
-        side: THREE.DoubleSide,
-        visible: false
-      })
-    )
-
-    // Position Grid
-    layer.position.z = zStart;
-
-    //Set name
-    layer.name = `layer ${i}`
-
-    // Add to scene
-    scene.add(layer)
-
-    // Calc new position for next grid
-    zStart += BLOCK_SIZE
-  }
-}
-
-const getIntersectionsMouse = (mouseMoveEvent) => {
-  const raycaster = new THREE.Raycaster();
-  raycaster.setFromCamera(new THREE.Vector2(
-    (event.clientX / window.innerWidth) * 2 - 1,
-    - (event.clientY / window.innerHeight) * 2 + 1
-  ), camera);
-  return raycaster.intersectObjects(scene.children);
-}
-
-const getGrid = (gridID, scene) => scene.children.find((object) => object.name === `layer ${gridID}`)
-
-const getGridZ = (gridID, scene) => getGrid(gridID, scene).position.z
-
-const getIntersectionWithGrid = (gridID, intersections) => {
-  return intersections.find((intersection) => intersection.object.name === `layer ${gridID}`) || false
-}
-
-
-/****************************/
-/******* SETUP - START ******/
-/****************************/
+/********************/
+/******* SETUP ******/
+/********************/
 const target = ref();
 
 // Get Screen size
@@ -94,7 +41,7 @@ const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(sizes.width, sizes.height);
 
-// Camera
+// Create camera an position it
 const camera = new THREE.PerspectiveCamera(50, sizes.ratio);
 camera.position.set(40, -15, 15);
 camera.up.set(0, 0, 1);
@@ -103,9 +50,9 @@ camera.lookAt(0, 0, 0);
 // OrbitControlls 
 const controls = new OrbitControls(camera, renderer.domElement);
 
-/********************/
-/******* INIT *******/
-/********************/
+/*****************************/
+/******* START OBJECTS *******/
+/*****************************/
 
 // Add Grid
 createGrids(GRID.x, GRID.y, GRID.z, scene)
@@ -114,11 +61,13 @@ createGrids(GRID.x, GRID.y, GRID.z, scene)
 const axesHelper = new THREE.AxesHelper(10);
 scene.add(axesHelper);
 
+// Add Highlight cube
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-cube.name = "highlight";
-scene.add(cube);
+const highlightCube = new THREE.Mesh(geometry, material);
+highlightCube.position.set(0.5, 0.5, 0.5)
+highlightCube.name = "highlight";
+scene.add(highlightCube);
 
 
 /********************/
@@ -127,15 +76,11 @@ scene.add(cube);
 
 // onMouseMove
 addEventListener("mousemove", (event) => {
+  // Get all intersections with mouse and world
+  const intersections = getIntersectionsMouse(event, camera, scene)
 
-  const intersection = getIntersectionWithGrid(ACTIVE_LAYER, getIntersectionsMouse(event))
-  if (intersection) {
-    const pos = new THREE.Vector3().copy(intersection.point).floor().addScalar(0.5)
-    cube.position.x = pos.x
-    cube.position.y = pos.y
-    cube.position.z = getGridZ(ACTIVE_LAYER, scene) + BLOCK_SIZE / 2 // Sollte nicht nötig sein
-  }
-
+  // Update the highlighter
+  updateHighlight(highlightCube, ACTIVE_LAYER, intersections)
 });
 
 // onRezise
@@ -164,6 +109,7 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+// Entry Point
 onMounted(() => {
   // Renderer gets appended to target
   target.value.appendChild(renderer.domElement);
@@ -171,6 +117,7 @@ onMounted(() => {
   // Start Animation
   animate();
 });
+
 </script>
 
 <template>
