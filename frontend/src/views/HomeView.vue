@@ -16,7 +16,7 @@ import Button from '../components/Button.vue'
       </div>
     </div>
     <div class="m-item"><h1 class="game-name">Machine Deluxe 3000</h1></div>
-    <div class="s-item"></div>
+    <div class="s-item"><img src="../assets/rectangles.svg" alt="" style="transform: translate(30px, 30px); width: 100%;"></div>
   </div> 
 </template>
 
@@ -43,15 +43,15 @@ import Button from '../components/Button.vue'
   display: flex;
   flex-direction: column;
   position: absolute; 
-  left: 30%;
-  bottom: 20%; 
+  left: 45%;
+  bottom: 15%; 
   gap: 1rem;
 }
 .game-name{
   position: absolute;
-  top: 25%;
+  top: 20%;
   letter-spacing: 1.5px;
   font-size: 40px;
-  font-weight: 500;
+  font-weight: 800;
 }
 </style>

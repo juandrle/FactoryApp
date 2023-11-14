@@ -10,17 +10,17 @@ defineProps({
 
 <style>
 .v-button{
-    background-color:#8845c7;
+    background-color:#683CE4;
 	border-radius:30px;
 	cursor:pointer;
 	color:#ffffff;
 	font-size:16px;
 	text-decoration:none;
     max-width: 250px;
-    padding: 10px 20px;
+    padding: 10px 45px;
 }
 .v-button:hover {
-	background-color:#6a3a99;
+	background-color:#4b2ba6;
 }
 .v-button:active {
 	position:relative;
