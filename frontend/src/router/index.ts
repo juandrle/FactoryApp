@@ -22,6 +22,11 @@ const router = createRouter({
       path: '/demo',
       name: 'demo',
       component: DemoView
+    },
+    {
+      path: '/erstellen',
+      name: 'erstellen',
+      component: () => import('../views/FactoryCreateView.vue')
     }
   ]
 })

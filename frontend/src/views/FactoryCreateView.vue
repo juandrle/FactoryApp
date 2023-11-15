@@ -1,21 +1,20 @@
 <script setup lang="ts">
 import { VueElement, ref } from 'vue';
 import Button from '../components/Button.vue'
-  const buttonData = ref([
-    {text: 'Fabrik erstellen', link:''}, 
-    {text: 'Fabrik beitreten', link:''}, 
-    {text: 'Einstellungen', link:''}
-    ])
+const buttonData = ref([
+    {text: 'Fabrik erstellen und bestellen'}])
 </script>
 
 <template>
   <div class="container">
     <div class="s-item">
-      <div class="button-container">
+        <div class="logo"><img src="" alt=""></div>
+    </div>
+    <div class="m-item"><h1 class="game-name">Fabrik erstellen</h1>
+        <div class="button-container">
         <Button v-for="item in buttonData" :text="item.text"></Button>
       </div>
     </div>
-    <div class="m-item"><h1 class="game-name">Machine Deluxe 3000</h1></div>
     <div class="s-item"></div>
   </div> 
 </template>
