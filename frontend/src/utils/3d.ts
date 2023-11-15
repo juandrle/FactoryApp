@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export const getIntersectionsMouse = (mouseMoveEvent, camera, scene) => {
+export const getIntersectionsMouse = (mouseMoveEvent: MouseEvent, camera: any, scene: any) => {
   const raycaster = new THREE.Raycaster()
   raycaster.setFromCamera(
     new THREE.Vector2(

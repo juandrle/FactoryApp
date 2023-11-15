@@ -1,9 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createGrids, updateHighlight, placeEntity } from "../utils/factory.js"
-import { getIntersectionsMouse } from "../utils/3d.js"
+import { getIntersectionsMouse } from "../utils/3d.js";
+import { type IGrid, type ISizes } from "../types/global"
 
 const {
   grid_width,
@@ -15,8 +16,8 @@ const {
 /*********** COFIG *************/
 /*******************************/
 
-const ACTIVE_LAYER = 0;
-const GRID = {
+const ACTIVE_LAYER: number = 0;
+const GRID: IGrid = {
   x: grid_width,
   y: grid_lenght,
   z: grid_height
@@ -25,32 +26,30 @@ const GRID = {
 /********************/
 /******* SETUP ******/
 /********************/
-const target = ref();
+const target = ref()
+
 
 // Get Screen size
-let sizes = {
+let sizes: ISizes = {
   width: window.innerWidth,
   height: window.innerHeight,
   ratio: window.innerWidth / window.innerHeight
 }
 
 // Add Scene & Renderer
-const scene = new THREE.Scene();
-const renderer = new THREE.WebGLRenderer();
+const scene: any = new THREE.Scene();
+const renderer: any = new THREE.WebGLRenderer();
 renderer.setSize(sizes.width, sizes.height);
 scene.background = new THREE.Color("black")
 
 // Create camera an position it
-const camera = new THREE.PerspectiveCamera(50, sizes.ratio);
+const camera: any = new THREE.PerspectiveCamera(50, sizes.ratio);
 camera.position.set(40, -15, 15);
 camera.up.set(0, 0, 1);
 camera.lookAt(0, 0, 0);
 
 // OrbitControlls 
-const controls = new OrbitControls(camera, renderer.domElement);
-
-// Start Items
-const items = []
+const controls: OrbitControls = new OrbitControls(camera, renderer.domElement);
 
 /*****************************/
 /******* START OBJECTS *******/
@@ -60,13 +59,13 @@ const items = []
 createGrids(GRID.x, GRID.y, GRID.z, scene)
 
 // Add axis helper
-// const axesHelper = new THREE.AxesHelper(10);
-// scene.add(axesHelper);
+const axesHelper: any = new THREE.AxesHelper(20);
+scene.add(axesHelper);
 
 // Add Highlight cube
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const highlightCube = new THREE.Mesh(geometry, material);
+const geometry: any = new THREE.BoxGeometry(1, 1, 1);
+const material: any = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const highlightCube: any = new THREE.Mesh(geometry, material);
 highlightCube.position.set(0.5, 0.5, 0.5)
 highlightCube.name = "highlight";
 scene.add(highlightCube);
@@ -77,7 +76,7 @@ scene.add(highlightCube);
 /********************/
 
 // onMouseMove
-addEventListener("mousemove", (event) => {
+addEventListener("mousemove", (event: MouseEvent) => {
   // Get all intersections with mouse and world
   const intersections = getIntersectionsMouse(event, camera, scene)
 
@@ -85,15 +84,16 @@ addEventListener("mousemove", (event) => {
   updateHighlight(highlightCube, ACTIVE_LAYER, intersections)
 });
 
-addEventListener("click", (event) => {
+//onClick
+addEventListener("click", () => {
 
   /**
    * Hardcoding an Entity 
    * This will be the "Selected Entity" in the future
    * For now its just a cube.
    */
-  const my_current_entity = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1), 
+  const my_current_entity: any = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
     new THREE.MeshBasicMaterial({ color: new THREE.Color("red") })
   );
   highlightCube.name = "entity_cube";

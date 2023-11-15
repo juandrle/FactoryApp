@@ -1,24 +1,24 @@
 import * as THREE from 'three'
 
-export const getGrid = (gridID, scene) => {
-  return scene.children.find((object) => object.name === `layer ${gridID}`)
+export const getGrid = (gridID: number, scene: any) => {
+  return scene.children.find((object: any) => object.name === `layer ${gridID}`)
 }
 
-export const getGridZ = (gridID, scene) => {
+export const getGridZ = (gridID: number, scene: any) => {
   return getGrid(gridID, scene).position.z
 }
 
-export const createGrids = (x, y, z, scene) => {
+export const createGrids = (x: number, y: number, z: number, scene: any) => {
   // The Color settings of the First layer
-  const colorFirst = new THREE.Color('white')
+  const colorFirst: any = new THREE.Color('white')
 
   // The Color settings of all layers on top
-  const colorRest = new THREE.Color('#5d81cf')
+  const colorRest: any = new THREE.Color('#5d81cf')
 
-  let zStart = 0
-  for (let i = 0; i < z; i++) {
+  let zStart: number = 0
+  for (let i: number = 0; i < z; i++) {
     // Create Grid
-    const grid = new THREE.GridHelper(x, y)
+    const grid: any = new THREE.GridHelper(x, y)
     grid.rotateX(Math.PI / 2)
 
     // Set color based on the layer
@@ -38,7 +38,7 @@ export const createGrids = (x, y, z, scene) => {
     scene.add(grid)
 
     //Create Layer
-    const layer = new THREE.Mesh(
+    const layer: any = new THREE.Mesh(
       new THREE.PlaneGeometry(x, y),
       new THREE.MeshBasicMaterial({
         side: THREE.DoubleSide,
@@ -60,30 +60,30 @@ export const createGrids = (x, y, z, scene) => {
   }
 }
 
-export const getIntersectionWithGrid = (gridID, intersections) => {
+export const getIntersectionWithGrid = (gridID: number, intersections: any) => {
   return (
-    intersections.find((intersection) => intersection.object.name === `layer ${gridID}`) || false
+    intersections.find((intersection: any) => intersection.object.name === `layer ${gridID}`) || false
   )
 }
 
-export const updateHighlight = (highlight, activeLayer, intersections) => {
+export const updateHighlight = (highlight: any, activeLayer: number, intersections: any) => {
   // "Trim" intersctions to only geht intersection with the grid
-  const intersection = getIntersectionWithGrid(activeLayer, intersections)
+  const intersection: any = getIntersectionWithGrid(activeLayer, intersections)
 
   // Now we got the intersection with the activ grid, and can set the highlight
   if (intersection) {
     // Get the exact position of the Intersection and Make it snapping with the grid (floor, addScalar)
-    const pos = new THREE.Vector3().copy(intersection.point).floor().addScalar(0.5)
+    const pos: any = new THREE.Vector3().copy(intersection.point).floor().addScalar(0.5)
 
     // Set the highlight
     highlight.position.set(pos.x, pos.y, intersection.object.position.z + 0.5)
   }
 }
 
-export const placeEntity = (scene, pos, entity) => {
+export const placeEntity = (scene: any, pos: any, entity: any) => {
   entity.position.set(pos.x, pos.y, pos.z)
   scene.add(entity)
-  
+
   // In the future, this is the place for validations like
-  // - is there a cube in the way ... 
+  // - is there a cube in the way ...
 }
