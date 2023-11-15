@@ -62,7 +62,8 @@ export const createGrids = (x: number, y: number, z: number, scene: any) => {
 
 export const getIntersectionWithGrid = (gridID: number, intersections: any) => {
   return (
-    intersections.find((intersection: any) => intersection.object.name === `layer ${gridID}`) || false
+    intersections.find((intersection: any) => intersection.object.name === `layer ${gridID}`) ||
+    false
   )
 }
 
@@ -80,10 +81,17 @@ export const updateHighlight = (highlight: any, activeLayer: number, intersectio
   }
 }
 
-export const placeEntity = (scene: any, pos: any, entity: any) => {
-  entity.position.set(pos.x, pos.y, pos.z)
-  scene.add(entity)
-
-  // In the future, this is the place for validations like
-  // - is there a cube in the way ...
+export const placeEntity = (loader: any, scene: any, pos: any, path: string) => {
+  loader.load(
+    path,
+    function (gltf: any) {
+      gltf.scene.scale.set(0.01, 0.01, 0.01)
+      gltf.scene.position.set(pos.x, pos.y, pos.z)
+      scene.add(gltf.scene)
+    },
+    undefined,
+    function (error: any) {
+      console.error(error)
+    }
+  )
 }

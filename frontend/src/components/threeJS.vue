@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createGrids, updateHighlight, placeEntity } from "../utils/factory.js"
 import { getIntersectionsMouse } from "../utils/3d.js";
 import { type IGrid, type ISizes } from "../types/global"
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const {
   grid_width,
@@ -40,7 +41,7 @@ let sizes: ISizes = {
 const scene: any = new THREE.Scene();
 const renderer: any = new THREE.WebGLRenderer();
 renderer.setSize(sizes.width, sizes.height);
-scene.background = new THREE.Color("black")
+scene.background = new THREE.Color("black");
 
 // Create camera an position it
 const camera: any = new THREE.PerspectiveCamera(50, sizes.ratio);
@@ -49,7 +50,10 @@ camera.up.set(0, 0, 1);
 camera.lookAt(0, 0, 0);
 
 // OrbitControlls 
-const controls: OrbitControls = new OrbitControls(camera, renderer.domElement);
+new OrbitControls(camera, renderer.domElement);
+
+// Model loader
+const loader: any = new GLTFLoader();
 
 /*****************************/
 /******* START OBJECTS *******/
@@ -92,14 +96,15 @@ addEventListener("click", () => {
    * This will be the "Selected Entity" in the future
    * For now its just a cube.
    */
-  const my_current_entity: any = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: new THREE.Color("red") })
-  );
-  highlightCube.name = "entity_cube";
+  // const my_current_entity: any = new THREE.Mesh(
+  //   new THREE.BoxGeometry(1, 1, 1),
+  //   new THREE.MeshBasicMaterial({ color: new THREE.Color("red") })
+  // );
 
+  // highlightCube.name = "entity_cube";
+  
   // Place cube
-  placeEntity(scene, highlightCube.position, my_current_entity)
+  placeEntity(loader, scene, highlightCube.position, "cube.gltf")
 });
 
 // onRezise
