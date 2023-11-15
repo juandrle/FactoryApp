@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import { RouterLink, RouterView } from 'vue-router'
-import threeJS from './components/threeJS.vue'
+import factory from './components/factory.vue'
 </script>
 
 <template>
@@ -9,7 +9,7 @@ import threeJS from './components/threeJS.vue'
   </header>
 
   <div class="wrapper">
-    <threeJS grid_width="20" grid_lenght="20" grid_height="3" />
+    <factory grid_width="1000" grid_lenght="1000" grid_height="3" />
   </div>
 </template>
 

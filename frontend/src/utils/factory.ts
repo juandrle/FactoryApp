@@ -86,6 +86,7 @@ export const placeEntity = (loader: any, scene: any, pos: any, path: string) => 
     path,
     function (gltf: any) {
       gltf.scene.position.set(pos.x, pos.y, pos.z)
+      gltf.scene.scale.set(50,50,50)
       scene.add(gltf.scene)
     },
     undefined,
