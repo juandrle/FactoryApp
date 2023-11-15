@@ -16,7 +16,7 @@ import Button from '../components/Button.vue'
       </div>
     </div>
     <div class="m-item"><h1 class="game-name">Machine Deluxe 3000</h1></div>
-    <div class="s-item"><img src="../assets/rectangles.svg" alt="" style="transform: translate(30px, 30px); width: 100%;"></div>
+    <div class="s-item"></div>
   </div> 
 </template>
 
@@ -25,6 +25,10 @@ import Button from '../components/Button.vue'
   display: flex; 
   min-width: 100vw;
   min-height: 100vh;
+  background-image: url('../assets/rectangles.svg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: right bottom;
 }
 .container .s-item {
   display: flex;
@@ -49,9 +53,15 @@ import Button from '../components/Button.vue'
 }
 .game-name{
   position: absolute;
-  top: 20%;
-  letter-spacing: 1.5px;
-  font-size: 40px;
-  font-weight: 800;
+  top: 20%; 
+  font: normal normal bold 70px/84px Overpass;
+  letter-spacing: 0px;
 }
+/* .container .s-item .svg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+} */
 </style>

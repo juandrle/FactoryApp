@@ -11,13 +11,15 @@ defineProps({
 <style>
 .v-button{
     background-color:#683CE4;
-	border-radius:30px;
+	display: inline-block;
+	border-radius:35px;
 	cursor:pointer;
 	color:#ffffff;
-	font-size:16px;
+	font-size:22px;
 	text-decoration:none;
-    max-width: 250px;
-    padding: 10px 45px;
+    padding: 10px 10px 10px 25px;
+	margin: auto;
+	width: 290px; 
 }
 .v-button:hover {
 	background-color:#4b2ba6;
