@@ -6,5 +6,12 @@ public interface GridService {
 
     String addCubeToGrid(String gridID, Cube cube);
 
-    // JSON-Parser parseCubeJSON implementieren
+    Cube getCubeFromJSON(String cubeJSON);
+
+    Cube parseJSON(String cubeJSON);
+
+    String getJSONFromPojo(Cube cube);
+
+    String generateJSON(Cube cube);
+
 }
