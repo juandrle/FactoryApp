@@ -67,14 +67,12 @@ const axesHelper: any = new THREE.AxesHelper(20);
 scene.add(axesHelper);
 
 // Add Highlight cube
-const geometry: any = new THREE.BoxGeometry(1.01, 1.01, 1.01);
+const geometry: any = new THREE.BoxGeometry(25, 25, 25);
 
 const material: any = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const highlightCube: any = new THREE.Mesh(geometry, material);
-highlightCube.position.set(0.5, 0.5, 0.5)
 highlightCube.name = "highlight";
 scene.add(highlightCube);
-highlightCube.scale.set(50,50,50)
 
 
 /********************/

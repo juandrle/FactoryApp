@@ -56,7 +56,7 @@ export const createGrids = (x: number, y: number, z: number, scene: any) => {
     scene.add(layer)
 
     // Calc new position for next grid
-    zStart += 1
+    zStart += 25
   }
 }
 
@@ -67,7 +67,7 @@ export const getIntersectionWithGrid = (gridID: number, intersections: any) => {
   )
 }
 
-export const updateHighlight = (highlight: any, activeLayer: number, intersections: any) => {
+export const updateHighlight = (object: any, activeLayer: number, intersections: any) => {
   // "Trim" intersctions to only geht intersection with the grid
   const intersection: any = getIntersectionWithGrid(activeLayer, intersections)
 
@@ -77,16 +77,20 @@ export const updateHighlight = (highlight: any, activeLayer: number, intersectio
     const pos: any = new THREE.Vector3().copy(intersection.point).floor().addScalar(0.5)
 
     // Set the highlight
-    highlight.position.set(pos.x, pos.y, intersection.object.position.z + 0.5)
+    object.position.set(pos.x, pos.y, intersection.object.position.z + object.geometry.parameters.height/2)
+
   }
 }
 
 export const placeEntity = (loader: any, scene: any, pos: any, path: string) => {
+  var object: any
   loader.load(
     path,
     function (gltf: any) {
-      gltf.scene.position.set(pos.x, pos.y, pos.z)
-      gltf.scene.scale.set(50,50,50)
+      object = gltf.scene
+      object.position.set(pos.x, pos.y, pos.z)
+      object.scale.set(25,25,25)
+
       scene.add(gltf.scene)
     },
     undefined,
