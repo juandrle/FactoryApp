@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { createGrids, updateHighlight, placeEntity } from "../utils/factory.js"
+import { createGrids, updateHighlight, placeEntity, setGroundTexture } from "../utils/factory.js"
 import { getIntersectionsMouse } from "../utils/3d.js";
 import { type IGrid, type ISizes } from "../types/global"
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -42,6 +42,13 @@ const scene: any = new THREE.Scene();
 const renderer: any = new THREE.WebGLRenderer();
 renderer.setSize(sizes.width, sizes.height);
 scene.background = new THREE.Color("white");
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Add ambient light
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // Add directional light
+directionalLight.position.set(1, 1, 1).normalize();
+scene.add(directionalLight);
+
 
 // Create camera an position it
 const camera: any = new THREE.PerspectiveCamera(50, sizes.ratio);
@@ -61,6 +68,10 @@ const loader: any = new GLTFLoader();
 
 // Add Grid
 createGrids(GRID.x, GRID.y, GRID.z, scene)
+
+// set Texture
+
+setGroundTexture('old-cement-wall-texture.jpg', scene)
 
 // Add axis helper
 const axesHelper: any = new THREE.AxesHelper(20);

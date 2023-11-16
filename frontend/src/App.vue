@@ -9,7 +9,7 @@ import factory from './components/factory.vue'
   </header>
 
   <div class="wrapper">
-    <factory grid_width="1000" grid_lenght="1000" grid_height="3" />
+    <factory grid_width="1000" grid_lenght="1000" grid_height="1" />
   </div>
 </template>
 
