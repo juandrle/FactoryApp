@@ -16,17 +16,17 @@ public class FactoryFieldController {
     }
 
     @GetMapping("/{id}")
-    public FactoryFields getFactoryFieldsById(@PathVariable Long id) {
+    public FieldOLD getFactoryFieldsById(@PathVariable Long id) {
         return factoryFieldService.getFactoryFieldById(id);
     }
 
     @PostMapping("/{id}/add-field")
-    public void addFieldToFactoryFields(@PathVariable Long id, @RequestBody Field field) {
+    public void addFieldToFactoryFields(@PathVariable Long id, @RequestBody FieldOLD field) {
         factoryFieldService.addFieldToFactoryFields(id, field);
     }
 
     @DeleteMapping("/{id}/delete-field")
-    public void deleteFieldFromFactoryFields(@PathVariable Long id, @RequestBody Field field) {
+    public void deleteFieldFromFactoryFields(@PathVariable Long id, @RequestBody FieldOLD field) {
         factoryFieldService.deleteFieldFromFactoryFields(id, field);
     }
 }

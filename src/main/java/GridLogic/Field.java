@@ -1,4 +1,4 @@
-package FieldLogic;
+package GridLogic;
 
 import Machines.Machine;
 import jakarta.persistence.*;
@@ -17,7 +17,6 @@ public class Field implements Serializable {
     private int x;
     private int y;
     private int z;
-    private String orientation;//mashine
     private String machineID;
 
     //private int fieldSize;
@@ -37,7 +36,5 @@ public class Field implements Serializable {
     public void setY(int y) { this.y = y; }
     public void setZ(int Z) { this.z = z; }
     public void setMachine(String machineID){ this.machineID = machineID; }
-
-
 
 }

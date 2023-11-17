@@ -1,7 +1,6 @@
-package FieldLogic;
+package GridLogic;
 
-import GridLogic.Field;
-import GridLogic.FieldService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,17 +11,31 @@ public class FieldController {
     @Autowired
     private FieldService fieldService;
 
-    @PostMapping
-    public void createField(@RequestBody Field field) {
+    /** @PostMapping public void createField(@RequestBody Field field) {
         fieldService.saveField(field);
-    }
+    } **/
 
     @GetMapping("/{id}")
     public Field getFieldById(@PathVariable Long id) {
         return fieldService.getFieldById(id);
     }
 
-    // Weitere Endpunkte für Aktualisieren, Löschen, Abfragen von Feldern, etc.
+
+
+
+
+
+    //Todoliste:
+    /*
+    initialize field(angestossen von frontend
+    aktualisieren??
+    isPlaceable
+    place machine to Field
+    remove machine from field
+    move (add und remove benutzen)
+
+
+     */
 }
 
 

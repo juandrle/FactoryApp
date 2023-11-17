@@ -3,30 +3,32 @@ package FieldLogic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FactoryFieldService {
 
     @Autowired
     private FactoryFieldRepository factoryFieldRepository;
 
-    public void saveFactoryFields(FactoryFields factoryFields) {
+    public void saveFactoryFields(List factoryFields) {
         factoryFieldRepository.save(factoryFields);
     }
 
-    public FactoryFields getFactoryFieldById(Long id) {
+    public FieldOLD getFactoryFieldById(Long id) {
         return factoryFieldRepository.findById(id).orElse(null);
     }
 
-    public void addFieldToFactoryFields(Long factoryFieldId, Field field) {
-        FactoryFields factoryFields = factoryFieldRepository.findById(factoryFieldId).orElse(null);
+    public void addFieldToFactoryFields(Long factoryFieldId, FieldOLD field, FactoryFields factoryFields) {
+        FieldOLD field = factoryFieldRepository.findById(factoryFieldId).orElse(null);
         if (factoryFields != null) {
             factoryFields.addField(field);
             factoryFieldRepository.save(factoryFields);
         }
     }
 
-    public void deleteFieldFromFactoryFields(Long factoryFieldsId, Field field) {
-        FactoryFields factoryFields = factoryFieldRepository.findById(factoryFieldsId).orElse(null);
+    public void deleteFieldFromFactoryFields(Long factoryFieldsId, FieldOLD field) {
+        FieldOLD factoryFields = factoryFieldRepository.findById(factoryFieldsId).orElse(null);
         if (factoryFields != null) {
             factoryFields.deleteField(field);
             factoryFieldRepository.save(factoryFields);
