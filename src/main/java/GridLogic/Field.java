@@ -14,10 +14,8 @@ public class Field implements Serializable {
     private long id;
     @Version
     private long version;
-    private int x;
-    private int y;
-    private int z;
-    private String machineID;
+    private Position pos;
+    private long machineID;
 
     //private int fieldSize;
 
@@ -27,14 +25,10 @@ public class Field implements Serializable {
 
 
     //Get and Set
-    public int getX() { return x;}
-    public int getY() { return y;}
-    public int getZ() { return z; }
-    public String getMachineID() { return machineID; }
+    public Position getPosition() { return pos;}
 
-    public void setX(int x) { this.x = x; }
-    public void setY(int y) { this.y = y; }
-    public void setZ(int Z) { this.z = z; }
-    public void setMachine(String machineID){ this.machineID = machineID; }
+    public long getMachineID() { return machineID; }
+
+    public void setZ(Position pos) { this.pos = pos; }
 
 }

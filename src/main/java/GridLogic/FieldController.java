@@ -25,8 +25,12 @@ public class FieldController {
 
 
 
+
+
+
     //Todoliste:
     /*
+    Dummieklassen<<<<<<<<<<<<<<<<<<<
     initialize field(angestossen von frontend
     aktualisieren??
     isPlaceable
