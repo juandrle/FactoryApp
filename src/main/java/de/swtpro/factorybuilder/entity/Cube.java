@@ -17,15 +17,21 @@ public class Cube implements Serializable{
     @Version
     private long version;
 
-    private int sideLengthA;
+    private int width;
     
-    private int sideLengthB;
+    private int height;
 
-    private int posX;
-
-    private int posY;
+    // where does the cube start
+    private Position rootPos;
     
-    private int posZ;
+    // where is the input located
+    private Position inPos;
+    
+    // where is the output located
+    private Position outPos;
+    
+    // where are we on the grid
+    private Position fieldPos;
 
     private String orientation;
 
@@ -60,44 +66,52 @@ public class Cube implements Serializable{
         this.version = version;
     }
 
-    public int getSideLengthA() {
-        return sideLengthA;
+    public int getWidth() {
+        return width;
     }
 
-    public void setSideLengthA(int sideLengthA) {
-        this.sideLengthA = sideLengthA;
+    public void setWidth(int width) {
+        this.width = width;
     }
 
-    public int getSideLengthB() {
-        return sideLengthB;
+    public int getHeight() {
+        return height;
     }
 
-    public void setSideLengthB(int sideLengthB) {
-        this.sideLengthB = sideLengthB;
+    public void setHeight(int height) {
+        this.height = height;
     }
 
-    public int getPosX() {
-        return posX;
+    public Position getRootPos() {
+        return rootPos;
     }
 
-    public void setPosX(int posX) {
-        this.posX = posX;
+    public void setRootPos(Position rootPos) {
+        this.rootPos = rootPos;
     }
 
-    public int getPosY() {
-        return posY;
+    public Position getInPos() {
+        return inPos;
     }
 
-    public void setPosY(int posY) {
-        this.posY = posY;
+    public void setInPos(Position inPos) {
+        this.inPos = inPos;
     }
 
-    public int getPosZ() {
-        return posZ;
+    public Position getOutPos() {
+        return outPos;
     }
 
-    public void setPosZ(int posZ) {
-        this.posZ = posZ;
+    public void setOutPos(Position outPos) {
+        this.outPos = outPos;
+    }
+
+    public Position getFieldPos() {
+        return fieldPos;
+    }
+
+    public void setFieldPos(Position fieldPos) {
+        this.fieldPos = fieldPos;
     }
 
     public String getOrientation() {
