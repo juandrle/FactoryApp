@@ -17,15 +17,26 @@ public class Cube implements Serializable{
     @Version
     private long version;
 
-    private int sideLength;
-
-    private int x;
-
-    private int y;
+    private int sideLengthA;
     
-    private int z;
+    private int sideLengthB;
+
+    private int posX;
+
+    private int posY;
+    
+    private int posZ;
 
     private String orientation;
+
+    // where is the input coming from
+    private String inOrientation;
+
+    // where is the output going
+    private String outOrientation;
+
+    // how many items are needed / can be stored in a machine
+    private int capacity;
 
     private String modelId;
 
@@ -49,36 +60,44 @@ public class Cube implements Serializable{
         this.version = version;
     }
 
-    public int getSideLength() {
-        return sideLength;
+    public int getSideLengthA() {
+        return sideLengthA;
     }
 
-    public void setSideLength(int sideLength) {
-        this.sideLength = sideLength;
+    public void setSideLengthA(int sideLengthA) {
+        this.sideLengthA = sideLengthA;
     }
 
-    public int getX() {
-        return x;
+    public int getSideLengthB() {
+        return sideLengthB;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setSideLengthB(int sideLengthB) {
+        this.sideLengthB = sideLengthB;
     }
 
-    public int getY() {
-        return y;
+    public int getPosX() {
+        return posX;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public void setPosX(int posX) {
+        this.posX = posX;
     }
 
-    public int getZ() {
-        return z;
+    public int getPosY() {
+        return posY;
     }
 
-    public void setZ(int z) {
-        this.z = z;
+    public void setPosY(int posY) {
+        this.posY = posY;
+    }
+
+    public int getPosZ() {
+        return posZ;
+    }
+
+    public void setPosZ(int posZ) {
+        this.posZ = posZ;
     }
 
     public String getOrientation() {
@@ -89,6 +108,30 @@ public class Cube implements Serializable{
         this.orientation = orientation;
     }
 
+    public String getInOrientation() {
+        return inOrientation;
+    }
+
+    public void setInOrientation(String inOrientation) {
+        this.inOrientation = inOrientation;
+    }
+
+    public String getOutOrientation() {
+        return outOrientation;
+    }
+
+    public void setOutOrientation(String outOrientation) {
+        this.outOrientation = outOrientation;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
     public String getModelId() {
         return modelId;
     }
@@ -97,6 +140,4 @@ public class Cube implements Serializable{
         this.modelId = modelId;
     }
 
-    
-    
 }
