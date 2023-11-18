@@ -2,8 +2,8 @@
 import { VueElement, ref } from 'vue';
 import Button from '../components/Button.vue'
 const buttonData = ref([
-    {text: 'Fabrik erstellen und bestellen'}])
-
+    {text: 'Fabrik erstellen und bestellen'}]
+  )
 
 const sizes = ref([
   { label: 'Size blabla1', value: 'size1', name: 'factory_size' },
@@ -17,7 +17,7 @@ const sizes = ref([
   <div class="container">
     <div class="s-item">
       <div class="content-s-item">
-        <div><img src="icons8-fabric-96.png" width="45x" alt="logo"/></div>
+        <img src="/icons8-fabric-96.png"/>
         <p class="logo-titel">Machine Deluxe 3000</p>
       </div>
     </div>
@@ -61,7 +61,7 @@ const sizes = ref([
   display: flex; 
   min-width: 100vw;
   min-height: 100vh;
-  background-image: url('../assets/rectangles.svg');
+  background-image: url('../assets/single_rectangles.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: right bottom;
@@ -89,7 +89,7 @@ const sizes = ref([
 }
 .game-name{
   position: absolute;
-  top: 20%; 
+  top: 10%; 
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0px;
 }
@@ -125,13 +125,19 @@ const sizes = ref([
 .content-s-item {
   display: flex;
   position: absolute;
+  align-items: center;
+  gap: 10px;
   bottom: 90%;
   top: 5%;
 }
 
+.content-s-item img{
+  width: 40px;
+  height: min-content;
+}
+
 .fabrik-settings {
-  min-width: 100vw;
-  min-height: 100vh;
+  min-width: 100%; 
   background-image: url('../assets/rectangles.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
