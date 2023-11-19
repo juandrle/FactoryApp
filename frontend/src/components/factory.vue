@@ -119,14 +119,23 @@ addEventListener("mousemove", (event: MouseEvent) => {
   const intersections = getIntersectionsMouse(event, camera, scene)
 
   // Update the highlighter
-  updateHighlight(highlight, ACTIVE_LAYER, intersections)
+  if(highlight) // Object model wird asynchron geladen
+    updateHighlight(highlight, ACTIVE_LAYER, intersections)
 });
 
 //onClick
 addEventListener("click", () => {
 
   // Place cube
-  placeEntity(loader, scene, highlight.position, "/mock/.gltf/cube.gltf")
+  if (placeRequest({
+    x: highlight.position.x,
+    y: highlight.position.y,
+    z: highlight.position.z,
+    orientation: "N",
+    entityID: "cube"
+  })) {
+    placeEntity(loader, scene, highlight.position, "/mock/.gltf/cube.gltf")
+  }
 });
 
 // onRezise

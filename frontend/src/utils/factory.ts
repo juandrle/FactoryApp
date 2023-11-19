@@ -152,7 +152,7 @@ export const getIntersectionWithGrid = (gridID: number, intersections: any) => {
   )
 }
 
-export const updateHighlight = (object: any, activeLayer: number, intersections: any) => {
+export const updateHighlight = (highlight: any, activeLayer: number, intersections: any) => {
   // "Trim" intersctions to only geht intersection with the grid
   const intersection: any = getIntersectionWithGrid(activeLayer, intersections)
 
@@ -162,7 +162,7 @@ export const updateHighlight = (object: any, activeLayer: number, intersections:
     const pos: any = new THREE.Vector3().copy(intersection.point).floor()
 
     // Set the highlight
-    object.position.set(
+    highlight.position.set(
       pos.x,
       pos.y,
       intersection.object.position.z
@@ -206,4 +206,7 @@ export const loadFactory = (scene: any, loader: any, factory_id: string) => {
   )
 }
 
-export const placeRequest = (placeRequest: IPlaceRequest) => {}
+export const placeRequest = (placeRequest: IPlaceRequest) => {
+  console.log(placeRequest, "... würde jetzt ans backend gesendet werden")
+  return true
+}
