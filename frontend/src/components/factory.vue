@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import {ref, onMounted} from 'vue';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import {createGrids, updateHighlight, placeEntity, setGroundTexture, createRoomWithTextures} from "../utils/factory.js"
-import { getIntersectionsMouse } from "../utils/3d.js";
-import { type IGrid, type ISizes } from "../types/global"
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {
+  createGrids,
+  updateHighlight,
+  placeEntity,
+  createWallsWithTexture,
+  createGroundWithTextures, createRoofWithTextures
+} from "../utils/factory.js"
+import {getIntersectionsMouse} from "../utils/3d.js";
+import {type IGrid, type ISizes} from "../types/global"
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
 const {
   grid_width,
@@ -69,7 +75,10 @@ const loader: any = new GLTFLoader();
 // Add Grid
 createGrids(GRID.x, GRID.y, GRID.z, scene)
 
-createRoomWithTextures('old-cement-wall-texture.jpg', scene, GRID.x, GRID.y, GRID.z)
+// creating roomtextures
+createGroundWithTextures('factoryGround.jpeg', scene, GRID.x, GRID.y);
+createRoofWithTextures('factoryRoof.jpeg', scene, GRID.x, GRID.y, GRID.z);
+createWallsWithTexture('factoryWall.jpg', scene, GRID.x, GRID.y, GRID.z);
 
 // Add axis helper
 const axesHelper: any = new THREE.AxesHelper(20);
@@ -78,7 +87,7 @@ scene.add(axesHelper);
 // Add Highlight cube
 const geometry: any = new THREE.BoxGeometry(1, 1, 1);
 
-const material: any = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const material: any = new THREE.MeshBasicMaterial({color: 0x00ff00});
 const highlightCube: any = new THREE.Mesh(geometry, material);
 highlightCube.name = "highlight";
 scene.add(highlightCube);
@@ -98,7 +107,7 @@ addEventListener("mousemove", (event: MouseEvent) => {
 });
 
 //onClick
-addEventListener("click", () => {  
+addEventListener("click", () => {
   // Place cube
   placeEntity(loader, scene, highlightCube.position, "cube.gltf")
 });

@@ -60,35 +60,67 @@ export const createGrids = (x: number, y: number, z: number, scene: any) => {
         zStart += 1
     }
 }
-export const createRoomWithTextures = (path: string, scene: any, width: number, depth: number, height: number) => {
+export const createGroundWithTextures = (path: string, scene: any, width: number, depth: number) => {
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load(path);
+
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+
+    const material = new THREE.MeshStandardMaterial({map: texture});
+
+    const groundPane = new THREE.PlaneGeometry(width, depth);
+
+    const groundMesh = new THREE.Mesh(groundPane, material);
+
+    scene.add(groundMesh);
+}
+export const createRoofWithTextures = (path: string, scene: any, width: number, depth: number, height: number) => {
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load(path);
+
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+
+    const material = new THREE.MeshStandardMaterial({map: texture});
+
+    const roofPane = new THREE.PlaneGeometry(width, depth);
+
+    const roofMesh = new THREE.Mesh(roofPane, material);
+    roofMesh.position.set(0, 0, height)
+    roofMesh.rotateX(Math.PI)
+
+    scene.add(roofMesh);
+}
+export const createWallsWithTexture = (path: string, scene: any, width: number, depth: number, height: number) => {
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load(path);
     const material = new THREE.MeshStandardMaterial({map: texture});
 
-    const groundPane = new THREE.PlaneGeometry(width, depth);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+
     const widthWallPane = new THREE.PlaneGeometry(width, height);
     widthWallPane.rotateX(Math.PI / 2);
     const depthWallPane = new THREE.PlaneGeometry(depth, height);
     depthWallPane.rotateX(Math.PI / 2);
     depthWallPane.rotateZ(Math.PI / 2);
 
-    const groundMesh = new THREE.Mesh(groundPane, material);
     const widthWallMesh1 = new THREE.Mesh(widthWallPane, material);
     widthWallMesh1.position.set(0, depth / 2, height / 2);
     const widthWallMesh2 = new THREE.Mesh(widthWallPane, material);
     widthWallMesh2.position.set(0, -depth / 2, height / 2);
-    widthWallMesh2.rotateX(Math.PI);
+    widthWallMesh2.rotateZ(Math.PI);
     const depthWallMesh1 = new THREE.Mesh(depthWallPane, material);
     depthWallMesh1.position.set(-width / 2, 0, height / 2);
     const depthWallMesh2 = new THREE.Mesh(depthWallPane, material);
     depthWallMesh2.position.set(width / 2, 0, height / 2);
     depthWallMesh2.rotateZ(Math.PI);
-
-    scene.add(groundMesh);
     scene.add(widthWallMesh2);
     scene.add(widthWallMesh1);
     scene.add(depthWallMesh1);
     scene.add(depthWallMesh2);
+
 }
 
 export const getIntersectionWithGrid = (gridID: number, intersections: any) => {
