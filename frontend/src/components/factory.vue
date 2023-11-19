@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import {ref, onMounted} from 'vue';
+import { ref, onMounted } from 'vue';
+import type { IVector3 } from '@/types/global'
 import * as THREE from 'three';
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {
   createGrids,
   updateHighlight,
   placeEntity,
   createWallsWithTexture,
-  createGroundWithTextures, createRoofWithTextures
+  createGroundWithTextures,
+  createRoofWithTextures,
+  loadFactory,
+  placeRequest
 } from "../utils/factory.js"
-import {getIntersectionsMouse} from "../utils/3d.js";
-import {type IGrid, type ISizes} from "../types/global"
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import { getIntersectionsMouse } from "../utils/3d.js";
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
 
 const {
   grid_width,
@@ -24,7 +28,7 @@ const {
 /*******************************/
 
 const ACTIVE_LAYER: number = 0;
-const GRID: IGrid = {
+const GRID: IVector3 = {
   x: grid_width,
   y: grid_lenght,
   z: grid_height
@@ -37,7 +41,11 @@ const target = ref()
 
 
 // Get Screen size
-let sizes: ISizes = {
+let sizes: {
+  width: number
+  height: number
+  ratio: number
+} = {
   width: window.innerWidth,
   height: window.innerHeight,
   ratio: window.innerWidth / window.innerHeight
@@ -85,12 +93,20 @@ const axesHelper: any = new THREE.AxesHelper(20);
 scene.add(axesHelper);
 
 // Add Highlight cube
-const geometry: any = new THREE.BoxGeometry(1, 1, 1);
-
-const material: any = new THREE.MeshBasicMaterial({color: 0x00ff00});
-const highlightCube: any = new THREE.Mesh(geometry, material);
-highlightCube.name = "highlight";
-scene.add(highlightCube);
+var highlight: any;
+loader.load(
+  "/mock/.gltf/cube.gltf",
+  function (gltf: any) {
+    highlight = gltf.scene
+    highlight.position.set(0, 0, 0)
+    highlight.name = 'highlight'
+    scene.add(gltf.scene)
+  },
+  undefined,
+  function (error: any) {
+    console.error(error)
+  }
+)
 
 
 /********************/
@@ -103,13 +119,14 @@ addEventListener("mousemove", (event: MouseEvent) => {
   const intersections = getIntersectionsMouse(event, camera, scene)
 
   // Update the highlighter
-  updateHighlight(highlightCube, ACTIVE_LAYER, intersections)
+  updateHighlight(highlight, ACTIVE_LAYER, intersections)
 });
 
 //onClick
 addEventListener("click", () => {
+
   // Place cube
-  placeEntity(loader, scene, highlightCube.position, "cube.gltf")
+  placeEntity(loader, scene, highlight.position, "/mock/.gltf/cube.gltf")
 });
 
 // onRezise
@@ -147,8 +164,24 @@ onMounted(() => {
   animate();
 });
 
+const onButtonClicked = () => {
+  loadFactory(scene, loader, "factory_id_sample")
+}
+
 </script>
 
 <template>
+  <button @click="onButtonClicked" style="
+    font-size:20px;
+    bottom: 150px; 
+    left: 300px;
+    cursor: pointer;
+    position: absolute;
+    padding: 8px 12px; 
+    background-color: 	#282b30; 
+    border: 2px 	#7289da solid; 
+    font-weight: 600;
+    border-radius: 10px; 
+    color: 	#7289da">Test Load Factory</button>
   <div ref="target"></div>
 </template>
