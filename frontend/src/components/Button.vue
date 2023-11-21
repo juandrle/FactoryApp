@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router';
 defineProps({
-    text: String
+    text: String,
+	link: {
+      type: String,
+      required: true
+    }
 })
 </script>
 
 <template>
-  <a href="#" class="v-button">{{text}}</a>
+  <RouterLink :to="link" class="v-button">{{text}}</RouterLink>
 </template>
 
 <style>

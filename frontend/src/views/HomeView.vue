@@ -2,9 +2,9 @@
 import { VueElement, ref } from 'vue';
 import Button from '../components/Button.vue'
   const buttonData = ref([
-    {text: 'Fabrik erstellen'}, 
-    {text: 'Fabrik beitreten'}, 
-    {text: 'Einstellungen'}
+    {text: 'Fabrik erstellen', link: "/erstellen"}, 
+    {text: 'Fabrik beitreten', link:"/beitreten"}, 
+    {text: 'Einstellungen', link:"/settings"}
     ])
 </script>
 
@@ -12,7 +12,7 @@ import Button from '../components/Button.vue'
   <div class="container">
     <div class="s-item">
       <div class="button-container">
-        <Button v-for="item in buttonData" :text="item.text"></Button>
+        <Button v-for="item in buttonData" :text="item.text" :link="item.link"></Button>
       </div>
     </div>
     <div class="m-item"><h1 class="game-name">Machine Deluxe 3000</h1></div>
@@ -57,11 +57,4 @@ import Button from '../components/Button.vue'
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0px;
 }
-/* .container .s-item .svg-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-} */
 </style>
