@@ -1,0 +1,30 @@
+[
+  {
+    "x": 5,
+    "y": 5,
+    "z": 0,
+    "path": "/mock/.gltf/cube.gltf",
+    "orientation": "N"
+  },
+  {
+    "x": -7,
+    "y": 9,
+    "z": 0,
+    "path": "/mock/.gltf/cube.gltf",
+    "orientation": "O"
+  },
+  {
+    "x": 3,
+    "y": -8,
+    "z": 0,
+    "path": "/mock/.gltf/cube.gltf",
+    "orientation": "S"
+  },
+  {
+    "x": 0,
+    "y": -3,
+    "z": 0,
+    "path": "/mock/.gltf/cube.gltf",
+    "orientation": "W"
+  }
+]
