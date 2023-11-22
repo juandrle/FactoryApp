@@ -1,6 +1,7 @@
 package de.swtpro.factorybuilder.entity;
 
 import java.io.Serializable;
+import de.swtpro.factorybuilder.utility.Position;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
