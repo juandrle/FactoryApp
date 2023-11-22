@@ -2,7 +2,7 @@
 import { VueElement, ref } from 'vue';
 import Button from '../components/Button.vue'
   const buttonData = ref([
-    {text: 'Fabrik erstellen', link: "/erstellen"}, 
+    {text: 'Fabrik erstellen', link: "/create"},
     {text: 'Fabrik beitreten', link:"/beitreten"}, 
     {text: 'Einstellungen', link:"/settings"}
     ])

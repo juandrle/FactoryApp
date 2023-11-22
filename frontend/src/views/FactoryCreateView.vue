@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {ref} from 'vue'
 import Button from '../components/Button.vue'
-const buttonData = ref([{ text: 'Fabrik erstellen und bestellen' }])
+
+const buttonData = ref([{text: 'Fabrik erstellen und bestellen', link: '/factory'}])
 
 const sizes = ref([
-  { label: '10', value: 'size1', name: 'factory_size' },
-  { label: '25', value: 'size2', name: 'factory_size' },
-  { label: '50', value: 'size3', name: 'factory_size' },
-  { label: '100', value: 'size4', name: 'factory_size' }
+  {label: '10', value: 'size1', name: 'factory_size'},
+  {label: '25', value: 'size2', name: 'factory_size'},
+  {label: '50', value: 'size3', name: 'factory_size'},
+  {label: '100', value: 'size4', name: 'factory_size'}
 ])
 </script>
 
@@ -15,32 +16,33 @@ const sizes = ref([
   <div class="container">
     <div class="s-item">
       <div class="content-s-item">
-        <img src="/icons8-fabric-96.png" width="20px" height="auto" />
+        <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
         <p class="logo-titel">Machine Deluxe 3000</p>
       </div>
     </div>
     <div class="m-item">
       <h1 class="game-name">Fabrik erstellen</h1>
-      <div class="fabrik-settings">
-        <form action="/fabrik" method="">
-          <div class="fabrik-name">
-            <input placeholder="Name" />
-            <input placeholder="Passwort" />
+      <div class="factory-settings">
+        <form action="/factory" method="">
+          <div class="factory-name">
+            <input placeholder="Name"/>
+            <input placeholder="Passwort"/>
           </div>
           <div class="size-radio-container">
             <div class="radio-option" v-for="size in sizes" :key="size.value">
-              <input type="radio" :id="size.value" :name="size.name" :value="size.value" />
+              <input type="radio" :id="size.value" :name="size.name" :value="size.value"/>
               <label :for="size.value">{{ size.label }} m²</label>
             </div>
           </div>
+          <Button
+              class="button-create"
+              v-for="item in buttonData"
+              :text="item.text"
+              :key="item.text"
+              :link="item.link"></Button>
         </form>
       </div>
-      <Button
-        class="button-erstellen"
-        v-for="item in buttonData"
-        :text="item.text"
-        :key="item.text"
-      ></Button>
+
     </div>
     <div class="s-item"></div>
   </div>
@@ -48,7 +50,7 @@ const sizes = ref([
 
 <style>
 form {
-  background-color: #342844; 
+  background-color: #342844;
   padding: 1.875rem 1.125rem;
   border-radius: 25px;
 }
@@ -62,6 +64,7 @@ form {
   background-attachment: fixed;
   background-position: right bottom; */
 }
+
 .container .s-item {
   display: flex;
   flex: 1 1 25%;
@@ -69,16 +72,19 @@ form {
   align-items: flex-end;
   padding: 2rem;
 }
+
 .container .m-item {
   flex: 1 1 50%;
   display: flex;
   justify-content: center;
 }
+
 .game-name {
   position: absolute;
   top: 10%;
   font-weight: 400;
 }
+
 .radio-option {
   display: flex;
   align-items: center;
@@ -98,16 +104,20 @@ form {
   display: flex;
   align-items: center;
 }
-.button-erstellen {
-  position: absolute;
+
+.button-create {
+  display: flex;
+  flex-direction: column;
   width: fit-content;
   padding: 10px 20px 10px 20px;
   top: 75%;
 }
+
 .logo-titel {
   font: normal normal bold 0.938rem/1.25rem Overpass;
   letter-spacing: 0px;
 }
+
 .content-s-item {
   display: flex;
   position: absolute;
@@ -122,21 +132,21 @@ form {
   height: min-content;
 }
 
-.fabrik-settings {
+.factory-settings {
   position: relative;
   min-width: 100%;
-  top:4rem; 
+  top: 4rem;
   padding: 11.5rem 6.25rem;
 }
 
-.fabrik-name {
+.factory-name {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   margin: 1rem 2.5rem 1rem 2.5rem;
 }
 
-.fabrik-name input {
+.factory-name input {
   background-color: transparent;
   padding: 12px 20px;
   box-sizing: border-box;
