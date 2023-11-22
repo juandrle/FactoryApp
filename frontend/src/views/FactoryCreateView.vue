@@ -48,7 +48,7 @@ const sizes = ref([
 
 <style>
 form {
-  background-color: #342844; /* hier eigentlich das rectangle im hintergrund */ /*--> @DSCHULIA finde es eigentlich besser so dass das div eine hintergrund farbe hat, würde es nicht mit dem svg als bg-image machen*/
+  background-color: #342844; 
   padding: 1.875rem 1.125rem;
   border-radius: 25px;
 }
@@ -126,7 +126,7 @@ form {
   position: relative;
   min-width: 100%;
   top:4rem; 
-  padding: 14.063rem 6.25rem;
+  padding: 11.5rem 6.25rem;
 }
 
 .fabrik-name {
