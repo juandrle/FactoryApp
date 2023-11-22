@@ -11,7 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 import de.swtpro.factorybuilder.entity.Cube;
+import org.springframework.stereotype.Service;
 
+@Service
 public class GridServiceImpl implements GridService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GridServiceImpl.class);

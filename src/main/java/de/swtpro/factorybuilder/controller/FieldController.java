@@ -1,7 +1,7 @@
-package FieldLogic;
+package de.swtpro.factorybuilder.controller;
 
-import GridLogic.Field;
-import GridLogic.FieldService;
+import de.swtpro.factorybuilder.entity.Field;
+import de.swtpro.factorybuilder.service.FieldService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

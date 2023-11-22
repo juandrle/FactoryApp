@@ -1,4 +1,4 @@
-package GridLogic;
+package de.swtpro.factorybuilder.utility;
 
 public class Position {
 

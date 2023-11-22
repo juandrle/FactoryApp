@@ -1,4 +1,4 @@
-package Machines;
+package de.swtpro.factorybuilder.entity;
 
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 

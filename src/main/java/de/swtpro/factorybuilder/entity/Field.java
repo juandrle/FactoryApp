@@ -1,6 +1,6 @@
-package GridLogic;
+package de.swtpro.factorybuilder.entity;
 
-import Machines.Machine;
+import de.swtpro.factorybuilder.utility.Position;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
