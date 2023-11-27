@@ -191,12 +191,12 @@ onMounted(() => {
 })
 
 // Button onLoadFactory
-const onLoadFactory = () => {
+const onLoadFactoryButton = () => {
   loadFactory(scene, loader, 'factory_id_sample')
 }
 
 // Button onToggleMoveMode
-const onToggleMoveMode = () => {
+const onToggleMoveModeButton = () => {
   moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
 }
 </script>
@@ -207,7 +207,7 @@ const onToggleMoveMode = () => {
     style="position: absolute; width: 100%; bottom: 50px; left: 200px; display: flex; gap: 20px"
   >
     <button
-      @click="onLoadFactory"
+      @click="onLoadFactoryButton"
       style="
         font-size: 20px;
         cursor: pointer;
@@ -223,7 +223,7 @@ const onToggleMoveMode = () => {
     </button>
 
     <button
-      @click="onToggleMoveMode"
+      @click="onToggleMoveModeButton"
       style="
         font-size: 20px;
         cursor: pointer;

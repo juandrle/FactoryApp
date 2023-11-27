@@ -1,4 +1,4 @@
-import type { IBackendEntity } from '@/types/backendEntity'
+import type { IBackendEntity, IBackendEntityPreview } from '@/types/backendEntity'
 import type { IVector3 } from '@/types/global'
 import type { IPlaceRequest } from '@/types/placeRequest'
 import * as THREE from 'three'
@@ -162,11 +162,7 @@ export const updateHighlight = (highlight: any, activeLayer: number, intersectio
     const pos: any = new THREE.Vector3().copy(intersection.point).floor()
 
     // Set the highlight
-    highlight.position.set(
-      pos.x,
-      pos.y,
-      intersection.object.position.z
-    )
+    highlight.position.set(pos.x, pos.y, intersection.object.position.z)
   }
 }
 
@@ -188,20 +184,29 @@ export const placeEntity = (loader: any, scene: any, pos: IVector3, path: string
 }
 
 export const loadFactory = (scene: any, loader: any, factory_id: string) => {
-  fetch('/mock/backend/mockBackendResponse.json').then((res) =>
+  fetch('/mock/backend/mockBackendLoadFactoryResponse.json').then((res) =>
     res.json().then((backendEntitys: IBackendEntity[]) => {
       backendEntitys.forEach((backendEntity) => {
         placeEntity(
           loader,
           scene,
-          { 
-            x: backendEntity.x, 
-            y: backendEntity.y, 
-            z: backendEntity.z 
+          {
+            x: backendEntity.x,
+            y: backendEntity.y,
+            z: backendEntity.z
           },
           backendEntity.path
         )
       })
+    })
+  )
+}
+
+export const getAllEntitys = () => {
+  return fetch('/mock/backend/mockBackendGetAllEntitys.json').then((res) =>
+    res.json().then((backendEntitys: IBackendEntityPreview[]) => {
+      console.log(backendEntitys)
+      return backendEntitys
     })
   )
 }
