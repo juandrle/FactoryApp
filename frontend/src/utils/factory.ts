@@ -207,6 +207,6 @@ export const loadFactory = (scene: any, loader: any, factory_id: string) => {
 }
 
 export const placeRequest = (placeRequest: IPlaceRequest) => {
-  console.log(placeRequest, "... würde jetzt ans backend gesendet werden")
+  // console.log(placeRequest, "... würde jetzt ans backend gesendet werden")
   return true
 }
