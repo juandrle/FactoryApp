@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import type { IVector3 } from '@/types/global'
+import {ref, onMounted} from 'vue';
+import type {IVector3} from '@/types/global'
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {
   createGrids,
   updateHighlight,
@@ -13,15 +13,11 @@ import {
   loadFactory,
   placeRequest
 } from "../utils/factory.js"
-import { getIntersectionsMouse } from "../utils/3d.js";
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import {getIntersectionsMouse} from "../utils/3d.js";
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
-
-const {
-  grid_width,
-  grid_lenght,
-  grid_height
-} = defineProps(['grid_width', "grid_lenght", "grid_height"])
+const props = withDefaults(defineProps<{ grid_width: number, grid_length: number, grid_height: number }>(), {
+  grid_width: 30, grid_length: 50, grid_height: 8})
 
 /*******************************/
 /*********** COFIG *************/
@@ -29,9 +25,9 @@ const {
 
 const ACTIVE_LAYER: number = 0;
 const GRID: IVector3 = {
-  x: grid_width,
-  y: grid_lenght,
-  z: grid_height
+  x: props.grid_width,
+  y: props.grid_length,
+  z: props.grid_height
 };
 
 /********************/
@@ -70,7 +66,7 @@ camera.position.set(40, -15, 15);
 camera.up.set(0, 0, 1);
 camera.lookAt(0, 0, 0);
 
-// OrbitControlls 
+// OrbitControlls
 new OrbitControls(camera, renderer.domElement);
 
 // Model loader
@@ -95,17 +91,17 @@ scene.add(axesHelper);
 // Add Highlight cube
 var highlight: any;
 loader.load(
-  "/mock/.gltf/cube.gltf",
-  function (gltf: any) {
-    highlight = gltf.scene
-    highlight.position.set(0, 0, 0)
-    highlight.name = 'highlight'
-    scene.add(gltf.scene)
-  },
-  undefined,
-  function (error: any) {
-    console.error(error)
-  }
+    "/mock/.gltf/cube.gltf",
+    function (gltf: any) {
+      highlight = gltf.scene
+      highlight.position.set(0, 0, 0)
+      highlight.name = 'highlight'
+      scene.add(gltf.scene)
+    },
+    undefined,
+    function (error: any) {
+      console.error(error)
+    }
 )
 
 
@@ -119,7 +115,7 @@ addEventListener("mousemove", (event: MouseEvent) => {
   const intersections = getIntersectionsMouse(event, camera, scene)
 
   // Update the highlighter
-  if(highlight) // Object model wird asynchron geladen
+  if (highlight) // Object model wird asynchron geladen
     updateHighlight(highlight, ACTIVE_LAYER, intersections)
 });
 
@@ -182,15 +178,16 @@ const onButtonClicked = () => {
 <template>
   <button @click="onButtonClicked" style="
     font-size:20px;
-    bottom: 150px; 
+    bottom: 150px;
     left: 300px;
     cursor: pointer;
     position: absolute;
-    padding: 8px 12px; 
-    background-color: 	#282b30; 
-    border: 2px 	#7289da solid; 
+    padding: 8px 12px;
+    background-color: 	#282b30;
+    border: 2px 	#7289da solid;
     font-weight: 600;
-    border-radius: 10px; 
-    color: 	#7289da">Test Load Factory</button>
+    border-radius: 10px;
+    color: 	#7289da">Test Load Factory
+  </button>
   <div ref="target"></div>
 </template>

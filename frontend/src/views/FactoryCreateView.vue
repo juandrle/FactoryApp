@@ -5,11 +5,22 @@ import Button from '../components/Button.vue'
 const buttonData = ref([{text: 'Fabrik erstellen und bestellen', link: '/factory'}])
 
 const sizes = ref([
-  {label: '10', value: 'size1', name: 'factory_size'},
-  {label: '25', value: 'size2', name: 'factory_size'},
-  {label: '50', value: 'size3', name: 'factory_size'},
-  {label: '100', value: 'size4', name: 'factory_size'}
+  {label: '30x50x8', value: 'size1', width: 30, length: 50, height: 8},
+  {label: '60x100x12', value: 'size2', width: 60, length: 100, height: 12},
+  {label: '90x150x16', value: 'size3', width: 90, length: 150, height: 16},
+  {label: '120x200x20', value: 'size4', width: 120, length: 200, height: 20}
 ])
+const selectedSize = ref()
+
+function createFactory() {
+  if (selectedSize.value) {
+    console.log(selectedSize.value)
+  } else {
+    console.error("Please select a size before creating the factory.")
+  }
+}
+
+
 </script>
 
 <template>
@@ -23,15 +34,15 @@ const sizes = ref([
     <div class="m-item">
       <h1 class="game-name">Fabrik erstellen</h1>
       <div class="factory-settings">
-        <form action="/factory" method="">
+        <form @submit.prevent="createFactory">
           <div class="factory-name">
             <input placeholder="Name"/>
             <input placeholder="Passwort"/>
           </div>
           <div class="size-radio-container">
             <div class="radio-option" v-for="size in sizes" :key="size.value">
-              <input type="radio" :id="size.value" :name="size.name" :value="size.value"/>
-              <label :for="size.value">{{ size.label }} m²</label>
+              <input type="radio" v-model="selectedSize" :id="size.value" :value="size.value"/>
+              <label :for="size.value">{{ size.label }}</label>
             </div>
           </div>
           <Button
