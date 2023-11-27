@@ -166,6 +166,30 @@ export const updateHighlight = (highlight: any, activeLayer: number, intersectio
   }
 }
 
+export const updateHighlightModel: any = async (
+  prevHighlight: any,
+  url: string,
+  scene: any,
+  loader: any
+) => {
+  return await loader.loadAsync(url).then((model: any) => {
+  
+    // Neuen highlighter vorbereiten
+    let newHighlight:any = model.scene;
+    newHighlight.position.set(prevHighlight.position)
+    newHighlight.name = prevHighlight.name
+
+    // Delete old highlight
+    scene.children = scene.children.filter((object: any) => object.name !== prevHighlight.name)
+    prevHighlight = null;
+
+    // add new to scene
+    scene.add(newHighlight)
+    
+    return newHighlight
+  })
+}
+
 export const placeEntity = (loader: any, scene: any, pos: IVector3, path: string) => {
   var object: any
   loader.load(
@@ -202,13 +226,12 @@ export const loadFactory = (scene: any, loader: any, factory_id: string) => {
   )
 }
 
-export const getAllEntitys = () => {
-  return fetch('/mock/backend/mockBackendGetAllEntitys.json').then((res) =>
-    res.json().then((backendEntitys: IBackendEntityPreview[]) => {
-      console.log(backendEntitys)
-      return backendEntitys
-    })
-  )
+export const getAllEntitys: () => Promise<IBackendEntityPreview[]> = async () => {
+  // Simuliere einen Verzögerung von 2 Sekunden (2000 Millisekunden)
+  await new Promise((resolve) => setTimeout(resolve, 500))
+
+  // Führe die tatsächliche Anfrage aus und gib die Daten zurück
+  return fetch('/mock/backend/mockBackendGetAllEntitys.json').then((res) => res.json())
 }
 
 export const placeRequest = (placeRequest: IPlaceRequest) => {

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
+import type { Ref } from 'vue'
 import type { IVector3 } from '@/types/global'
+import type { IBackendEntityPreview } from '@/types/backendEntity'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { FlyControls } from 'three/addons/controls/FlyControls.js'
@@ -13,10 +15,13 @@ import {
   createGroundWithTextures,
   createRoofWithTextures,
   loadFactory,
-  placeRequest
+  placeRequest,
+  getAllEntitys,
+  updateHighlightModel
 } from '../utils/factory.js'
 import { getIntersectionsMouse } from '../utils/3d.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import EntityBar from './EntityBar.vue'
 
 /*******************************/
 /*********** COFIG *************/
@@ -32,7 +37,13 @@ const GRID: IVector3 = {
 /******* SETUP ******/
 /********************/
 const target = ref()
-const moveMode = ref<'orbit' | 'fly'>('orbit')
+const moveMode: Ref<String> = ref<'orbit' | 'fly'>('orbit')
+const allEntitys: Ref<IBackendEntityPreview[]> = ref([])
+const activeEntity: Ref<IBackendEntityPreview> = ref({
+  path: '/fallback/.gltf/cube.gltf',
+  icon: '',
+  entityID: 'loadingCube'
+})
 
 // Get Screen size
 let sizes: {
@@ -50,10 +61,13 @@ const scene: any = new THREE.Scene()
 const renderer: any = new THREE.WebGLRenderer()
 renderer.setSize(sizes.width, sizes.height)
 scene.background = new THREE.Color('white')
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5) // Add ambient light
+
+// Add ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
 scene.add(ambientLight)
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5) // Add directional light
+// Add directional light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
 directionalLight.position.set(1, 1, 1).normalize()
 scene.add(directionalLight)
 
@@ -63,28 +77,8 @@ camera.position.set(40, -15, 15)
 camera.up.set(0, 0, 1)
 camera.lookAt(0, 0, 0)
 
-
+// Set Camera controll option (Orbit as Defaukt)
 let cameraControlls: any = new OrbitControls(camera, renderer.domElement)
-
-watch(moveMode, () => {
-  var prevCamera = camera
-  camera = new THREE.PerspectiveCamera(50, sizes.ratio)
-  camera.position.copy(prevCamera.position)
-  camera.rotation.copy(prevCamera.rotation)
-  camera.up.copy(prevCamera.up)
-
-  const controlls = moveMode.value === 'fly'
-    ? new FlyControls(camera, renderer.domElement)
-    : new OrbitControls(camera, renderer.domElement)
-
-  if(moveMode.value === "fly"){
-    controlls.movementSpeed = 10;
-    controlls.dragToLook = true;
-    controlls.rollSpeed = 0.3;
-  }
-
-  cameraControlls =  controlls
-})
 
 // Model loader
 const loader: any = new GLTFLoader()
@@ -108,7 +102,7 @@ scene.add(axesHelper)
 // Add Highlight cube
 var highlight: any
 loader.load(
-  '/mock/.gltf/cube.gltf',
+  '/fallback/.gltf/cube.gltf',
   function (gltf: any) {
     highlight = gltf.scene
     highlight.position.set(0, 0, 0)
@@ -148,7 +142,7 @@ addEventListener('click', () => {
       entityID: 'cube'
     })
   ) {
-    placeEntity(loader, scene, highlight.position, '/mock/.gltf/cube.gltf')
+    placeEntity(loader, scene, highlight.position, activeEntity.value.path)
   }
 })
 
@@ -186,6 +180,14 @@ onMounted(() => {
   // Renderer gets appended to target
   target.value.appendChild(renderer.domElement)
 
+  getAllEntitys().then((json) => {
+    // Alle entittys sind nun zugänglich für uns
+    allEntitys.value = json
+
+    // Active entity ändern
+    activeEntity.value = allEntitys.value[0]
+  })
+
   // Start Animation
   animate()
 })
@@ -199,47 +201,80 @@ const onLoadFactoryButton = () => {
 const onToggleMoveModeButton = () => {
   moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
 }
+
+// watch active Entity to change current model
+watch(activeEntity, () => {
+  updateHighlightModel(highlight, activeEntity.value.path, scene, loader).then(
+    (newHighlight: any) => {
+      highlight = newHighlight
+    }
+  )
+})
+
+// Watch the moveMode to change camera option
+watch(moveMode, () => {
+  var prevCamera = camera
+  camera = new THREE.PerspectiveCamera(50, sizes.ratio)
+  camera.position.copy(prevCamera.position)
+  camera.rotation.copy(prevCamera.rotation)
+  camera.up.copy(prevCamera.up)
+
+  const controlls =
+    moveMode.value === 'fly'
+      ? new FlyControls(camera, renderer.domElement)
+      : new OrbitControls(camera, renderer.domElement)
+
+  if (moveMode.value === 'fly') {
+    controlls.movementSpeed = 10
+    controlls.dragToLook = true
+    controlls.rollSpeed = 0.3
+  }
+
+  cameraControlls = controlls
+})
+
+
 </script>
 
 <template>
-  <div
-    className="test-bar"
-    style="position: absolute; width: 100%; bottom: 50px; left: 200px; display: flex; gap: 20px"
-  >
-    <button
-      @click="onLoadFactoryButton"
-      style="
-        font-size: 20px;
-        cursor: pointer;
-        padding: 8px 12px;
-        background-color: #282b30;
-        border: 2px #7289da solid;
-        font-weight: 600;
-        border-radius: 10px;
-        color: #7289da;
-      "
-    >
-      Test Load Factory
-    </button>
-
-    <button
-      @click="onToggleMoveModeButton"
-      style="
-        font-size: 20px;
-        cursor: pointer;
-        padding: 8px 12px;
-        background-color: #282b30;
-        border: 2px #7289da solid;
-        font-weight: 600;
-        border-radius: 10px;
-        color: #7289da;
-      "
-    >
-      Test Load Factory
-    </button>
+  <div className="target" ref="target">
+    <div className="button-bar">
+      <button @click="onLoadFactoryButton">Test Load Factory</button>
+      <button @click="onToggleMoveModeButton">Toggle Camera Mode</button>
+    </div>
+    <div className="debug-bar">
+      <div>Current Camera Mode: {{ moveMode }}</div>
+      <div>Active Entity: {{ activeEntity.entityID }}</div>
+    </div>
+    <EntityBar :entities="allEntitys" :active-entity="activeEntity"  @update-active-entity="id => activeEntity = allEntitys[id]"/>
   </div>
-  <div style="position: absolute; top: 10px; left: 60px; color: #282b30; font-size: 20px">
-    Current Mode: {{ moveMode }}
-  </div>
-  <div ref="target"></div>
 </template>
+
+<style>
+.button-bar {
+  display: flex;
+  position: absolute;
+  bottom: 60px;
+  left: 60px;
+  gap: 20px;
+}
+
+.button-bar button {
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px 12px;
+  background-color: #282b30;
+  border: 2px #7289da solid;
+  font-weight: 600;
+  border-radius: 10px;
+  color: #7289da;
+}
+
+.debug-bar {
+  position: absolute;
+  top: 60px;
+  left: 60px;
+  color: #282b30;
+  font-size: 20px;
+}
+</style>

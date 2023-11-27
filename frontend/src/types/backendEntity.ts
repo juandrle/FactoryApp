@@ -9,4 +9,5 @@ export interface IBackendEntity {
 export interface IBackendEntityPreview {
     path: string;
     icon: string;
+    entityID: string;
 }

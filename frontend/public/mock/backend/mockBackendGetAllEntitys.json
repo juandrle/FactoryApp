@@ -1,10 +1,22 @@
 [
     {
-        "path": "/mock/.gltf/cube.gltf",
-        "icon": "https://images.pexels.com/photos/1340189/pexels-photo-1340189.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        "path": "/mock/.gltf/farben.gltf",
+        "icon": "/mock/svg/cart-outline.svg",
+        "entityID": "Plane Cube 1"
     },
     {
         "path": "/mock/.gltf/cube.gltf",
-        "icon": "https://images.pexels.com/photos/54101/magic-cube-cube-puzzle-play-54101.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        "icon": "/mock/svg/cube-outline.svg",
+        "entityID": "Color Cube 2"
+    },
+    {
+        "path": "/mock/.gltf/farben.gltf",
+        "icon": "/mock/svg/home-outline.svg",
+        "entityID": "Color Cube 3"
+    },
+    {
+        "path": "/mock/.gltf/cube.gltf",
+        "icon": "/mock/svg/triangle-outline.svg",
+        "entityID": "Color Cube 4"
     }
 ]
