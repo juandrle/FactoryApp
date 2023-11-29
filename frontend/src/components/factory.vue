@@ -6,7 +6,6 @@ import type { IBackendEntityPreview } from '@/types/backendEntity'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { FlyControls } from 'three/addons/controls/FlyControls.js'
-
 import {
   createGrids,
   updateHighlight,
@@ -22,6 +21,8 @@ import {
 import { getIntersectionsMouse } from '../utils/3d.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from './EntityBar.vue'
+
+import { FreeMoveControls } from "../classes/FreeMoveControls.js"
 
 /*******************************/
 /*********** COFIG *************/
@@ -221,14 +222,10 @@ watch(moveMode, () => {
 
   const controlls =
     moveMode.value === 'fly'
-      ? new FlyControls(camera, renderer.domElement)
+      ? new FreeMoveControls(camera, renderer.domElement)
       : new OrbitControls(camera, renderer.domElement)
 
-  if (moveMode.value === 'fly') {
-    controlls.movementSpeed = 10
-    controlls.dragToLook = true
-    controlls.rollSpeed = 0.3
-  }
+
 
   cameraControlls = controlls
 })
