@@ -17,21 +17,21 @@ public class Field implements Serializable {
 
     private long factoryID;
 
-    private long machineID;
+    private long modelID;
     private Position pos;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "machine_id", referencedColumnName = "id")
-    private Machine machine;
+    private PlacedModel machine;
 
 
     //Get and Set
     public Position getPosition() { return pos;}
 
-    public long getMachineID() { return machineID; }
+    public long getMachineID() { return modelID; }
 
     public void setPosition(Position pos){ this.pos = pos; }
 
-    public void setMachineID(Long id) { this.machineID = id; }
+    public void setMachineID(Long id) { this.modelID = id; }
 
 }

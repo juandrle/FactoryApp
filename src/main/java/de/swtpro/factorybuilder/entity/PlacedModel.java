@@ -1,6 +1,7 @@
 package de.swtpro.factorybuilder.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.swtpro.factorybuilder.utility.Position;
@@ -11,7 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 
 @Entity
-public class Model implements Serializable{
+public class PlacedModel implements Serializable{
     
     @Id
     @GeneratedValue
@@ -39,10 +40,10 @@ public class Model implements Serializable{
     // how many items are needed / can be stored in a machine
     private int capacity;
 
-    private String modelId;
+    private long modelId;
 
 
-    public Model() {
+    public PlacedModel() {
     }
 
     public long getId() {

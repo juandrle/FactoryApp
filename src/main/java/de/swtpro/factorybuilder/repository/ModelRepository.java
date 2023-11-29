@@ -1,7 +1,16 @@
 package de.swtpro.factorybuilder.repository;
 
-import de.swtpro.factorybuilder.entity.Machine;
+import de.swtpro.factorybuilder.entity.Model;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MachineRepository extends JpaRepository<Machine, Long> {
+import java.util.List;
+import java.util.Optional;
+
+public interface ModelRepository extends JpaRepository<Model, Long> {
+
+    @Override
+    List<Model> findAll();
+
+    @Override
+    Optional<Model> findById(Long aLong);
 }

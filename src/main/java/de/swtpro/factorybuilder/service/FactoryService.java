@@ -1,10 +1,11 @@
 package de.swtpro.factorybuilder.service;
 
+import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.GridRepository;
-import de.swtpro.factorybuilder.repository.MachineRepository;
+import de.swtpro.factorybuilder.repository.ModelRepository;
 import de.swtpro.factorybuilder.utility.Position;
-import de.swtpro.factorybuilder.entity.Machine;
+import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class FactoryService {
     @Autowired
     private GridRepository gridRepository;
     @Autowired
-    private MachineRepository machineRepository;
+    private ModelRepository modelRepository;
     @Autowired
     private FactoryRepository factoryRepository;
 
@@ -50,35 +51,29 @@ public class FactoryService {
         return gridRepository.findById(id).orElse(null);
     }
 
-    public Machine getMachineById(Long id) {
-        return machineRepository.findById(id).orElse(null);
+    public Model getMachineById(Long id) {
+        return modelRepository.findById(id).orElse(null);
     }
     public Long getMachineIdFromField(@PathVariable Long id) {
         Field field = getFieldById(id);
         return field.getMachineID();
     }
 
-
-
-    public Machine getMachineByPosition(Position pos){
-        return getMachineById(getFieldByPosition(pos).getMachineID());
-    }
-
-    public void placeMachineToField(Machine machine, Position position){
+    public void placeMachineToField(Model model, Position position){
         Field f = getFieldByPosition(position);
-        f.setMachineID(machine.getMachineID());
+        f.setMachineID(model.getId());
         //Todo: save in repository
     }
 
-    private boolean checkForPlacement(Position rootPosition, Machine thisMachine){
-        Machine otherMachine;
-        int fieldsize = 5// getFieldByPosition(rootPosition).getCompleteFieldSize(); ändern
+    private boolean checkForPlacement(Position rootPosition, Model thisModel){
+        Model otherMachine;
+        int fieldsize = 5;// getFieldByPosition(rootPosition).getCompleteFieldSize(); ändern
         Field checkFields;
         Position checkPosition = null;
 
         //Abfrage sind die Felder belegt auf denen die Maschine platziert werden soll
-        for(int i = 0; i <thisMachine.getHeight();i++){
-            for(int j = 0; j <thisMachine.getWidth();j++){
+        for(int i = 0; i <thisModel.getHeight();i++){
+            for(int j = 0; j <thisModel.getWidth();j++){
                 int x = rootPosition.getX(),y = rootPosition.getY(),z = rootPosition.getZ();
 
                 switch(thisMachine.getOrientation()) {
@@ -154,7 +149,7 @@ public class FactoryService {
 
 
     public boolean moveMachine(Position pos,Position newPos){
-        Machine machine = getMachineByPosition(pos);
+        Model machine = getMachineByPosition(pos);
         //Todo: remove from field and remove from repository
         placeMachineToField(machine,newPos);
         //Todo: which informations are needed for this operatino?
