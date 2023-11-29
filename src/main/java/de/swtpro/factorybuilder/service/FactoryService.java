@@ -29,7 +29,7 @@ public class FactoryService {
             for(int j= 0; j < fieldsize; j++){
                 Field field = new Field();
                 field.setPosition(new Position(i,j,0));
-                field.setMachineID(null);
+                field.setModelID(null);
             }
         }
         //Todo: put fields in repository
@@ -61,7 +61,7 @@ public class FactoryService {
 
     public void placeMachineToField(Model model, Position position){
         Field f = getFieldByPosition(position);
-        f.setMachineID(model.getId());
+        f.setModelID(model.getId());
         //Todo: save in repository
     }
 

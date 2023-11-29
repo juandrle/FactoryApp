@@ -32,6 +32,6 @@ public class Field implements Serializable {
 
     public void setPosition(Position pos){ this.pos = pos; }
 
-    public void setMachineID(Long id) { this.modelID = id; }
+    public void setModelID(Long id) { this.modelID = id; }
 
 }
