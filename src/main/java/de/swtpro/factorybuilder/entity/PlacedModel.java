@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 
 @Entity
-public class Cube implements Serializable{
+public class Model implements Serializable{
     
     @Id
     @GeneratedValue
@@ -42,7 +42,7 @@ public class Cube implements Serializable{
     private String modelId;
 
 
-    public Cube() {
+    public Model() {
     }
 
     public long getId() {
