@@ -28,10 +28,10 @@ public class Field implements Serializable {
     //Get and Set
     public Position getPosition() { return pos;}
 
-    public long getMachineID() { return modelID; }
+    public long getModelID() { return modelID; }
 
     public void setPosition(Position pos){ this.pos = pos; }
 
-    public void setMachineID(Long id) { this.modelID = id; }
+    public void setModelID(Long id) { this.modelID = id; }
 
 }
