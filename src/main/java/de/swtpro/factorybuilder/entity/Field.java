@@ -14,10 +14,11 @@ public class Field implements Serializable {
     private long id;
     @Version
     private long version;
-    private Position pos;
-    private long machineID;
 
-    private int completeFieldSize;
+    private long factoryID;
+
+    private long machineID;
+    private Position pos;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "machine_id", referencedColumnName = "id")
@@ -32,7 +33,5 @@ public class Field implements Serializable {
     public void setPosition(Position pos){ this.pos = pos; }
 
     public void setMachineID(Long id) { this.machineID = id; }
-
-    public int getCompleteFieldSize(){return completeFieldSize;}
 
 }

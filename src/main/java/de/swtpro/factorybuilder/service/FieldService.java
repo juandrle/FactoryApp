@@ -17,6 +17,7 @@ public class FieldService {
     @Autowired
     private MachineRepository machineRepository;
 
+    //TODO: factory einbeziehen und die größe des feldes anpassen
 
     public void initializeField(int fieldsize){
         for(int i= 0; i < fieldsize; i++){

@@ -1,6 +1,8 @@
 package de.swtpro.factorybuilder.entity;
 
 import java.io.Serializable;
+import java.util.List;
+
 import de.swtpro.factorybuilder.utility.Position;
 
 import jakarta.persistence.Entity;
@@ -18,29 +20,21 @@ public class Cube implements Serializable{
     @Version
     private long version;
 
-    private int width;
-    
-    private int height;
+    private long factoryID;
 
     // where does the cube start
     private Position rootPos;
     
     // where is the input located
-    private Position inPos;
+    private List<Input> inputs;
     
     // where is the output located
-    private Position outPos;
+    private List<Output> outputs;
     
     // where are we on the grid
     private Position fieldPos;
 
     private String orientation;
-
-    // where is the input coming from
-    private String inOrientation;
-
-    // where is the output going
-    private String outOrientation;
 
     // how many items are needed / can be stored in a machine
     private int capacity;
@@ -67,21 +61,6 @@ public class Cube implements Serializable{
         this.version = version;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
 
     public Position getRootPos() {
         return rootPos;
@@ -91,20 +70,10 @@ public class Cube implements Serializable{
         this.rootPos = rootPos;
     }
 
-    public Position getInPos() {
-        return inPos;
-    }
+    public List<Input> getInputs() { return inputs;}
 
-    public void setInPos(Position inPos) {
-        this.inPos = inPos;
-    }
-
-    public Position getOutPos() {
-        return outPos;
-    }
-
-    public void setOutPos(Position outPos) {
-        this.outPos = outPos;
+    public List<Output> getOutputs() {
+        return outputs;
     }
 
     public Position getFieldPos() {
@@ -121,22 +90,6 @@ public class Cube implements Serializable{
 
     public void setOrientation(String orientation) {
         this.orientation = orientation;
-    }
-
-    public String getInOrientation() {
-        return inOrientation;
-    }
-
-    public void setInOrientation(String inOrientation) {
-        this.inOrientation = inOrientation;
-    }
-
-    public String getOutOrientation() {
-        return outOrientation;
-    }
-
-    public void setOutOrientation(String outOrientation) {
-        this.outOrientation = outOrientation;
     }
 
     public int getCapacity() {
