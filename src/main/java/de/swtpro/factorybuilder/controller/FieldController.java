@@ -12,6 +12,7 @@ public class FieldController {
     @Autowired
     private FieldService fieldService;
 
+    /**
     @PostMapping
     public void createField(@RequestBody Field field) {
         fieldService.saveField(field);
@@ -21,7 +22,7 @@ public class FieldController {
     public Field getFieldById(@PathVariable Long id) {
         return fieldService.getFieldById(id);
     }
-
+*/
     // Weitere Endpunkte für Aktualisieren, Löschen, Abfragen von Feldern, etc.
 }
 
