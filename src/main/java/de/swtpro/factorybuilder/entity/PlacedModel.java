@@ -101,11 +101,11 @@ public class PlacedModel implements Serializable{
         this.capacity = capacity;
     }
 
-    public String getModelId() {
+    public long getModelId() {
         return modelId;
     }
 
-    public void setModelId(String modelId) {
+    public void setModelId(long modelId) {
         this.modelId = modelId;
     }
 
