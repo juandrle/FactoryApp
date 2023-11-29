@@ -1,7 +1,9 @@
 package de.swtpro.factorybuilder.entity;
 
-import javax.swing.text.Position;
+import jakarta.persistence.Embeddable;
 
+import javax.swing.text.Position;
+@Embeddable
 public class Output implements Processing{
     private String orientation;
     private Position position;
@@ -9,6 +11,10 @@ public class Output implements Processing{
     public Output(Position position, String orientation){
         this.position = position;
         this.orientation = orientation;
+    }
+
+    public Output() {
+
     }
 
     @Override

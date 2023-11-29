@@ -6,10 +6,7 @@ import java.util.List;
 
 import de.swtpro.factorybuilder.utility.Position;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 
 @Entity
 public class PlacedModel implements Serializable{
@@ -27,12 +24,15 @@ public class PlacedModel implements Serializable{
     private Position rootPos;
     
     // where is the input located
+    @ElementCollection
     private List<Input> inputs;
     
     // where is the output located
+    @ElementCollection
     private List<Output> outputs;
     
     // where are we on the grid
+    @Embedded
     private Position fieldPos;
 
     private String orientation;
@@ -101,11 +101,11 @@ public class PlacedModel implements Serializable{
         this.capacity = capacity;
     }
 
-    public String getModelId() {
+    public long getModelId() {
         return modelId;
     }
 
-    public void setModelId(String modelId) {
+    public void setModelId(long modelId) {
         this.modelId = modelId;
     }
 

@@ -2,6 +2,8 @@ package de.swtpro.factorybuilder.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import java.io.File;
 
@@ -10,21 +12,22 @@ public class Model {
     @Id
     long id;
 
-    File modelFile;
+    @Lob
+    String modelGltf;
 
     public long getId() {
         return id;
     }
 
-    public File getModelFile() {
-        return modelFile;
+    public String getModelFile() {
+        return modelGltf;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public void setModelFile(File modelFile) {
-        this.modelFile = modelFile;
+    public void setModelFile(String modelGltf) {
+        this.modelGltf = modelGltf;
     }
 }
