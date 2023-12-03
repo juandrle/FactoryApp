@@ -4,7 +4,7 @@
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  /* --vt-c-white-mute: #f2f2f2; */
 
   /*--vt-c-black: #12111A;*/
   --vt-c-black: linear-gradient(#12111A, #211432);
@@ -21,7 +21,7 @@
   --vt-c-text-light-1: var(--vt-c-indigo);
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --vt-c-text-dark-2: var(--vt-c-white-soft);
 }
 
 /* semantic color variables for this project */
@@ -64,13 +64,6 @@
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
   }
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
 }
 
 body {
