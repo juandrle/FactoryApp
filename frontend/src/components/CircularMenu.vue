@@ -1,101 +1,166 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-
-const isMenuOpen = ref(false);
-
-function toggleMenu() {
-  isMenuOpen.value = !isMenuOpen.value;
-}
-</script>
-
-
 <template>
-  <div class="menu-container">
-    <div class="menu-wrapper">
-      <a href="#" class="menu-button button-1" style="background-color: #F44336">
-        <div></div>
-      </a>
-
-      <a href="#" class="menu-button button-2" style="background-color: #E91E63">
-        <div></div>
-      </a>
-
-      <a href="#" class="menu-button button-3" style="background-color: #9C27B0">
-        <div></div>
-      </a>
-
-      <a href="#" class="menu-button button-4" style="background-color: #673AB7">
-        <div></div>
-      </a>
-
-      <a href="#" class="menu-button button-5" style="background-color: #3F51B5">
-        <div></div>
-      </a>
-    </div>
+  <div>
+    <!-- <button :class="{ 'visible': isButtonVisible }" @click="buttonClicked">Click Me</button> -->
+    <nav :class="{ 'visible': isButtonVisible }">
+        <!-- <input  class="menu-toggler" type="checkbox">
+        <label for="menu-toggler"></label> -->
+        <ul>
+        <li class="menu-item">
+            <a class="fa-solid fa-arrows-rotate" href=""></a>
+            <p>Drehen</p>
+        </li>
+        <li class="menu-item">
+            <a class="fa-solid fa-arrows-up-down-left-right" href="#"></a>
+            <p>Versetzen</p>
+        </li>
+        <li class="menu-item">
+            <a class="fa-solid fa-trash" href="#"></a>
+            <p>Löschen</p>
+        </li>
+        <li class="menu-item">
+            <a class="fa-solid fa-code" href="#"></a>
+            <p>Skripten</p>
+        </li>
+        <li class="menu-item">
+            <a class="fa-regular fa-clone" href="#"></a>
+            <p>Klonen</p>
+        </li>
+        
+        </ul>
+    </nav>
   </div>
 </template>
 
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+
+const isButtonVisible = ref(false);
+
+// Event listener for the "V" key
+onMounted(() => {
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'v' || event.key === 'V') {
+      isButtonVisible.value = !isButtonVisible.value;
+    }
+  });
+});
+
+
+</script>
+
 <style scoped>
-.menu-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.menu-button {
-  display: block;
-  height: 130px;
-  width: 130px;
-  position:relative;
-  border-radius: 50%;
-  background-color: #E3DFD2;
-  
-  overflow: hidden;
-  /*transform: translate(-50%, -50%) scale(0);*/
-  transition: transform 0.3s, opacity 0.3s;
-}
-
-.menu-button div {
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  position:relative;
-  background-position: center;
-  transition: opacity 0.5s;
+/* ul {
   opacity: 0;
-}
+  transition: opacity 0.5s ease-in-out;
+} */
 
-.menu-wrapper a:hover {
-  scale:1.1;
-}
-
-.menu-wrapper a:hover div {
+.visible .menu-item {
   opacity: 1;
 }
 
-.menu-button:nth-child(1) {
-  transform:translate(0%, -10%) scale(1);
-  transform-origin: 50% 100%;
+.visible .menu-item:nth-child(1) {
+  transform: rotate(90deg) translate(-150px);
 }
 
-.menu-button:nth-child(2) {
-  transform:translate(-150%, 20%) scale(1);
-  transform-origin: 20% 80%;
+.visible .menu-item:nth-child(2) {
+  transform: rotate(162deg) translateX(-150px);
 }
 
-.menu-button:nth-child(3) {
-  transform: translate(150%, -80%) scale(1);
-  transform-origin: 0% -5%;
+.visible .menu-item:nth-child(3) {
+  transform: rotate(234deg) translateX(-150px);
 }
 
-.menu-button:nth-child(4) {
+.visible .menu-item:nth-child(4) {
+  transform: rotate(306deg) translateX(-150px);
+}
+
+.visible .menu-item:nth-child(5) {
+  transform: rotate(378deg) translateX(-150px);
+}
+
+.visible .menu-item a {
+    pointer-events:auto;
+  }
+.menu-item:nth-child(1) a {
+    transform: rotate(-90deg);
+  }
+  .menu-item:nth-child(2) a {
+    transform: rotate(-162deg);
+  }
+  .menu-item:nth-child(3) a {
+    transform: rotate(-234deg);
+  }
+  .menu-item:nth-child(4) a {
+    transform: rotate(-306deg);
+  }
+  .menu-item:nth-child(5) a {
+    transform: rotate(-378deg);
+  }
+.menu-item {
+    position: absolute;
+    display: block;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 120px;
+    height: 120px;
+    opacity: 0;
+    transition: 0.5s;
+  }
+ .menu-item a {
+    display: block;
+    width: inherit;
+    height: inherit;
+    line-height: 100px;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(230, 230, 250, 0.7);
+    border-radius: 50%;
+    text-align: center;
+    text-decoration: none;
+    font-size: 50px;
+    pointer-events: none;
+    transition: 0.2s;
+}
+
+.menu-item p{
+  font-size: 14px;
+  transition: 0.2s;
+  text-align: center;
+}
+
+.menu-item:nth-child(1) p{
   
-  transform: translate(-95%, 0%) scale(1);
-  transform-origin: 50% -50%;
+  transform: rotate(-90deg) translate(73px) translateY(33px);
 }
-.menu-button:nth-child(5) {
+.menu-item:nth-child(2) p{
   
-  transform: translate(105%, -100%) scale(1);
-  transform-origin: 60% -110%;
+  transform: rotate(-162deg) translate(23px) translateY(101px);
+}
+.menu-item:nth-child(3) p{
+  
+  transform: rotate(-234deg) translate(-55px) translateY(78px);
+}
+.menu-item:nth-child(4) p{
+  
+  transform: rotate(-306deg) translate(-56px) translateY(-6px);
+}
+.menu-item:nth-child(5) p{
+  
+  transform: rotate(-378deg) translate(22px) translateY(-31px);
+}
+
+.menu-item a:hover {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+    color: white;
+    background: rgba(255, 255, 255, 0.3);
+    font-size: 44.44px
+}
+
+.menu-item a:hover + p {
+    font-size: 12px;
+    text-align: center;
 }
 
 </style>

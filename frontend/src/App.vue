@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import CircularMenu2 from "./components/CircularMenu2.vue";
+
+import CircularMenu from "./components/CircularMenu.vue";
 
 </script>
 
 <template>
-  
-  <CircularMenu2 />
+  <CircularMenu />
 </template>
 
 <style scoped>
