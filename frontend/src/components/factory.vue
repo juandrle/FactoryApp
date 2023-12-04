@@ -21,8 +21,7 @@ import {
 import { getIntersectionsMouse } from '../utils/3d.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from './EntityBar.vue'
-
-import { FreeMoveControls } from "../classes/FreeMoveControls.js"
+import { FreeMoveControls } from '../classes/FreeMoveControls.js'
 
 /*******************************/
 /*********** COFIG *************/
@@ -225,12 +224,8 @@ watch(moveMode, () => {
       ? new FreeMoveControls(camera, renderer.domElement)
       : new OrbitControls(camera, renderer.domElement)
 
-
-
   cameraControlls = controlls
 })
-
-
 </script>
 
 <template>
@@ -243,7 +238,11 @@ watch(moveMode, () => {
       <div>Current Camera Mode: {{ moveMode }}</div>
       <div>Active Entity: {{ activeEntity.entityID }}</div>
     </div>
-    <EntityBar :entities="allEntitys" :active-entity="activeEntity"  @update-active-entity="id => activeEntity = allEntitys[id]"/>
+    <EntityBar
+      :entities="allEntitys"
+      :active-entity="activeEntity"
+      @update-active-entity="(id) => (activeEntity = allEntitys[id])"
+    />
   </div>
 </template>
 
