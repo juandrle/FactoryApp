@@ -1,13 +1,13 @@
 import { CameraMode } from '@/enum/CameraMode'
-import { FlyControls } from 'three/addons/controls/FlyControls.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { CustomFlyControls } from './CustomFlyControlls.js'
 
 class CameraControlsManager {
-
   public mode: CameraMode | null = null
-  public controlls: FlyControls | OrbitControls | null = null
-  private domElement: any = null
+  public controlls: CustomFlyControls | OrbitControls | null = null
   public camera: any = null
+
+  private domElement: any = null
 
   constructor(camera: any, domElement: any, mode: CameraMode) {
     this.domElement = domElement
@@ -17,26 +17,20 @@ class CameraControlsManager {
   }
 
   toggleMode() {
+    console.log(this.mode)
     if (this.mode == CameraMode.FREE) this.switchTo(CameraMode.ORBIT)
     else this.switchTo(CameraMode.FREE)
   }
 
   switchTo(mode: CameraMode) {
-    this.mode = mode // für toggle
+    // für toggle
+    this.mode = mode
+
+    if (this.controlls) this.controlls.dispose()
+
     switch (mode) {
       case CameraMode.FREE: {
-        // Bro keine ahnung fixed den bug wenn das es nach dem toggeln immer schneller wird 
-        // vorher wurde einfach die camera ausgewechselt (siehe alte commits)
-        // Dispose removed alle event listener
-        this.controlls.dispose()
-
-        // change cam
-        this.controlls = new FlyControls(this.camera, this.domElement)
-
-        // Config
-        this.controlls.movementSpeed = 50
-        this.controlls.dragToLook = false
-        this.controlls.rollSpeed = 0.3
+        this.controlls = new CustomFlyControls(this.camera, this.domElement)
         break
       }
 
@@ -49,7 +43,7 @@ class CameraControlsManager {
 
   update() {
     if (this.mode === CameraMode.FREE) {
-      this.controlls.update(0.05)
+      this.controlls.update()
     }
   }
 }

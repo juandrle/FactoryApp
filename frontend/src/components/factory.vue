@@ -162,6 +162,15 @@ window.addEventListener('resize', () => {
   renderer.setSize(sizes.width, sizes.height)
 })
 
+// onKeyDown
+window.addEventListener('keydown', (event) => {
+  switch (event.code) {
+    case 'KeyQ':
+      ccm.toggleMode()
+      break
+  }
+})
+
 // Loop
 function animate() {
   requestAnimationFrame(animate)
@@ -194,10 +203,6 @@ const onLoadFactoryButton = () => {
   loadFactory(scene, loader, 'factory_id_sample')
 }
 
-// Button onToggleMoveMode
-const onToggleMoveModeButton = () => {
-  ccm.toggleMode()
-}
 
 // watch active Entity to change current model
 watch(activeEntity, () => {
@@ -213,10 +218,10 @@ watch(activeEntity, () => {
   <div className="target" ref="target">
     <div className="button-bar">
       <button @click="onLoadFactoryButton">Test Load Factory</button>
-      <button @click="onToggleMoveModeButton">Toggle Camera Mode</button>
     </div>
     <div className="debug-bar">
       <div>Active Entity: {{ activeEntity.entityID }}</div>
+      <div>SWITCH CAMERA-MODE WITH Q</div>
     </div>
     <EntityBar
       :entities="allEntitys"
