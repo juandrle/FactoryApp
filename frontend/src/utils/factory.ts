@@ -225,8 +225,27 @@ export const selectionObject = (currentObjectSelected: THREE.Group, lastObjectSe
                 )
             }
             lastObjectSelected.value = currentObjectSelected.value
+            console.log(currentObjectSelected.value)
             currentObjectSelected.value.children[0].children.forEach((element: THREE.Mesh) => {
-                    element.material.emissive.set(0xff0000)
+                switch (true) {
+                    case element.name.includes('1'):
+                        element.material.emissive.set(0x00ff00);
+                        break;
+                    case element.name.includes('2'):
+                        element.material.emissive.set(0x0000ff);
+                        break;
+                    case element.name.includes('3'):
+                        element.material.emissive.set(0xffff00);
+                        break;
+                    case element.name.includes('4'):
+                        element.material.emissive.set(0xd8bfd8);
+                        break;
+                    default:
+                        element.material.emissive.set(0xff0000);
+                        break;
+                }
+
+                //element.material.emissive.set(0xff0000)
                 }
             )
         }

@@ -155,19 +155,26 @@ addEventListener('click', (event: MouseEvent) => {
       })
   ) {
     placeEntity(loader, scene, highlight.position, activeEntity.value.path)
-  } else if (manipulationMode.value === 'move' && intersections.length > 0 &&
-      placeRequest({
-        x: currentObjectSelected.value.position.x,
-        y: currentObjectSelected.value.position.y,
-        z: currentObjectSelected.value.position.z,
-        orientation: 'N',
-        entityID: 'cube'
-      })) {
-    replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
-    manipulationMode.value = ''
   } else {
-    selectionObject(currentObjectSelected, lastObjectSelected, intersections)
-    currObjSelectedOriginPos.value = currentObjectSelected.value.position
+    switch (manipulationMode.value) {
+      case 'move':
+        if (intersections.length > 0 &&
+            placeRequest({
+              x: currentObjectSelected.value.position.x,
+              y: currentObjectSelected.value.position.y,
+              z: currentObjectSelected.value.position.z,
+              orientation: 'N',
+              entityID: 'cube'
+            })) {
+          replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
+          manipulationMode.value = ''
+        }
+        break
+      case '':
+        selectionObject(currentObjectSelected, lastObjectSelected, intersections)
+        currObjSelectedOriginPos.value = currentObjectSelected.value.position
+        break
+    }
   }
 })
 
@@ -228,25 +235,32 @@ const onToggleMoveModeButton = () => {
 }
 
 const onToggleSelectionMode = () => {
+  manipulationMode.value = ''
   if (moveOrSelectionMode.value === 'set') {
     scene.remove(highlight)
     moveOrSelectionMode.value = 'select'
   } else {
     scene.add(highlight)
     moveOrSelectionMode.value = 'set'
-    manipulationMode.value = ''
   }
 }
 const onToggleManipulationMode = () => {
-  if (manipulationMode.value === '' || manipulationMode.value === 'rotate') {
-    manipulationMode.value = 'move'
-  } else {
-    manipulationMode.value = 'rotate'
+  switch (manipulationMode.value) {
+    case '':
+      manipulationMode.value = 'rotate'
+      break
+    case 'rotate':
+      manipulationMode.value = 'move'
+      break
+    case 'move':
+      manipulationMode.value = ''
+      break
   }
 }
 watch(manipulationMode, () => {
   if (manipulationMode.value !== 'move' && currentObjectSelected.value.position != currObjSelectedOriginPos.value) {
     replaceEntity(currObjSelectedOriginPos.value, currentObjectSelected, lastObjectSelected)
+    console.log(currObjSelectedOriginPos.value)
   }
 })
 // watch active Entity to change current model
@@ -257,7 +271,22 @@ watch(activeEntity, () => {
       }
   )
 })
+addEventListener('keydown', (event) => {
+  if (manipulationMode.value === 'rotate') {
+    console.log(currentObjectSelected.value.target)
+    if (event.key === 'ArrowLeft') {
+      console.log('rotate left')
+        currentObjectSelected.value.rotation.set(0, 0, currentObjectSelected.value.rotation.z + (Math.PI / 2))
 
+
+
+    }
+    if (event.key === 'ArrowRight') {
+      console.log('rotate right')
+      currentObjectSelected.value.rotation.set(0, 0, currentObjectSelected.value.rotation.z - (Math.PI / 2))
+    }
+  }
+})
 // Watch the moveMode to change camera option
 watch(moveMode, () => {
   var prevCamera = camera
