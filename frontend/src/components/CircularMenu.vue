@@ -132,7 +132,7 @@ onMounted(() => {
 
 .menu-item:nth-child(1) p{
   
-  transform: rotate(-90deg) translate(73px) translateY(33px);
+  transform: rotate(-90deg) translate(72px) translateY(35px);
 }
 .menu-item:nth-child(2) p{
   
