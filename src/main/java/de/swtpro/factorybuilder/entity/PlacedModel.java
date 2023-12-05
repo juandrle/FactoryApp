@@ -20,7 +20,7 @@ public class PlacedModel implements Serializable{
 
     private long factoryID;
 
-    // where does the cube start
+    @Embedded
     private Position rootPos;
     
     // where is the input located
@@ -32,8 +32,9 @@ public class PlacedModel implements Serializable{
     private List<Output> outputs;
     
     // where are we on the grid
-    @Embedded
-    private Position fieldPos;
+
+    @ElementCollection
+    private List<Field> placedFields;
 
     private String orientation;
 
@@ -42,13 +43,17 @@ public class PlacedModel implements Serializable{
 
     private long modelId;
 
+    private long FactoryID;
 
-    public PlacedModel() {
-    }
+    public void PlacedModel() { }//TODO: plaziermethode machen
 
     public long getId() {
         return id;
     }
+
+    public long getFactoryID() { return factoryID; }
+
+    public void setFactoryID(long factoryID){ this.factoryID = factoryID;}
 
     public void setId(long id) {
         this.id = id;
@@ -62,7 +67,6 @@ public class PlacedModel implements Serializable{
         this.version = version;
     }
 
-
     public Position getRootPos() {
         return rootPos;
     }
@@ -73,17 +77,25 @@ public class PlacedModel implements Serializable{
 
     public List<Input> getInputs() { return inputs;}
 
+    public Input getInputByPosition(Position pos){
+        for(Input i: getInputs()){
+            if(i.getPosition() == pos)return i;
+        }
+        return null;
+    }
+
+    public Output getOutputByPosition(Position pos){
+        for(Output o: getOutputs()){
+            if(o.getPosition() == pos)return o;
+        }
+        return null;
+    }
+
     public List<Output> getOutputs() {
         return outputs;
     }
 
-    public Position getFieldPos() {
-        return fieldPos;
-    }
-
-    public void setFieldPos(Position fieldPos) {
-        this.fieldPos = fieldPos;
-    }
+    public List<Field> getPlacedFields(){ return placedFields;}
 
     public String getOrientation() {
         return orientation;

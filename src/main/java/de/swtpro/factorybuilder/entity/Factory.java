@@ -20,6 +20,10 @@ public class Factory implements Serializable {
 
     private int depth;
 
+    public long getFactoryID(){
+        return id;
+    }
+
     public int getWidth() {
         return width;
     }
