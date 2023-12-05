@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import type { Ref } from 'vue'
-import type { IVector3 } from '@/types/global'
+import type { IVector3, ISizes } from '@/types/global'
 import type { IBackendEntityPreview } from '@/types/backendEntity'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { FlyControls } from 'three/addons/controls/FlyControls.js'
 import {
   createGrids,
   updateHighlight,
@@ -21,7 +19,8 @@ import {
 import { getIntersectionsMouse } from '../utils/3d.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from './EntityBar.vue'
-import { FreeMoveControls } from '../classes/FreeMoveControls.js'
+import { CameraControlsManager } from '../classes/CameraControlsManager.js'
+import { CameraMode } from '@/enum/CameraMode'
 
 /*******************************/
 /*********** COFIG *************/
@@ -37,7 +36,7 @@ const GRID: IVector3 = {
 /******* SETUP ******/
 /********************/
 const target = ref()
-const moveMode: Ref<String> = ref<'orbit' | 'fly'>('orbit')
+const moveMode: CameraMode = CameraMode.ORBIT
 const allEntitys: Ref<IBackendEntityPreview[]> = ref([])
 const activeEntity: Ref<IBackendEntityPreview> = ref({
   path: '/fallback/.gltf/cube.gltf',
@@ -46,11 +45,7 @@ const activeEntity: Ref<IBackendEntityPreview> = ref({
 })
 
 // Get Screen size
-let sizes: {
-  width: number
-  height: number
-  ratio: number
-} = {
+let sizes: ISizes = {
   width: window.innerWidth,
   height: window.innerHeight,
   ratio: window.innerWidth / window.innerHeight
@@ -78,7 +73,11 @@ camera.up.set(0, 0, 1)
 camera.lookAt(0, 0, 0)
 
 // Set Camera controll option (Orbit as Defaukt)
-let cameraControlls: any = new OrbitControls(camera, renderer.domElement)
+let ccm: CameraControlsManager = new CameraControlsManager(
+  camera,
+  renderer.domElement,
+  moveMode
+)
 
 // Model loader
 const loader: any = new GLTFLoader()
@@ -167,9 +166,7 @@ window.addEventListener('resize', () => {
 function animate() {
   requestAnimationFrame(animate)
 
-  if (moveMode.value === 'fly') {
-    cameraControlls.update(0.05)
-  }
+  ccm.update()
 
   // Render new frame
   renderer.render(scene, camera)
@@ -199,7 +196,8 @@ const onLoadFactoryButton = () => {
 
 // Button onToggleMoveMode
 const onToggleMoveModeButton = () => {
-  moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
+  ccm.toggleMode()
+  console.log(scene.children)
 }
 
 // watch active Entity to change current model
@@ -210,22 +208,6 @@ watch(activeEntity, () => {
     }
   )
 })
-
-// Watch the moveMode to change camera option
-watch(moveMode, () => {
-  var prevCamera = camera
-  camera = new THREE.PerspectiveCamera(50, sizes.ratio)
-  camera.position.copy(prevCamera.position)
-  camera.rotation.copy(prevCamera.rotation)
-  camera.up.copy(prevCamera.up)
-
-  const controlls =
-    moveMode.value === 'fly'
-      ? new FreeMoveControls(camera, renderer.domElement)
-      : new OrbitControls(camera, renderer.domElement)
-
-  cameraControlls = controlls
-})
 </script>
 
 <template>
@@ -235,7 +217,6 @@ watch(moveMode, () => {
       <button @click="onToggleMoveModeButton">Toggle Camera Mode</button>
     </div>
     <div className="debug-bar">
-      <div>Current Camera Mode: {{ moveMode }}</div>
       <div>Active Entity: {{ activeEntity.entityID }}</div>
     </div>
     <EntityBar
