@@ -1,8 +1,6 @@
 import { CameraMode } from '@/enum/CameraMode'
 import { FlyControls } from 'three/addons/controls/FlyControls.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import * as THREE from 'three'
-import type { ISizes } from '@/types/global'
 
 class CameraControlsManager {
 

@@ -36,7 +36,7 @@ const GRID: IVector3 = {
 /******* SETUP ******/
 /********************/
 const target = ref()
-const moveMode: CameraMode = CameraMode.ORBIT
+const initalMoveMode: CameraMode = CameraMode.ORBIT
 const allEntitys: Ref<IBackendEntityPreview[]> = ref([])
 const activeEntity: Ref<IBackendEntityPreview> = ref({
   path: '/fallback/.gltf/cube.gltf',
@@ -76,7 +76,7 @@ camera.lookAt(0, 0, 0)
 let ccm: CameraControlsManager = new CameraControlsManager(
   camera,
   renderer.domElement,
-  moveMode
+  initalMoveMode
 )
 
 // Model loader
@@ -197,7 +197,6 @@ const onLoadFactoryButton = () => {
 // Button onToggleMoveMode
 const onToggleMoveModeButton = () => {
   ccm.toggleMode()
-  console.log(scene.children)
 }
 
 // watch active Entity to change current model
