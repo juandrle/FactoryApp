@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import type { Ref } from 'vue'
-import type { IVector3 } from '@/types/global'
-import type { IBackendEntityPreview } from '@/types/backendEntity'
+import {ref, onMounted, watch} from 'vue'
+import type {Ref} from 'vue'
+import type {IVector3} from '@/types/global'
+import type {IBackendEntityPreview} from '@/types/backendEntity'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { FlyControls } from 'three/addons/controls/FlyControls.js'
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
+import {FlyControls} from 'three/addons/controls/FlyControls.js'
 
 import {
   createGrids,
@@ -17,11 +17,12 @@ import {
   loadFactory,
   placeRequest,
   getAllEntitys,
-  updateHighlightModel
+  updateHighlightModel, selectionObject, replaceEntity
 } from '../utils/factory.js'
-import { getIntersectionsMouse } from '../utils/3d.js'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import {getIntersectionsMouse} from '../utils/3d.js'
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from './EntityBar.vue'
+import Button from "@/components/Button.vue";
 
 /*******************************/
 /*********** COFIG *************/
@@ -38,12 +39,17 @@ const GRID: IVector3 = {
 /********************/
 const target = ref()
 const moveMode: Ref<String> = ref<'orbit' | 'fly'>('orbit')
+const moveOrSelectionMode: Ref<String> = ref<'select' | 'set'>('set')
+const manipulationMode: Ref<String> = ref<'move' | 'rotate' | ''>('')
 const allEntitys: Ref<IBackendEntityPreview[]> = ref([])
 const activeEntity: Ref<IBackendEntityPreview> = ref({
   path: '/fallback/.gltf/cube.gltf',
   icon: '',
   entityID: 'loadingCube'
 })
+const currentObjectSelected: Ref<THREE.Group> = ref()
+const lastObjectSelected: Ref<THREE.Group> = ref()
+const currObjSelectedOriginPos: Ref<IVector3> = ref({x: 0, y: 0, z: 0})
 
 // Get Screen size
 let sizes: {
@@ -102,17 +108,17 @@ scene.add(axesHelper)
 // Add Highlight cube
 var highlight: any
 loader.load(
-  '/fallback/.gltf/cube.gltf',
-  function (gltf: any) {
-    highlight = gltf.scene
-    highlight.position.set(0, 0, 0)
-    highlight.name = 'highlight'
-    scene.add(gltf.scene)
-  },
-  undefined,
-  function (error: any) {
-    console.error(error)
-  }
+    '/fallback/.gltf/cube.gltf',
+    function (gltf: any) {
+      highlight = gltf.scene
+      highlight.position.set(0, 0, 0)
+      scene.add(highlight)
+      highlight.name = 'highlight'
+    },
+    undefined,
+    function (error: any) {
+      console.error(error)
+    }
 )
 
 /********************/
@@ -125,24 +131,43 @@ addEventListener('mousemove', (event: MouseEvent) => {
   const intersections = getIntersectionsMouse(event, camera, scene)
 
   // Update the highlighter
-  if (highlight)
-    // Object model wird asynchron geladen
+  if (highlight && moveOrSelectionMode.value === 'set')
+      // Object model wird asynchron geladen
     updateHighlight(highlight, ACTIVE_LAYER, intersections)
+  else if (currentObjectSelected.value && manipulationMode.value === 'move') {
+    updateHighlight(currentObjectSelected.value, ACTIVE_LAYER, intersections)
+  }
+
 })
 
 //onClick
-addEventListener('click', () => {
+addEventListener('click', (event: MouseEvent) => {
+  const intersections = getIntersectionsMouse(event, camera, scene)
+
   // Place cube
-  if (
-    placeRequest({
-      x: highlight.position.x,
-      y: highlight.position.y,
-      z: highlight.position.z,
-      orientation: 'N',
-      entityID: 'cube'
-    })
+  if (moveOrSelectionMode.value === 'set' && intersections.length > 0 &&
+      placeRequest({
+        x: highlight.position.x,
+        y: highlight.position.y,
+        z: highlight.position.z,
+        orientation: 'N',
+        entityID: 'cube'
+      })
   ) {
     placeEntity(loader, scene, highlight.position, activeEntity.value.path)
+  } else if (manipulationMode.value === 'move' && intersections.length > 0 &&
+      placeRequest({
+        x: currentObjectSelected.value.position.x,
+        y: currentObjectSelected.value.position.y,
+        z: currentObjectSelected.value.position.z,
+        orientation: 'N',
+        entityID: 'cube'
+      })) {
+    replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
+    manipulationMode.value = ''
+  } else {
+    selectionObject(currentObjectSelected, lastObjectSelected, intersections)
+    currObjSelectedOriginPos.value = currentObjectSelected.value.position
   }
 })
 
@@ -202,12 +227,34 @@ const onToggleMoveModeButton = () => {
   moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
 }
 
+const onToggleSelectionMode = () => {
+  if (moveOrSelectionMode.value === 'set') {
+    scene.remove(highlight)
+    moveOrSelectionMode.value = 'select'
+  } else {
+    scene.add(highlight)
+    moveOrSelectionMode.value = 'set'
+    manipulationMode.value = ''
+  }
+}
+const onToggleManipulationMode = () => {
+  if (manipulationMode.value === '' || manipulationMode.value === 'rotate') {
+    manipulationMode.value = 'move'
+  } else {
+    manipulationMode.value = 'rotate'
+  }
+}
+watch(manipulationMode, () => {
+  if (manipulationMode.value !== 'move' && currentObjectSelected.value.position != currObjSelectedOriginPos.value) {
+    replaceEntity(currObjSelectedOriginPos.value, currentObjectSelected, lastObjectSelected)
+  }
+})
 // watch active Entity to change current model
 watch(activeEntity, () => {
   updateHighlightModel(highlight, activeEntity.value.path, scene, loader).then(
-    (newHighlight: any) => {
-      highlight = newHighlight
-    }
+      (newHighlight: THREE.Group) => {
+        highlight = newHighlight
+      }
   )
 })
 
@@ -220,9 +267,9 @@ watch(moveMode, () => {
   camera.up.copy(prevCamera.up)
 
   const controlls =
-    moveMode.value === 'fly'
-      ? new FlyControls(camera, renderer.domElement)
-      : new OrbitControls(camera, renderer.domElement)
+      moveMode.value === 'fly'
+          ? new FlyControls(camera, renderer.domElement)
+          : new OrbitControls(camera, renderer.domElement)
 
   if (moveMode.value === 'fly') {
     controlls.movementSpeed = 10
@@ -241,12 +288,15 @@ watch(moveMode, () => {
     <div className="button-bar">
       <button @click="onLoadFactoryButton">Test Load Factory</button>
       <button @click="onToggleMoveModeButton">Toggle Camera Mode</button>
+      <button @click="onToggleSelectionMode">Toggle Selection Mode</button>
+      <button @click="onToggleManipulationMode">Toggle Move/Rotation</button>
     </div>
     <div className="debug-bar">
       <div>Current Camera Mode: {{ moveMode }}</div>
       <div>Active Entity: {{ activeEntity.entityID }}</div>
     </div>
-    <EntityBar :entities="allEntitys" :active-entity="activeEntity"  @update-active-entity="id => activeEntity = allEntitys[id]"/>
+    <EntityBar :entities="allEntitys" :active-entity="activeEntity"
+               @update-active-entity="id => activeEntity = allEntitys[id]"/>
   </div>
 </template>
 
