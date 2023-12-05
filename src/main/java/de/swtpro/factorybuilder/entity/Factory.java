@@ -20,6 +20,12 @@ public class Factory implements Serializable {
 
     private int depth;
 
+    private String picturePath;
+
+    public String getPicturePath() { return picturePath; }
+
+    public void setPicturePath(String picturePath) { this.picturePath = picturePath;    }
+
     public long getFactoryID(){
         return id;
     }

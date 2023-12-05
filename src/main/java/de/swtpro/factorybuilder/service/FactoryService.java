@@ -242,12 +242,19 @@ public class FactoryService {
         return true;
     }
 
-    public void removeModelFromField(Position pos){
-        Field field = getFieldByPosition(pos);
-
+    private void removeModelFromField(Field field){
         PlacedModel placedModel = getPlacedModelById(field.getPlacedModelID());
 
         //Todo: switch repository entry
+    }
+
+    public void removeModelFromFactory(PlacedModel placedModel){
+
+        Factory factory = getFactoryByID(placedModel.getFactoryID());
+        for(Field f: placedModel.getPlacedFields()){
+            removeModelFromField(f);
+        }
+        //TODO: delete placedmodel from grid, model and factory repos
     }
 
 
