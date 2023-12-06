@@ -5,3 +5,9 @@ export interface IBackendEntity {
     path: string; 
     orientation: string;
 }
+
+export interface IBackendEntityPreview {
+    path: string;
+    icon: string;
+    entityID: string;
+}
