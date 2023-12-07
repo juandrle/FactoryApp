@@ -40,7 +40,7 @@ export const createGrids = (x: number, y: number, z: number, scene: THREE.Scene)
         grid.name = `grid ${i}`
 
         // Add to scene
-        scene.add(grid)
+        //scene.add(grid)
 
         //Create Layer
         const layer: THREE.Mesh = new THREE.Mesh(
@@ -82,6 +82,7 @@ export const createGroundWithTextures = (
     const groundPane: THREE.PlaneGeometry = new THREE.PlaneGeometry(width, depth)
 
     const groundMesh: THREE.Mesh = new THREE.Mesh(groundPane, material)
+    groundMesh.name = "buildingMesh"
 
     scene.add(groundMesh)
 }
@@ -106,7 +107,7 @@ export const createRoofWithTextures = (
     const roofMesh: THREE.Mesh = new THREE.Mesh(roofPane, material)
     roofMesh.position.set(0, 0, height)
     roofMesh.rotateX(Math.PI)
-
+    roofMesh.name = "buildingMesh"
     scene.add(roofMesh)
 }
 
@@ -140,6 +141,10 @@ export const createWallsWithTexture = (
     const depthWallMesh2: THREE.Mesh = new THREE.Mesh(depthWallPane, material)
     depthWallMesh2.position.set(width / 2, 0, height / 2)
     depthWallMesh2.rotateZ(Math.PI)
+    widthWallMesh2.name = "buildingMesh"
+    widthWallMesh1.name = "buildingMesh"
+    depthWallMesh1.name = "buildingMesh"
+    depthWallMesh2.name = "buildingMesh"
     scene.add(widthWallMesh2)
     scene.add(widthWallMesh1)
     scene.add(depthWallMesh1)
@@ -177,7 +182,10 @@ export const updateHighlightModel: any = async (
 
         // Neuen highlighter vorbereiten
         let newHighlight: any = model.scene;
+        //TODO: TEMPORARY
+        newHighlight.rotation.set(Math.PI / 2, 0, 0)
         newHighlight.position.set(prevHighlight.position)
+        console.log(newHighlight.position)
         newHighlight.name = prevHighlight.name
 
         // Delete old highlight
@@ -198,6 +206,8 @@ export const placeEntity = (loader: GLTFLoader, scene: THREE.Scene, pos: IVector
         function (gltf: any) {
             object = gltf.scene
             object.position.set(pos.x, pos.y, pos.z)
+            // TODO: TEMPORARY
+            object.rotation.set(Math.PI / 2, 0, 0)
             object.name = 'entity'
             scene.add(gltf.scene)
         },
@@ -213,42 +223,41 @@ export const replaceEntity = (pos: IVector3, currentObjectSelected: THREE.Group,
 }
 export const selectionObject = (currentObjectSelected: THREE.Group, lastObjectSelected: THREE.Group, intersections: any) => {
     if (intersections.length > 0) {
-      console.log(intersections.filter((item:any) => !item.object.name.includes('grid')))
-        let filteredIntersections = intersections.filter((item: THREE.Mesh) => item.object.name.includes('Entity'))
-        if (filteredIntersections.length == 1) {
-            currentObjectSelected.value = filteredIntersections[0].object.parent.parent
-            // Setting Color
-            if (lastObjectSelected.value != currentObjectSelected.value && lastObjectSelected.value) {
-                lastObjectSelected.value.children[0].children.forEach((element: THREE.Mesh) => {
-                        element.material.emissive.set(0xffffff)
-                    }
-                )
-            }
-            lastObjectSelected.value = currentObjectSelected.value
-            console.log(currentObjectSelected.value)
-            currentObjectSelected.value.children[0].children.forEach((element: THREE.Mesh) => {
-                switch (true) {
-                    case element.name.includes('1'):
-                        element.material.emissive.set(0x00ff00);
-                        break;
-                    case element.name.includes('2'):
-                        element.material.emissive.set(0x0000ff);
-                        break;
-                    case element.name.includes('3'):
-                        element.material.emissive.set(0xffff00);
-                        break;
-                    case element.name.includes('4'):
-                        element.material.emissive.set(0xd8bfd8);
-                        break;
-                    default:
-                        element.material.emissive.set(0xff0000);
-                        break;
-                }
+        let filteredIntersections = intersections.filter((item: THREE.Mesh) => (!item.object.name.includes('layer') &&
+            !item.object.name.includes('building') && !item.object.type.includes('Axes') && !item.object.type.includes('Scene')))
 
-                //element.material.emissive.set(0xff0000)
+        if (filteredIntersections.length < 1) return
+        const closestIntersection = filteredIntersections.reduce((min: any, obj: any) => {
+            return obj.distance < min.distance ? obj : min;
+        }, {distance: Infinity})
+        currentObjectSelected.value = closestIntersection.object.parent
+        currentObjectSelected.value.children.forEach((element: any) => {
+            switch (element.type) {
+                case 'Mesh':
+                    element.material.emissive.setRGB(0,0.1,0)
+                    break
+                case 'Group':
+                    element.children.forEach((ele: any) => ele.material.emissive.setRGB(0,0.1,0))
+                    break
+                default:
+                    break
+            }
+        })
+
+        if (lastObjectSelected.value && lastObjectSelected.value != currentObjectSelected.value)
+            lastObjectSelected.value.children.forEach((element: THREE.Mesh) => {
+                switch (element.type) {
+                    case 'Mesh':
+                        element.material.emissive.set(0x000000)
+                        break
+                    case 'Group':
+                        element.children.forEach((ele: any) => ele.material.emissive.set(0x000000))
+                        break
+                    default:
+                        break
                 }
-            )
-        }
+            })
+        lastObjectSelected.value = currentObjectSelected.value
     }
 }
 export const loadFactory = (scene: THREE.Scene, loader: GLTFLoader, factory_id: string) => {

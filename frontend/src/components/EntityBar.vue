@@ -20,7 +20,6 @@ const props = defineProps<{
 .entity-bar {
   display: flex;
   flex-direction: column;
-  position: absolute;
   background-color: #f1ece2;
   gap: 12px;
   padding: 10px;
@@ -34,8 +33,8 @@ const props = defineProps<{
 .entity-bar .entity{
   cursor: pointer;
   color: black;
-  width: 60px;
-  height: 60px;
+  width: 30px;
+  height: 30px;
   border-radius: 10px;
   padding: 10px;
 }

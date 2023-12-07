@@ -172,7 +172,8 @@ addEventListener('click', (event: MouseEvent) => {
         break
       case '':
         selectionObject(currentObjectSelected, lastObjectSelected, intersections)
-        currObjSelectedOriginPos.value = currentObjectSelected.value.position
+        if (currentObjectSelected.value)
+          currObjSelectedOriginPos.value = currentObjectSelected.value.position
         break
     }
   }
@@ -276,8 +277,7 @@ addEventListener('keydown', (event) => {
     console.log(currentObjectSelected.value.target)
     if (event.key === 'ArrowLeft') {
       console.log('rotate left')
-        currentObjectSelected.value.rotation.set(0, 0, currentObjectSelected.value.rotation.z + (Math.PI / 2))
-
+      currentObjectSelected.value.rotation.set(0, 0, currentObjectSelected.value.rotation.z + (Math.PI / 2))
 
 
     }
