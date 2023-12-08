@@ -6,23 +6,23 @@
         <label for="menu-toggler"></label> -->
         <ul>
         <li class="menu-item">
-            <a class="fa-solid fa-arrows-rotate" href=""></a>
+            <a class="fa-solid fa-arrows-rotate" @click='rotateClicked'></a>
             <p>Drehen</p>
         </li>
         <li class="menu-item">
-            <a class="fa-solid fa-arrows-up-down-left-right" href="#"></a>
+            <a class="fa-solid fa-arrows-up-down-left-right" @click='moveClicked'></a>
             <p>Versetzen</p>
         </li>
         <li class="menu-item">
-            <a class="fa-solid fa-trash" href="#"></a>
+            <a class="fa-solid fa-trash" @click='delClicked'></a>
             <p>Löschen</p>
         </li>
         <li class="menu-item">
-            <a class="fa-solid fa-code" href="#"></a>
+            <a class="fa-solid fa-code" @click='scriptClicked'></a>
             <p>Skripten</p>
         </li>
         <li class="menu-item">
-            <a class="fa-regular fa-clone" href="#"></a>
+            <a class="fa-regular fa-clone" @click='cloneClicked'></a>
             <p>Klonen</p>
         </li>
         
@@ -32,19 +32,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-
-const isButtonVisible = ref(false);
-
-// Event listener for the "V" key
-onMounted(() => {
-  window.addEventListener('keydown', (event) => {
-    if (event.key === 'v' || event.key === 'V') {
-      isButtonVisible.value = !isButtonVisible.value;
-    }
-  });
-});
-
+import {onMounted, inject, Ref} from 'vue';
+const emit = defineEmits<{
+  changeEntity: [string];
+  delEntity: [true];
+  rotateEntity: [true];
+  moveEntity: [true];
+  scriptEntity: [true];
+  cloneEntity: [true];
+}>()
+const delClicked = () =>{
+  emit('delEntity', true)
+}
+const rotateClicked = () => {
+  emit('rotateEntity', true)
+}
+const moveClicked = () => {
+  emit('moveEntity', true)
+}
+const scriptClicked = () => {
+  emit('scriptEntity', true)
+}
+const cloneClicked = () => {
+  emit('cloneEntity', true)
+}
+const isButtonVisible: Ref<Boolean> = inject('showCircleMenu')
+console.log(isButtonVisible.value)
 
 </script>
 

@@ -220,45 +220,53 @@ export const placeEntity = (loader: GLTFLoader, scene: THREE.Scene, pos: IVector
 export const replaceEntity = (pos: IVector3, currentObjectSelected: THREE.Group, lastObjectSelected: THREE.Group) => {
     currentObjectSelected.value.position.set(pos.x, pos.y, pos.z)
     lastObjectSelected.value = currentObjectSelected.value
+    highlightObjectWithColor(currentObjectSelected, false)
 }
 export const selectionObject = (currentObjectSelected: THREE.Group, lastObjectSelected: THREE.Group, intersections: any) => {
     if (intersections.length > 0) {
         let filteredIntersections = intersections.filter((item: THREE.Mesh) => (!item.object.name.includes('layer') &&
             !item.object.name.includes('building') && !item.object.type.includes('Axes') && !item.object.type.includes('Scene')))
 
-        if (filteredIntersections.length < 1) return
+        if (filteredIntersections.length < 1) return false
         const closestIntersection = filteredIntersections.reduce((min: any, obj: any) => {
             return obj.distance < min.distance ? obj : min;
         }, {distance: Infinity})
         currentObjectSelected.value = closestIntersection.object.parent
-        currentObjectSelected.value.children.forEach((element: any) => {
+        highlightObjectWithColor(currentObjectSelected, true)
+
+        if (lastObjectSelected.value && lastObjectSelected.value != currentObjectSelected.value)
+            highlightObjectWithColor(lastObjectSelected, false)
+        lastObjectSelected.value = currentObjectSelected.value
+        return true
+    }
+}
+export const highlightObjectWithColor = (object: THREE.Group, color: boolean) => {
+    if (!color)
+        object.value.children.forEach((element: THREE.Mesh) => {
             switch (element.type) {
                 case 'Mesh':
-                    element.material.emissive.setRGB(0,0.1,0)
+                    element.material.emissive.set(0x000000)
                     break
                 case 'Group':
-                    element.children.forEach((ele: any) => ele.material.emissive.setRGB(0,0.1,0))
+                    element.children.forEach((ele: any) => ele.material.emissive.set(0x000000))
                     break
                 default:
                     break
             }
         })
-
-        if (lastObjectSelected.value && lastObjectSelected.value != currentObjectSelected.value)
-            lastObjectSelected.value.children.forEach((element: THREE.Mesh) => {
-                switch (element.type) {
-                    case 'Mesh':
-                        element.material.emissive.set(0x000000)
-                        break
-                    case 'Group':
-                        element.children.forEach((ele: any) => ele.material.emissive.set(0x000000))
-                        break
-                    default:
-                        break
-                }
-            })
-        lastObjectSelected.value = currentObjectSelected.value
-    }
+    else
+        object.value.children.forEach((element: any) => {
+            switch (element.type) {
+                case 'Mesh':
+                    element.material.emissive.setRGB(0, 0.1, 0)
+                    break
+                case 'Group':
+                    element.children.forEach((ele: any) => ele.material.emissive.setRGB(0, 0.1, 0))
+                    break
+                default:
+                    break
+            }
+        })
 }
 export const loadFactory = (scene: THREE.Scene, loader: GLTFLoader, factory_id: string) => {
     fetch('/mock/backend/mockBackendLoadFactoryResponse.json').then((res) =>

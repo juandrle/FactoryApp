@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, watch} from 'vue'
+import {ref, onMounted, watch, provide} from 'vue'
 import type {Ref} from 'vue'
 import type {IVector3} from '@/types/global'
 import type {IBackendEntityPreview} from '@/types/backendEntity'
@@ -17,12 +17,13 @@ import {
   loadFactory,
   placeRequest,
   getAllEntitys,
-  updateHighlightModel, selectionObject, replaceEntity
+  updateHighlightModel, selectionObject, replaceEntity, highlightObjectWithColor
 } from '../utils/factory.js'
 import {getIntersectionsMouse} from '../utils/3d.js'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from './EntityBar.vue'
 import Button from "@/components/Button.vue";
+import CircularMenu from "@/components/CircularMenu.vue";
 
 /*******************************/
 /*********** COFIG *************/
@@ -39,7 +40,7 @@ const GRID: IVector3 = {
 /********************/
 const target = ref()
 const moveMode: Ref<String> = ref<'orbit' | 'fly'>('orbit')
-const moveOrSelectionMode: Ref<String> = ref<'select' | 'set'>('set')
+const moveOrSelectionMode: Ref<String> = ref<'set' | ''>('')
 const manipulationMode: Ref<String> = ref<'move' | 'rotate' | ''>('')
 const allEntitys: Ref<IBackendEntityPreview[]> = ref([])
 const activeEntity: Ref<IBackendEntityPreview> = ref({
@@ -50,6 +51,9 @@ const activeEntity: Ref<IBackendEntityPreview> = ref({
 const currentObjectSelected: Ref<THREE.Group> = ref()
 const lastObjectSelected: Ref<THREE.Group> = ref()
 const currObjSelectedOriginPos: Ref<IVector3> = ref({x: 0, y: 0, z: 0})
+const showCircMenu: Ref<Boolean> = ref(false)
+provide('showCircleMenu', showCircMenu)
+let dynamicDiv: HTMLElement | null
 
 // Get Screen size
 let sizes: {
@@ -84,7 +88,7 @@ camera.up.set(0, 0, 1)
 camera.lookAt(0, 0, 0)
 
 // Set Camera controll option (Orbit as Defaukt)
-let cameraControlls: any = new OrbitControls(camera, renderer.domElement)
+let cameraControls: any = new OrbitControls(camera, renderer.domElement)
 
 // Model loader
 const loader: any = new GLTFLoader()
@@ -133,19 +137,41 @@ addEventListener('mousemove', (event: MouseEvent) => {
   // Update the highlighter
   if (highlight && moveOrSelectionMode.value === 'set')
       // Object model wird asynchron geladen
+  {
     updateHighlight(highlight, ACTIVE_LAYER, intersections)
-  else if (currentObjectSelected.value && manipulationMode.value === 'move') {
+  } else if (currentObjectSelected.value && manipulationMode.value === 'move') {
     updateHighlight(currentObjectSelected.value, ACTIVE_LAYER, intersections)
   }
 
 })
 
 //onClick
-addEventListener('click', (event: MouseEvent) => {
+addEventListener('contextmenu', (event: MouseEvent) => {
+  event.preventDefault()
+  if (moveOrSelectionMode.value !== '' || manipulationMode.value !== '') return
   const intersections = getIntersectionsMouse(event, camera, scene)
+  if (selectionObject(currentObjectSelected, lastObjectSelected, intersections)) {
+    if (dynamicDiv) {
+      dynamicDiv.style.left = event.clientX-50 + 'px'
+      dynamicDiv.style.top = event.clientY+20 + 'px'
+      console.log(dynamicDiv.style.left)
+      console.log(event.clientX)
+      dynamicDiv.style.display = 'block'
+    }
 
+    showCircMenu.value = true
+  }
+  if (currentObjectSelected.value)
+    currObjSelectedOriginPos.value = currentObjectSelected.value.position
+})
+addEventListener('click', () => {
   // Place cube
-  if (moveOrSelectionMode.value === 'set' && intersections.length > 0 &&
+  if (showCircMenu.value) {
+    showCircMenu.value = false
+    highlightObjectWithColor(currentObjectSelected, false)
+    return
+  }
+  if (moveOrSelectionMode.value === 'set' &&
       placeRequest({
         x: highlight.position.x,
         y: highlight.position.y,
@@ -155,27 +181,16 @@ addEventListener('click', (event: MouseEvent) => {
       })
   ) {
     placeEntity(loader, scene, highlight.position, activeEntity.value.path)
-  } else {
-    switch (manipulationMode.value) {
-      case 'move':
-        if (intersections.length > 0 &&
-            placeRequest({
-              x: currentObjectSelected.value.position.x,
-              y: currentObjectSelected.value.position.y,
-              z: currentObjectSelected.value.position.z,
-              orientation: 'N',
-              entityID: 'cube'
-            })) {
-          replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
-          manipulationMode.value = ''
-        }
-        break
-      case '':
-        selectionObject(currentObjectSelected, lastObjectSelected, intersections)
-        if (currentObjectSelected.value)
-          currObjSelectedOriginPos.value = currentObjectSelected.value.position
-        break
-    }
+  } else if (manipulationMode.value === 'move' &&
+      placeRequest({
+        x: currentObjectSelected.value.position.x,
+        y: currentObjectSelected.value.position.y,
+        z: currentObjectSelected.value.position.z,
+        orientation: 'N',
+        entityID: 'cube'
+      })) {
+    replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
+    manipulationMode.value = ''
   }
 })
 
@@ -201,7 +216,7 @@ function animate() {
   requestAnimationFrame(animate)
 
   if (moveMode.value === 'fly') {
-    cameraControlls.update(0.05)
+    cameraControls.update(0.05)
   }
 
   // Render new frame
@@ -210,6 +225,8 @@ function animate() {
 
 // Entry Point
 onMounted(() => {
+  dynamicDiv = document.getElementById('dynamicDiv')
+  console.log(dynamicDiv)
   // Renderer gets appended to target
   target.value.appendChild(renderer.domElement)
 
@@ -235,37 +252,33 @@ const onToggleMoveModeButton = () => {
   moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
 }
 
-const onToggleSelectionMode = () => {
-  manipulationMode.value = ''
-  if (moveOrSelectionMode.value === 'set') {
-    scene.remove(highlight)
-    moveOrSelectionMode.value = 'select'
-  } else {
-    scene.add(highlight)
-    moveOrSelectionMode.value = 'set'
-  }
+const onRotateClicked = () => {
+  manipulationMode.value = 'rotate'
+
 }
-const onToggleManipulationMode = () => {
-  switch (manipulationMode.value) {
-    case '':
-      manipulationMode.value = 'rotate'
-      break
-    case 'rotate':
-      manipulationMode.value = 'move'
-      break
-    case 'move':
-      manipulationMode.value = ''
-      break
-  }
+const onMoveClicked = () => {
+  manipulationMode.value = 'move'
+
 }
-watch(manipulationMode, () => {
-  if (manipulationMode.value !== 'move' && currentObjectSelected.value.position != currObjSelectedOriginPos.value) {
-    replaceEntity(currObjSelectedOriginPos.value, currentObjectSelected, lastObjectSelected)
-    console.log(currObjSelectedOriginPos.value)
-  }
-})
+const onDelClicked = () => {
+  scene.remove(currentObjectSelected)
+}
+const onScriptClicked = () => {
+
+}
+const onCloneClicked = () => {
+
+}
+// watch(manipulationMode, () => {
+//   if (manipulationMode.value !== 'move' && currentObjectSelected.value.position != currObjSelectedOriginPos.value) {
+//     replaceEntity(currObjSelectedOriginPos.value, currentObjectSelected, lastObjectSelected)
+//     console.log(currObjSelectedOriginPos.value)
+//   }
+// })
 // watch active Entity to change current model
 watch(activeEntity, () => {
+  moveOrSelectionMode.value = 'set'
+  scene.add(highlight)
   updateHighlightModel(highlight, activeEntity.value.path, scene, loader).then(
       (newHighlight: THREE.Group) => {
         highlight = newHighlight
@@ -273,17 +286,18 @@ watch(activeEntity, () => {
   )
 })
 addEventListener('keydown', (event) => {
+  if (event.key === 'v' || event.key === 'V') {
+    moveOrSelectionMode.value = ''
+    manipulationMode.value = ''
+    scene.remove(highlight)
+  }
   if (manipulationMode.value === 'rotate') {
-    console.log(currentObjectSelected.value.target)
+    const currObjSelRot = currentObjectSelected.value.rotation
     if (event.key === 'ArrowLeft') {
-      console.log('rotate left')
-      currentObjectSelected.value.rotation.set(0, 0, currentObjectSelected.value.rotation.z + (Math.PI / 2))
-
-
+      currObjSelRot.set(0, 0, currObjSelRot.z + (Math.PI / 2))
     }
     if (event.key === 'ArrowRight') {
-      console.log('rotate right')
-      currentObjectSelected.value.rotation.set(0, 0, currentObjectSelected.value.rotation.z - (Math.PI / 2))
+      currObjSelRot.set(0, 0, currObjSelRot.z - (Math.PI / 2))
     }
   }
 })
@@ -295,30 +309,38 @@ watch(moveMode, () => {
   camera.rotation.copy(prevCamera.rotation)
   camera.up.copy(prevCamera.up)
 
-  const controlls =
+  const controls =
       moveMode.value === 'fly'
           ? new FlyControls(camera, renderer.domElement)
           : new OrbitControls(camera, renderer.domElement)
 
   if (moveMode.value === 'fly') {
-    controlls.movementSpeed = 10
-    controlls.dragToLook = true
-    controlls.rollSpeed = 0.3
+    controls.movementSpeed = 10
+    controls.dragToLook = true
+    controls.rollSpeed = 0.3
   }
 
-  cameraControlls = controlls
+  cameraControls = controls
 })
-
-
+const toggleMenuVisibility = () => {
+  showCircMenu.value = !showCircMenu.value;
+};
 </script>
 
 <template>
   <div className="target" ref="target">
+    <div id="dynamicDiv" style="background-color: #2c3e50; position: absolute">
+      <CircularMenu :toggleMenuVisibility="toggleMenuVisibility"
+                    @scriptEntity='onScriptClicked'
+                    @delEntity='onDelClicked'
+                    @moveEntity='onMoveClicked'
+                    @rotateEntity='onRotateClicked'
+                    @cloneEntity='onCloneClicked'
+      ></CircularMenu>
+    </div>
     <div className="button-bar">
       <button @click="onLoadFactoryButton">Test Load Factory</button>
       <button @click="onToggleMoveModeButton">Toggle Camera Mode</button>
-      <button @click="onToggleSelectionMode">Toggle Selection Mode</button>
-      <button @click="onToggleManipulationMode">Toggle Move/Rotation</button>
     </div>
     <div className="debug-bar">
       <div>Current Camera Mode: {{ moveMode }}</div>
