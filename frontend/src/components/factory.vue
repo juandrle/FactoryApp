@@ -249,26 +249,6 @@ const onToggleMoveModeButton = () => {
   moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
 }
 
-const onRotateClicked = () => {
-  manipulationMode.value = 'rotate'
-  console.log('rotating Entity')
-
-}
-const onMoveClicked = () => {
-  manipulationMode.value = 'move'
-  console.log('moving Entity')
-
-}
-const onDelClicked = () => {
-  scene.remove(currentObjectSelected.value)
-  console.log('deleting Entity')
-}
-const onScriptClicked = () => {
-  console.log('scripting Entity')
-}
-const onCloneClicked = () => {
-  console.log('cloning Entity')
-}
 // watch(manipulationMode, () => {
 //   if (manipulationMode.value !== 'move' && currentObjectSelected.value.position != currObjSelectedOriginPos.value) {
 //     replaceEntity(currObjSelectedOriginPos.value, currentObjectSelected, lastObjectSelected)
@@ -289,6 +269,7 @@ addEventListener('keydown', (event) => {
   if (event.key === 'v' || event.key === 'V') {
     moveOrSelectionMode.value = ''
     manipulationMode.value = ''
+    highlightObjectWithColor(currentObjectSelected, false)
     scene.remove(highlight)
   }
   if (manipulationMode.value === 'rotate') {
@@ -325,17 +306,36 @@ watch(moveMode, () => {
 const toggleMenuVisibility = () => {
   showCircMenu.value = !showCircMenu.value;
 };
+const onChangeEntityClicked = (situation: string) => {
+  switch (situation){
+    case 'delete':
+      scene.remove(currentObjectSelected.value)
+      console.log('deleting Entity')
+      break
+    case 'rotate':
+      manipulationMode.value = 'rotate'
+      console.log('rotating Entity')
+      break
+    case 'move':
+      manipulationMode.value = 'move'
+      console.log('moving Entity')
+      break
+    case 'script':
+      console.log('scripting Entity')
+      break
+    case 'clone':
+      console.log('cloning Entity')
+      break
+  }
+
+}
 </script>
 
 <template>
   <div className="target" ref="target">
     <div id="dynamicDiv" style="background-color: #2c3e50; position: absolute">
       <CircularMenu :toggleMenuVisibility="toggleMenuVisibility"
-                    @scriptEntity='onScriptClicked'
-                    @delEntity='onDelClicked'
-                    @moveEntity='onMoveClicked'
-                    @rotateEntity='onRotateClicked'
-                    @cloneEntity='onCloneClicked'
+                    @changeEntity="onChangeEntityClicked"
       ></CircularMenu>
     </div>
     <div className="button-bar">

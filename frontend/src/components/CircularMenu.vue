@@ -42,19 +42,19 @@ const emit = defineEmits<{
   cloneEntity: [true];
 }>()
 const delClicked = () =>{
-  emit('delEntity', true)
+  emit('changeEntity', 'delete')
 }
 const rotateClicked = () => {
-  emit('rotateEntity', true)
+  emit('changeEntity', 'rotate')
 }
 const moveClicked = () => {
-  emit('moveEntity', true)
+  emit('changeEntity', 'move')
 }
 const scriptClicked = () => {
-  emit('scriptEntity', true)
+  emit('changeEntity', 'script')
 }
 const cloneClicked = () => {
-  emit('cloneEntity', true)
+  emit('changeEntity', 'clone')
 }
 const isButtonVisible: Ref<Boolean> = inject('showCircleMenu')
 console.log(isButtonVisible.value)
