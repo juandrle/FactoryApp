@@ -152,13 +152,10 @@ addEventListener('contextmenu', (event: MouseEvent) => {
   const intersections = getIntersectionsMouse(event, camera, scene)
   if (selectionObject(currentObjectSelected, lastObjectSelected, intersections)) {
     if (dynamicDiv) {
-      dynamicDiv.style.left = event.clientX-50 + 'px'
-      dynamicDiv.style.top = event.clientY+20 + 'px'
-      console.log(dynamicDiv.style.left)
-      console.log(event.clientX)
+      dynamicDiv.style.left = event.clientX - 50 + 'px'
+      dynamicDiv.style.top = event.clientY + 20 + 'px'
       dynamicDiv.style.display = 'block'
     }
-
     showCircMenu.value = true
   }
   if (currentObjectSelected.value)
@@ -168,7 +165,8 @@ addEventListener('click', () => {
   // Place cube
   if (showCircMenu.value) {
     showCircMenu.value = false
-    highlightObjectWithColor(currentObjectSelected, false)
+    if (manipulationMode.value === '')
+      highlightObjectWithColor(currentObjectSelected, false)
     return
   }
   if (moveOrSelectionMode.value === 'set' &&
@@ -226,7 +224,6 @@ function animate() {
 // Entry Point
 onMounted(() => {
   dynamicDiv = document.getElementById('dynamicDiv')
-  console.log(dynamicDiv)
   // Renderer gets appended to target
   target.value.appendChild(renderer.domElement)
 
@@ -254,20 +251,23 @@ const onToggleMoveModeButton = () => {
 
 const onRotateClicked = () => {
   manipulationMode.value = 'rotate'
+  console.log('rotating Entity')
 
 }
 const onMoveClicked = () => {
   manipulationMode.value = 'move'
+  console.log('moving Entity')
 
 }
 const onDelClicked = () => {
-  scene.remove(currentObjectSelected)
+  scene.remove(currentObjectSelected.value)
+  console.log('deleting Entity')
 }
 const onScriptClicked = () => {
-
+  console.log('scripting Entity')
 }
 const onCloneClicked = () => {
-
+  console.log('cloning Entity')
 }
 // watch(manipulationMode, () => {
 //   if (manipulationMode.value !== 'move' && currentObjectSelected.value.position != currObjSelectedOriginPos.value) {
