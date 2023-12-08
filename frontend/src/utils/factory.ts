@@ -7,41 +7,12 @@ import type {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
 export const getGrid = (gridID: number, scene: THREE.Scene) => {
     return scene.children.find((object: any) => object.name === `layer ${gridID}`)
 }
-
 export const getGridZ = (gridID: number, scene: THREE.Scene) => {
     return getGrid(gridID, scene).position.z
 }
-
 export const createGrids = (x: number, y: number, z: number, scene: THREE.Scene) => {
-    // The Color settings of the First layer
-    const colorFirst: THREE.Color = new THREE.Color('white')
-
-    // The Color settings of all layers on top
-    const colorRest: THREE.Color = new THREE.Color('#5d81cf')
-
     let zStart: number = 0
     for (let i: number = 0; i < z; i++) {
-        // Create Grid
-        const grid: THREE.GridHelper = new THREE.GridHelper(x, y)
-        grid.rotateX(Math.PI / 2)
-
-        // Set color based on the layer
-        if (i === 0) {
-            grid.material.color.set(colorFirst)
-        } else {
-            grid.material.color.set(colorRest)
-        }
-        grid.visible = false
-
-        // Position Grid
-        grid.position.z = zStart
-
-        // Set name
-        grid.name = `grid ${i}`
-
-        // Add to scene
-        //scene.add(grid)
-
         //Create Layer
         const layer: THREE.Mesh = new THREE.Mesh(
             new THREE.PlaneGeometry(x, y),
@@ -61,18 +32,18 @@ export const createGrids = (x: number, y: number, z: number, scene: THREE.Scene)
         scene.add(layer)
 
         // Calc new position for next grid
-        zStart += 1
+        zStart++
     }
 }
 
 export const createGroundWithTextures = (
-    path: string,
-    scene: any,
+    texturePath: string,
+    scene: THREE.Scene,
     width: number,
     depth: number
 ) => {
     const textureLoader: THREE.TextureLoader = new THREE.TextureLoader()
-    const texture = textureLoader.load(path)
+    const texture = textureLoader.load(texturePath)
 
     texture.minFilter = THREE.LinearFilter
     texture.magFilter = THREE.LinearFilter
@@ -88,14 +59,14 @@ export const createGroundWithTextures = (
 }
 
 export const createRoofWithTextures = (
-    path: string,
-    scene: any,
+    texturePath: string,
+    scene: THREE.Scene,
     width: number,
     depth: number,
     height: number
 ) => {
     const textureLoader: THREE.TextureLoader = new THREE.TextureLoader()
-    const texture = textureLoader.load(path)
+    const texture = textureLoader.load(texturePath)
 
     texture.minFilter = THREE.LinearFilter
     texture.magFilter = THREE.LinearFilter
@@ -112,14 +83,14 @@ export const createRoofWithTextures = (
 }
 
 export const createWallsWithTexture = (
-    path: string,
-    scene: any,
+    texturePath: string,
+    scene: THREE.Scene,
     width: number,
     depth: number,
     height: number
 ) => {
     const textureLoader: THREE.TextureLoader = new THREE.TextureLoader()
-    const texture = textureLoader.load(path)
+    const texture = textureLoader.load(texturePath)
     const material: THREE.StandardMaterial = new THREE.MeshStandardMaterial({map: texture})
 
     texture.minFilter = THREE.LinearFilter
@@ -151,21 +122,21 @@ export const createWallsWithTexture = (
     scene.add(depthWallMesh2)
 }
 
-export const getIntersectionWithGrid = (gridID: number, intersections: any) => {
+export const getIntersectionWithGrid = (gridID: number, intersections: THREE.Vector3[]) => {
     return (
         intersections.find((intersection: any) => intersection.object.name === `layer ${gridID}`) ||
         false
     )
 }
 
-export const updateHighlight = (highlight: THREE.Group, activeLayer: number, intersections: any) => {
+export const moveHighlight = (highlight: THREE.Group, activeLayer: number, intersections: THREE.Vector3[]) => {
     // "Trim" intersctions to only geht intersection with the grid
-    const intersection: any = getIntersectionWithGrid(activeLayer, intersections)
+    const intersection = getIntersectionWithGrid(activeLayer, intersections)
 
     // Now we got the intersection with the activ grid, and can set the highlight
     if (intersection) {
         // Get the exact position of the Intersection and Make it snapping with the grid (floor, addScalar)
-        const pos: any = new THREE.Vector3().copy(intersection.point).floor()
+        const pos: THREE.Vector3 = new THREE.Vector3().copy(intersection.point).floor()
 
         // Set the highlight
         highlight.position.set(pos.x, pos.y, intersection.object.position.z)
@@ -173,10 +144,10 @@ export const updateHighlight = (highlight: THREE.Group, activeLayer: number, int
 }
 
 export const updateHighlightModel: any = async (
-    prevHighlight: any,
+    prevHighlight: THREE.Group,
     url: string,
-    scene: any,
-    loader: any
+    scene: THREE.scene,
+    loader: GLTFLoader
 ) => {
     return await loader.loadAsync(url).then((model: any) => {
 

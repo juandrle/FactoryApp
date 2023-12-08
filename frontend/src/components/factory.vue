@@ -9,7 +9,7 @@ import {FlyControls} from 'three/addons/controls/FlyControls.js'
 
 import {
   createGrids,
-  updateHighlight,
+  moveHighlight,
   placeEntity,
   createWallsWithTexture,
   createGroundWithTextures,
@@ -70,7 +70,8 @@ let sizes: {
 const scene: any = new THREE.Scene()
 const renderer: any = new THREE.WebGLRenderer()
 renderer.setSize(sizes.width, sizes.height)
-scene.background = new THREE.Color('white')
+scene.background = new THREE.Color('#12111A')
+provide('Scene', scene)
 
 // Add ambient light
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
@@ -106,8 +107,8 @@ createRoofWithTextures('factoryRoof.jpeg', scene, GRID.x, GRID.y, GRID.z)
 createWallsWithTexture('factoryWall.jpg', scene, GRID.x, GRID.y, GRID.z)
 
 // Add axis helper
-const axesHelper: any = new THREE.AxesHelper(20)
-scene.add(axesHelper)
+// const axesHelper: any = new THREE.AxesHelper(20)
+//scene.add(axesHelper)
 
 // Add Highlight cube
 var highlight: any
@@ -138,9 +139,9 @@ addEventListener('mousemove', (event: MouseEvent) => {
   if (highlight && moveOrSelectionMode.value === 'set')
       // Object model wird asynchron geladen
   {
-    updateHighlight(highlight, ACTIVE_LAYER, intersections)
+    moveHighlight(highlight, ACTIVE_LAYER, intersections)
   } else if (currentObjectSelected.value && manipulationMode.value === 'move') {
-    updateHighlight(currentObjectSelected.value, ACTIVE_LAYER, intersections)
+    moveHighlight(currentObjectSelected.value, ACTIVE_LAYER, intersections)
   }
 
 })
@@ -256,20 +257,12 @@ const onToggleMoveModeButton = () => {
 //   }
 // })
 // watch active Entity to change current model
-watch(activeEntity, () => {
-  moveOrSelectionMode.value = 'set'
-  scene.add(highlight)
-  updateHighlightModel(highlight, activeEntity.value.path, scene, loader).then(
-      (newHighlight: THREE.Group) => {
-        highlight = newHighlight
-      }
-  )
-})
 addEventListener('keydown', (event) => {
   if (event.key === 'v' || event.key === 'V') {
     moveOrSelectionMode.value = ''
     manipulationMode.value = ''
-    highlightObjectWithColor(currentObjectSelected, false)
+    showCircMenu.value = false
+    if (currentObjectSelected.value) highlightObjectWithColor(currentObjectSelected, false)
     scene.remove(highlight)
   }
   if (manipulationMode.value === 'rotate') {
@@ -281,6 +274,15 @@ addEventListener('keydown', (event) => {
       currObjSelRot.set(0, 0, currObjSelRot.z - (Math.PI / 2))
     }
   }
+})
+watch(activeEntity, () => {
+  moveOrSelectionMode.value = 'set'
+  scene.add(highlight)
+  updateHighlightModel(highlight, activeEntity.value.path, scene, loader).then(
+      (newHighlight: THREE.Group) => {
+        highlight = newHighlight
+      }
+  )
 })
 // Watch the moveMode to change camera option
 watch(moveMode, () => {
@@ -307,7 +309,7 @@ const toggleMenuVisibility = () => {
   showCircMenu.value = !showCircMenu.value;
 };
 const onChangeEntityClicked = (situation: string) => {
-  switch (situation){
+  switch (situation) {
     case 'delete':
       scene.remove(currentObjectSelected.value)
       console.log('deleting Entity')
