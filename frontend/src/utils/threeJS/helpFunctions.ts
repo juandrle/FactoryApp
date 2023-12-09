@@ -1,8 +1,6 @@
-import type {IBackendEntity, IBackendEntityPreview} from '@/types/backendEntity'
-import type {IVector3} from '@/types/global'
-import type {IPlaceRequest} from '@/types/placeRequest'
-import * as THREE from 'three'
-import type {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {IVector3} from "@/types/global";
+import * as THREE from 'three';
 
 export const getGrid = (gridID: number, scene: THREE.Scene) => {
     return scene.children.find((object: any) => object.name === `layer ${gridID}`)
@@ -35,7 +33,6 @@ export const createGrids = (x: number, y: number, z: number, scene: THREE.Scene)
         zStart++
     }
 }
-
 export const createGroundWithTextures = (
     texturePath: string,
     scene: THREE.Scene,
@@ -57,7 +54,6 @@ export const createGroundWithTextures = (
 
     scene.add(groundMesh)
 }
-
 export const createRoofWithTextures = (
     texturePath: string,
     scene: THREE.Scene,
@@ -81,7 +77,6 @@ export const createRoofWithTextures = (
     roofMesh.name = "buildingMesh"
     scene.add(roofMesh)
 }
-
 export const createWallsWithTexture = (
     texturePath: string,
     scene: THREE.Scene,
@@ -121,14 +116,12 @@ export const createWallsWithTexture = (
     scene.add(depthWallMesh1)
     scene.add(depthWallMesh2)
 }
-
 export const getIntersectionWithGrid = (gridID: number, intersections: THREE.Vector3[]) => {
     return (
         intersections.find((intersection: any) => intersection.object.name === `layer ${gridID}`) ||
         false
     )
 }
-
 export const moveHighlight = (highlight: THREE.Group, activeLayer: number, intersections: THREE.Vector3[]) => {
     // "Trim" intersctions to only geht intersection with the grid
     const intersection = getIntersectionWithGrid(activeLayer, intersections)
@@ -142,7 +135,6 @@ export const moveHighlight = (highlight: THREE.Group, activeLayer: number, inter
         highlight.position.set(pos.x, pos.y, intersection.object.position.z)
     }
 }
-
 export const updateHighlightModel: any = async (
     prevHighlight: THREE.Group,
     url: string,
@@ -169,7 +161,6 @@ export const updateHighlightModel: any = async (
         return newHighlight
     })
 }
-
 export const placeEntity = (loader: GLTFLoader, scene: THREE.Scene, pos: IVector3, path: string) => {
     var object: any
     loader.load(
@@ -239,36 +230,3 @@ export const highlightObjectWithColor = (object: THREE.Group, color: boolean) =>
             }
         })
 }
-export const loadFactory = (scene: THREE.Scene, loader: GLTFLoader, factory_id: string) => {
-    fetch('/mock/backend/mockBackendLoadFactoryResponse.json').then((res) =>
-        res.json().then((backendEntitys: IBackendEntity[]) => {
-            backendEntitys.forEach((backendEntity) => {
-                placeEntity(
-                    loader,
-                    scene,
-                    {
-                        x: backendEntity.x,
-                        y: backendEntity.y,
-                        z: backendEntity.z
-                    },
-                    backendEntity.path
-                )
-            })
-        })
-    )
-}
-
-export const getAllEntitys: () => Promise<IBackendEntityPreview[]> = async () => {
-    // Simuliere einen Verzögerung von 2 Sekunden (2000 Millisekunden)
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    // Führe die tatsächliche Anfrage aus und gib die Daten zurück
-    return fetch('/mock/backend/mockBackendGetAllEntitys.json').then((res) => res.json())
-}
-
-export const placeRequest = (placeRequest: IPlaceRequest) => {
-    // console.log(placeRequest, "... würde jetzt ans backend gesendet werden")
-    return true
-}
-
-

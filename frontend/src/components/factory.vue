@@ -7,23 +7,24 @@ import * as THREE from 'three'
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
 import {FlyControls} from 'three/addons/controls/FlyControls.js'
 
+import {getIntersectionsMouse} from '../utils/threeJS/3d'
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
+import EntityBar from '@/components/temp/EntityBar.vue'
+import Button from "@/components/temp/Button.vue";
+import CircularMenu from "@/components/ui/CircularMenu.vue";
+import {placeRequest} from "@/utils/backendComms/postRequests";
+import {getAllEntitys, loadFactory} from "@/utils/backendComms/getRequests";
 import {
   createGrids,
-  moveHighlight,
-  placeEntity,
-  createWallsWithTexture,
   createGroundWithTextures,
   createRoofWithTextures,
-  loadFactory,
-  placeRequest,
-  getAllEntitys,
-  updateHighlightModel, selectionObject, replaceEntity, highlightObjectWithColor
-} from '../utils/factory.js'
-import {getIntersectionsMouse} from '../utils/3d.js'
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
-import EntityBar from './EntityBar.vue'
-import Button from "@/components/Button.vue";
-import CircularMenu from "@/components/CircularMenu.vue";
+  createWallsWithTexture,
+  highlightObjectWithColor, moveHighlight,
+  placeEntity,
+  replaceEntity,
+  selectionObject,
+  updateHighlightModel
+} from "@/utils/threeJS/helpFunctions";
 
 /*******************************/
 /*********** COFIG *************/
@@ -36,7 +37,7 @@ const GRID: IVector3 = {
   z: 8
 }
 /********************/
-/******* SETUP ******/
+/*** REF VARIABLES **/
 /********************/
 const target = ref()
 const moveMode: Ref<String> = ref<'orbit' | 'fly'>('orbit')
@@ -52,85 +53,167 @@ const currentObjectSelected: Ref<THREE.Group> = ref()
 const lastObjectSelected: Ref<THREE.Group> = ref()
 const currObjSelectedOriginPos: Ref<IVector3> = ref({x: 0, y: 0, z: 0})
 const showCircMenu: Ref<Boolean> = ref(false)
-provide('showCircleMenu', showCircMenu)
-let dynamicDiv: HTMLElement | null
 
-// Get Screen size
+/********************/
+/*** VARIABLES ******/
+/********************/
+let dynamicDiv: HTMLElement | null
 let sizes: {
   width: number
   height: number
   ratio: number
-} = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-  ratio: window.innerWidth / window.innerHeight
+}
+let scene: THREE.Scene
+let renderer: THREE.WebGLRenderer
+let camera: THREE.PerspectiveCamera
+let cameraControls: THREE.OrbitControls
+let loader: THREE.GLTFLoader
+let highlight: THREE.Group
+
+
+function init() {
+  // provides
+  provide('showCircleMenu', showCircMenu)
+
+  sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    ratio: window.innerWidth / window.innerHeight
+  }
+  scene = new THREE.Scene()
+
+  scene.background = new THREE.Color('#12111A')
+  renderer = new THREE.WebGLRenderer()
+
+  renderer.setSize(sizes.width, sizes.height)
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+
+  scene.add(ambientLight)
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
+  directionalLight.position.set(1, 1, 1).normalize()
+
+  scene.add(directionalLight)
+  camera = new THREE.PerspectiveCamera(50, sizes.ratio)
+  camera.position.set(40, -15, 15)
+  camera.up.set(0, 0, 1)
+  camera.lookAt(0, 0, 0)
+
+  cameraControls = new OrbitControls(camera, renderer.domElement)
+
+  loader = new GLTFLoader()
+
+  // Add axis helper
+  // const axesHelper: any = new THREE.AxesHelper(20)
+  // scene.add(axesHelper)
+
+  loader.load(
+      '/fallback/.gltf/cube.gltf',
+      function (gltf: any) {
+        highlight = gltf.scene
+        highlight.position.set(0, 0, 0)
+        scene.add(highlight)
+        highlight.name = 'highlight'
+      },
+      undefined,
+      function (error: any) {
+        console.error(error)
+      }
+  )
+}
+const createRoom = (x: number, y: number, z: number) => {
+  // Add Grid
+  createGrids(x, y, z, scene)
+  // creating roomtextures
+  createGroundWithTextures('factoryGround.jpeg', scene, x, y)
+  createRoofWithTextures('factoryRoof.jpeg', scene, x, y, z)
+  createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
 }
 
-// Add Scene & Renderer
-const scene: any = new THREE.Scene()
-const renderer: any = new THREE.WebGLRenderer()
-renderer.setSize(sizes.width, sizes.height)
-scene.background = new THREE.Color('#12111A')
-provide('Scene', scene)
+// Loop
+const animate = () => {
 
-// Add ambient light
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
-scene.add(ambientLight)
+  requestAnimationFrame(animate)
+  if (moveMode.value === 'fly') {
 
-// Add directional light
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
-directionalLight.position.set(1, 1, 1).normalize()
-scene.add(directionalLight)
+    cameraControls.update(0.05)
+  }
+  // Render new frame
 
-// Create camera an position it
-let camera: any = new THREE.PerspectiveCamera(50, sizes.ratio)
-camera.position.set(40, -15, 15)
-camera.up.set(0, 0, 1)
-camera.lookAt(0, 0, 0)
+  renderer.render(scene, camera)
+}
 
-// Set Camera controll option (Orbit as Defaukt)
-let cameraControls: any = new OrbitControls(camera, renderer.domElement)
+// Entry Point
 
-// Model loader
-const loader: any = new GLTFLoader()
+// Button onLoadFactory
+const onLoadFactoryButton = () => {
+  loadFactory(scene, loader, 'factory_id_sample')
 
-/*****************************/
-/******* START OBJECTS *******/
-/*****************************/
+}
+// Button onToggleMoveMode
+const toggleMenuVisibility = () => {
+  showCircMenu.value = !showCircMenu.value;
 
-// Add Grid
-createGrids(GRID.x, GRID.y, GRID.z, scene)
+};
+const onChangeEntityClicked = (situation: string) => {
+  switch (situation) {
+    case 'delete':
+      scene.remove(currentObjectSelected.value)
+      console.log('deleting Entity')
+      break
+    case 'rotate':
+      manipulationMode.value = 'rotate'
+      console.log('rotating Entity')
+      break
+    case 'move':
+      manipulationMode.value = 'move'
+      console.log('moving Entity')
+      break
+    case 'script':
+      console.log('scripting Entity')
+      break
+    case 'clone':
+      console.log('cloning Entity')
+      break
+  }
+}
+const onToggleMoveModeButton = () => {
+  moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
 
-// creating roomtextures
-createGroundWithTextures('factoryGround.jpeg', scene, GRID.x, GRID.y)
-createRoofWithTextures('factoryRoof.jpeg', scene, GRID.x, GRID.y, GRID.z)
-createWallsWithTexture('factoryWall.jpg', scene, GRID.x, GRID.y, GRID.z)
-
-// Add axis helper
-// const axesHelper: any = new THREE.AxesHelper(20)
-//scene.add(axesHelper)
-
-// Add Highlight cube
-var highlight: any
-loader.load(
-    '/fallback/.gltf/cube.gltf',
-    function (gltf: any) {
-      highlight = gltf.scene
-      highlight.position.set(0, 0, 0)
-      scene.add(highlight)
-      highlight.name = 'highlight'
-    },
-    undefined,
-    function (error: any) {
-      console.error(error)
+}
+/**
+ * LISTENERS
+ **/
+window.addEventListener('resize', () => {
+  // Variables
+  sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    ratio: window.innerWidth / window.innerHeight
+  }
+  // Camera ratio
+  camera.aspect = sizes.ratio
+  camera.updateProjectionMatrix()
+  // Resize Renderer
+  renderer.setSize(sizes.width, sizes.height)
+})
+addEventListener('keydown', (event) => {
+  if (event.key === 'v' || event.key === 'V') {
+    moveOrSelectionMode.value = ''
+    manipulationMode.value = ''
+    showCircMenu.value = false
+    if (currentObjectSelected.value) highlightObjectWithColor(currentObjectSelected, false)
+    scene.remove(highlight)
+  }
+  if (manipulationMode.value === 'rotate') {
+    const currObjSelRot = currentObjectSelected.value.rotation
+    if (event.key === 'ArrowLeft') {
+      currObjSelRot.set(0, 0, currObjSelRot.z + (Math.PI / 2))
     }
-)
-
-/********************/
-/**** CALLBACKS *****/
-/********************/
-
-// onMouseMove
+    if (event.key === 'ArrowRight') {
+      currObjSelRot.set(0, 0, currObjSelRot.z - (Math.PI / 2))
+    }
+  }
+})
 addEventListener('mousemove', (event: MouseEvent) => {
   // Get all intersections with mouse and world
   const intersections = getIntersectionsMouse(event, camera, scene)
@@ -144,23 +227,6 @@ addEventListener('mousemove', (event: MouseEvent) => {
     moveHighlight(currentObjectSelected.value, ACTIVE_LAYER, intersections)
   }
 
-})
-
-//onClick
-addEventListener('contextmenu', (event: MouseEvent) => {
-  event.preventDefault()
-  if (moveOrSelectionMode.value !== '' || manipulationMode.value !== '') return
-  const intersections = getIntersectionsMouse(event, camera, scene)
-  if (selectionObject(currentObjectSelected, lastObjectSelected, intersections)) {
-    if (dynamicDiv) {
-      dynamicDiv.style.left = event.clientX - 50 + 'px'
-      dynamicDiv.style.top = event.clientY + 20 + 'px'
-      dynamicDiv.style.display = 'block'
-    }
-    showCircMenu.value = true
-  }
-  if (currentObjectSelected.value)
-    currObjSelectedOriginPos.value = currentObjectSelected.value.position
 })
 addEventListener('click', () => {
   // Place cube
@@ -192,89 +258,24 @@ addEventListener('click', () => {
     manipulationMode.value = ''
   }
 })
-
-// onRezise
-window.addEventListener('resize', () => {
-  // Variables
-  sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    ratio: window.innerWidth / window.innerHeight
-  }
-
-  // Camera ratio
-  camera.aspect = sizes.ratio
-  camera.updateProjectionMatrix()
-
-  // Resize Renderer
-  renderer.setSize(sizes.width, sizes.height)
-})
-
-// Loop
-function animate() {
-  requestAnimationFrame(animate)
-
-  if (moveMode.value === 'fly') {
-    cameraControls.update(0.05)
-  }
-
-  // Render new frame
-  renderer.render(scene, camera)
-}
-
-// Entry Point
-onMounted(() => {
-  dynamicDiv = document.getElementById('dynamicDiv')
-  // Renderer gets appended to target
-  target.value.appendChild(renderer.domElement)
-
-  getAllEntitys().then((json) => {
-    // Alle entittys sind nun zugänglich für uns
-    allEntitys.value = json
-
-    // Active entity ändern
-    activeEntity.value = allEntitys.value[0]
-  })
-
-  // Start Animation
-  animate()
-})
-
-// Button onLoadFactory
-const onLoadFactoryButton = () => {
-  loadFactory(scene, loader, 'factory_id_sample')
-}
-
-// Button onToggleMoveMode
-const onToggleMoveModeButton = () => {
-  moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
-}
-
-// watch(manipulationMode, () => {
-//   if (manipulationMode.value !== 'move' && currentObjectSelected.value.position != currObjSelectedOriginPos.value) {
-//     replaceEntity(currObjSelectedOriginPos.value, currentObjectSelected, lastObjectSelected)
-//     console.log(currObjSelectedOriginPos.value)
-//   }
-// })
-// watch active Entity to change current model
-addEventListener('keydown', (event) => {
-  if (event.key === 'v' || event.key === 'V') {
-    moveOrSelectionMode.value = ''
-    manipulationMode.value = ''
-    showCircMenu.value = false
-    if (currentObjectSelected.value) highlightObjectWithColor(currentObjectSelected, false)
-    scene.remove(highlight)
-  }
-  if (manipulationMode.value === 'rotate') {
-    const currObjSelRot = currentObjectSelected.value.rotation
-    if (event.key === 'ArrowLeft') {
-      currObjSelRot.set(0, 0, currObjSelRot.z + (Math.PI / 2))
+addEventListener('contextmenu', (event: MouseEvent) => {
+  event.preventDefault()
+  if (moveOrSelectionMode.value !== '' || manipulationMode.value !== '') return
+  const intersections = getIntersectionsMouse(event, camera, scene)
+  if (selectionObject(currentObjectSelected, lastObjectSelected, intersections)) {
+    if (dynamicDiv) {
+      dynamicDiv.style.left = event.clientX - 50 + 'px'
+      dynamicDiv.style.top = event.clientY + 20 + 'px'
+      dynamicDiv.style.display = 'block'
     }
-    if (event.key === 'ArrowRight') {
-      currObjSelRot.set(0, 0, currObjSelRot.z - (Math.PI / 2))
-    }
+    showCircMenu.value = true
   }
+  if (currentObjectSelected.value)
+    currObjSelectedOriginPos.value = currentObjectSelected.value.position
 })
+/**
+ * WATCHERS
+ * **/
 watch(activeEntity, () => {
   moveOrSelectionMode.value = 'set'
   scene.add(highlight)
@@ -305,32 +306,21 @@ watch(moveMode, () => {
 
   cameraControls = controls
 })
-const toggleMenuVisibility = () => {
-  showCircMenu.value = !showCircMenu.value;
-};
-const onChangeEntityClicked = (situation: string) => {
-  switch (situation) {
-    case 'delete':
-      scene.remove(currentObjectSelected.value)
-      console.log('deleting Entity')
-      break
-    case 'rotate':
-      manipulationMode.value = 'rotate'
-      console.log('rotating Entity')
-      break
-    case 'move':
-      manipulationMode.value = 'move'
-      console.log('moving Entity')
-      break
-    case 'script':
-      console.log('scripting Entity')
-      break
-    case 'clone':
-      console.log('cloning Entity')
-      break
-  }
-
-}
+init()
+onMounted(() => {
+  target.value.appendChild(renderer.domElement)
+  dynamicDiv = document.getElementById('dynamicDiv')
+  // Renderer gets appended to target
+  getAllEntitys().then((json) => {
+    // Alle entittys sind nun zugänglich für uns
+    allEntitys.value = json
+    // Active entity ändern
+    activeEntity.value = allEntitys.value[0]
+  })
+  // initial function calls
+  animate()
+  createRoom(GRID.x, GRID.y, GRID.z)
+})
 </script>
 
 <template>
