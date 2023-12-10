@@ -1,25 +1,43 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {computed, inject, Ref, ref, watch} from 'vue'
 import Button from '../components/temp/Button.vue'
+import type {IVector3} from "@/types/global";
+import router from "@/router";
 
 const buttonData = ref([{text: 'Fabrik erstellen und bestellen', link: '/factory'}])
 
 const sizes = ref([
-  {label: '30x50x8', value: 'size1', width: 30, length: 50, height: 8},
-  {label: '60x100x12', value: 'size2', width: 60, length: 100, height: 12},
-  {label: '90x150x16', value: 'size3', width: 90, length: 150, height: 16},
-  {label: '120x200x20', value: 'size4', width: 120, length: 200, height: 20}
+  {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
+  {label: '60x100x12', value: {x: 60, y: 100, z: 12} as IVector3},
+  {label: '90x150x16', value: {x: 90, y: 150, z: 16} as IVector3},
+  {label: '120x200x20', value: {x: 120, y: 200, z: 20} as IVector3}
 ])
 const selectedSize = ref()
+const {factorySize, updateFactorySize} = inject<{
+  factorySize: Ref<IVector3>,
+  updateFactorySize: (newSize: IVector3) => void
+}>('factorySize')
+const combinedSize = computed((size) => {
+  return {
+    x: size.width as number,
+    y: size.length as number,
+    z: size.height as number
+  }
+})
 
 function createFactory() {
   if (selectedSize.value) {
-    console.log(selectedSize.value)
+    updateFactorySize({
+      x: selectedSize.value.x,
+      y: selectedSize.value.y,
+      z: selectedSize.value.z
+    })
+    console.log(factorySize.value)
+    router.push('/factory')
   } else {
     console.error("Please select a size before creating the factory.")
   }
 }
-
 
 </script>
 
@@ -40,17 +58,12 @@ function createFactory() {
             <input placeholder="Passwort"/>
           </div>
           <div class="size-radio-container">
-            <div class="radio-option" v-for="size in sizes" :key="size.value">
-              <input type="radio" v-model="selectedSize" :id="size.value" :value="size.value"/>
-              <label :for="size.value">{{ size.label }}</label>
+            <div class="radio-option" v-for="size in sizes" :key="size.label">
+              <input type="radio" v-model="selectedSize" :id="size.label" :value="size.value"/>
+              <label :for="size.label">{{ size.label }}</label>
             </div>
+            <button class="v-button" type="submit">Fabrik erstellen und bestellen</button>
           </div>
-          <Button
-              class="button-create"
-              v-for="item in buttonData"
-              :text="item.text"
-              :key="item.text"
-              :link="item.link"></Button>
         </form>
       </div>
 
@@ -169,5 +182,25 @@ form {
 .text-input:focus,
 input:focus {
   outline: none;
+}
+.v-button{
+  background-color:#683CE4;
+  display: inline-block;
+  border-radius:35px;
+  cursor:pointer;
+  color:#ffffff;
+  font-size:22px;
+  text-decoration:none;
+  text-align: center;
+  padding: 10px 10px 10px 10px;
+  margin: auto;
+  width: 290px;
+}
+.v-button:hover {
+  background-color:#4b2ba6;
+}
+.v-button:active {
+  position:relative;
+  top:1px;
 }
 </style>

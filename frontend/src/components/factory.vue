@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, watch, provide} from 'vue'
+import {ref, onMounted, watch, provide, inject} from 'vue'
 import type {Ref} from 'vue'
 import type {IVector3} from '@/types/global'
 import type {IBackendEntityPreview} from '@/types/backendEntity'
@@ -31,11 +31,6 @@ import {
 /*******************************/
 
 const ACTIVE_LAYER: number = 0
-const GRID: IVector3 = {
-  x: 30,
-  y: 50,
-  z: 8
-}
 /********************/
 /*** REF VARIABLES **/
 /********************/
@@ -57,6 +52,10 @@ const showCircMenu: Ref<Boolean> = ref(false)
 /********************/
 /*** VARIABLES ******/
 /********************/
+const {factorySize} = inject<{
+  factorySize: Ref<IVector3>,
+  updateFactorySize: (newSize: IVector3) => void
+}>('factorySize')
 let dynamicDiv: HTMLElement | null
 let sizes: {
   width: number
@@ -72,9 +71,9 @@ let highlight: THREE.Group
 
 
 function init() {
-  // provides
+  // provides & injections
   provide('showCircleMenu', showCircMenu)
-
+  console.log(factorySize)
   sizes = {
     width: window.innerWidth,
     height: window.innerHeight,
@@ -119,7 +118,9 @@ function init() {
         console.error(error)
       }
   )
+  createRoom(factorySize.value.x,factorySize.value.y,factorySize.value.z)
 }
+
 const createRoom = (x: number, y: number, z: number) => {
   // Add Grid
   createGrids(x, y, z, scene)
@@ -128,6 +129,7 @@ const createRoom = (x: number, y: number, z: number) => {
   createRoofWithTextures('factoryRoof.jpeg', scene, x, y, z)
   createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
 }
+
 
 // Loop
 const animate = () => {
@@ -319,7 +321,6 @@ onMounted(() => {
   })
   // initial function calls
   animate()
-  createRoom(GRID.x, GRID.y, GRID.z)
 })
 </script>
 

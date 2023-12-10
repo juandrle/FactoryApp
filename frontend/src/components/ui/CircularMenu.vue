@@ -35,11 +35,6 @@
 import {onMounted, inject, Ref} from 'vue';
 const emit = defineEmits<{
   changeEntity: [string];
-  delEntity: [true];
-  rotateEntity: [true];
-  moveEntity: [true];
-  scriptEntity: [true];
-  cloneEntity: [true];
 }>()
 const delClicked = () =>{
   emit('changeEntity', 'delete')
@@ -57,7 +52,6 @@ const cloneClicked = () => {
   emit('changeEntity', 'clone')
 }
 const isButtonVisible: Ref<Boolean> = inject('showCircleMenu')
-console.log(isButtonVisible.value)
 
 </script>
 
@@ -69,6 +63,7 @@ console.log(isButtonVisible.value)
 
 .visible .menu-item {
   opacity: 1;
+  user-select: none;
 }
 
 .visible .menu-item:nth-child(1) {
@@ -164,16 +159,15 @@ console.log(isButtonVisible.value)
   transform: rotate(-378deg) translate(22px) translateY(-31px);
 }
 
-.menu-item a:hover {
+.menu-item a:hover{
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
     color: white;
     background: rgba(255, 255, 255, 0.3);
-    font-size: 44.44px
+    font-size: 44.44px;
 }
 
 .menu-item a:hover + p {
     font-size: 12px;
     text-align: center;
 }
-
 </style>

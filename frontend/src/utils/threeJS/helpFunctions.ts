@@ -2,6 +2,7 @@ import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {IVector3} from "@/types/global";
 import * as THREE from 'three';
 
+let existingGrid: THREE.Mesh[] = []
 export const getGrid = (gridID: number, scene: THREE.Scene) => {
     return scene.children.find((object: any) => object.name === `layer ${gridID}`)
 }
@@ -10,6 +11,12 @@ export const getGridZ = (gridID: number, scene: THREE.Scene) => {
 }
 export const createGrids = (x: number, y: number, z: number, scene: THREE.Scene) => {
     let zStart: number = 0
+    if (existingGrid.length > 0) {
+        existingGrid.forEach((ele: THREE.Mesh) => {
+            scene.remove(ele)
+            existingGrid.splice(ele)
+        })
+    }
     for (let i: number = 0; i < z; i++) {
         //Create Layer
         const layer: THREE.Mesh = new THREE.Mesh(
@@ -25,10 +32,9 @@ export const createGrids = (x: number, y: number, z: number, scene: THREE.Scene)
 
         //Set name
         layer.name = `layer ${i}`
-
         // Add to scene
+        existingGrid[i] = layer
         scene.add(layer)
-
         // Calc new position for next grid
         zStart++
     }
@@ -148,7 +154,6 @@ export const updateHighlightModel: any = async (
         //TODO: TEMPORARY
         newHighlight.rotation.set(Math.PI / 2, 0, 0)
         newHighlight.position.set(prevHighlight.position)
-        console.log(newHighlight.position)
         newHighlight.name = prevHighlight.name
 
         // Delete old highlight
