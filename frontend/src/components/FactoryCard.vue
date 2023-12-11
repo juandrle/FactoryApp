@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { defineProps, ref } from 'vue'
+import type { Factory } from '@/views/FactoryEnterView.vue';
 const isRotated = ref(false)
 
 const rotateCard = () => {
@@ -18,6 +19,14 @@ const rotateCard = () => {
     isRotated.value = !isRotated.value // Zustand aktualisieren
   }
 }
+
+const props = defineProps({
+  factory: {
+    type: Object as () => Factory,
+    required: true,
+  },
+});
+
 </script>
 
 <template>
@@ -28,9 +37,12 @@ const rotateCard = () => {
         alt="Factoryimage"
       />
       <div class="factorycard-content">
-        <p>Erens Fabrik</p>
-        <p>20x40x60</p>
-        <p>Eren Ceviz</p>
+        <p>{{ factory.name }}</p>
+        <p>{{ factory.size }}</p>
+        <p>{{ factory.author }}</p>
+        <!-- <p>Erens Fabrik</p>
+        <p>20x40x80</p>
+        <p>Eren Ceviz</p> -->
       </div>
     </div>
     <div class="card-back" style="display: none">

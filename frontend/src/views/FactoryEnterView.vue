@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import FactoryCard from '@/components/FactoryCard.vue'
+
+export interface Factory {
+  id: number;
+  name: string;
+  size: string;
+  author: string;
+}
 
 const sizes = ref([
   { label: '30x50x8', value: '30x50x8' },
@@ -10,29 +17,50 @@ const sizes = ref([
 ])
 
 const owner = ref([
-  { label: 'Erstellt von: ', value: '' },
   { label: 'Vivien', value: 'Vivien' },
   { label: 'Dschulia', value: 'Dschulia' },
   { label: 'Dill', value: 'Dill' },
   { label: 'David', value: 'David' }
 ])
+
+const existing_factories = [
+  { id: 1, name: 'Erens Fabrik', size: '20x40x60', author: 'Eren Flamingo'},
+  { id: 2, name: 'Julias Fabrik', size: '20x40x60', author: 'Julia Flamingo'},
+  { id: 3, name: 'Davids Fabrik', size: '20x40x60', author: 'David Flamingo'},
+  { id: 4, name: 'Vincents Fabrik', size: '20x40x60', author: 'Vincent Flamingo'},
+  { id: 5, name: 'Viviens Fabrik', size: '20x40x60', author: 'Vivien Esel'},
+  { id: 6, name: 'Esels Fabrik', size: '20x40x60', author: 'Esel Esel'},
+] as Factory[]; 
+
+// Nach Fabriknamen filtern 
+const searchTerm = ref(''); 
+
+const filteredFactories = computed( () => {
+  return existing_factories.filter(factory => {
+    return factory.name.toLowerCase().includes(searchTerm.value.toLocaleLowerCase()); 
+  }); 
+}); 
+
 </script>
 
 <template>
   <div class="container">
     <div class="s-item">
       <div class="content-s-item">
+        <a href="/">
         <img src="/icons8-fabric-96.png" width="20px" height="auto" />
         <p class="logo-titel">Machine Deluxe 3000</p>
+      </a>
       </div>
     </div>
     <div class="m-item">
       <h1 class="game-name">Fabrik betreten</h1>
       <div class="contentDiv">
         <div class="filter-div">
-          <input placeholder="Suche..." />
+          <input placeholder="Suche..." v-model="searchTerm"/>
           <div class="custom-select">
             <select v-model="owner">
+              <option value="" disabled selected>Select your option</option>
               <option v-for="o in owner" :value="o.label">{{ o.label }}</option>
             </select>
           </div>
@@ -43,9 +71,7 @@ const owner = ref([
           </div>
         </div>
         <div class="factory-cards">
-          <FactoryCard></FactoryCard>
-          <FactoryCard></FactoryCard>
-          <FactoryCard></FactoryCard>
+          <FactoryCard v-for=" factory in filteredFactories" :key="factory.id" :factory="factory"></FactoryCard>
         </div>
       </div>
     </div>
@@ -70,17 +96,38 @@ const owner = ref([
   flex: 1 1 50%;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .game-name {
   position: absolute;
-  top: 10%;
+  top: 5%;
   font-weight: 400;
+}
+.content-s-item {
+  display: flex;
+  position: absolute;
+  bottom: 90%;
+  top: 2.5%;
+}
+
+.content-s-item img {
+  width: 2.5rem;
+  height: min-content;
+}
+
+.content-s-item a{
+  display: flex;
+  gap: 0.625rem;
+  text-decoration: none;
+  align-items: center;
+  color: white;
 }
 .contentDiv {
   border: 1px solid green;
-  position: relative;
-  width: 100%;
-  top: 13rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min-content;
 }
 input {
   display: block;
