@@ -3,6 +3,8 @@ import {computed, inject, Ref, ref, watch} from 'vue'
 import Button from '../components/temp/Button.vue'
 import type {IVector3} from "@/types/global";
 import router from "@/router";
+import {factoryCreateRequest} from "@/utils/backendComms/postRequests";
+import type {IFactoryCreate} from "@/types/backendEntity";
 
 const buttonData = ref([{text: 'Fabrik erstellen und bestellen', link: '/factory'}])
 
@@ -12,6 +14,8 @@ const sizes = ref([
   {label: '90x150x16', value: {x: 90, y: 150, z: 16} as IVector3},
   {label: '120x200x20', value: {x: 120, y: 200, z: 20} as IVector3}
 ])
+const factoryName = ref('')
+const factoryPassword = ref('')
 const selectedSize = ref()
 const {factorySize, updateFactorySize} = inject<{
   factorySize: Ref<IVector3>,
@@ -32,7 +36,14 @@ function createFactory() {
       y: selectedSize.value.y,
       z: selectedSize.value.z
     })
-    console.log(factorySize.value)
+    const factory: IFactoryCreate = {
+      name: factoryName.value,
+      password: factoryPassword.value,
+      width: selectedSize.value.x,
+      depth: selectedSize.value.y,
+      height: selectedSize.value.z
+    }
+    // if (await factoryCreateRequest(factory)) console.log('worked!')
     router.push('/factory')
   } else {
     console.error("Please select a size before creating the factory.")
@@ -53,16 +64,20 @@ function createFactory() {
       <h1 class="game-name">Fabrik erstellen</h1>
       <div class="factory-settings">
         <form @submit.prevent="createFactory">
-          <div class="factory-name">
-            <input placeholder="Name"/>
-            <input placeholder="Passwort"/>
-          </div>
-          <div class="size-radio-container">
-            <div class="radio-option" v-for="size in sizes" :key="size.label">
-              <input type="radio" v-model="selectedSize" :id="size.label" :value="size.value"/>
-              <label :for="size.label">{{ size.label }}</label>
+          <div class="form">
+            <div class="factory-name">
+              <input v-model="factoryName" placeholder="Name"/>
+              <input v-model="factoryPassword" placeholder="Passwort"/>
             </div>
-            <button class="v-button" type="submit">Fabrik erstellen und bestellen</button>
+            <div class="size-radio-container">
+              <div class="radio-option" v-for="size in sizes" :key="size.label">
+                <input type="radio" v-model="selectedSize" :id="size.label" :value="size.value"/>
+                <label :for="size.label">{{ size.label }}</label>
+              </div>
+            </div>
+          </div>
+          <div class="button-create">
+            <button class="v-button v-form-button" type="submit">Fabrik erstellen</button>
           </div>
         </form>
       </div>
@@ -73,10 +88,13 @@ function createFactory() {
 </template>
 
 <style>
-form {
+.form {
   background-color: #342844;
   padding: 1.875rem 1.125rem;
   border-radius: 25px;
+}
+.v-form-button {
+  border-color: transparent;
 }
 
 .container {
@@ -132,8 +150,7 @@ form {
 .button-create {
   display: flex;
   flex-direction: column;
-  width: fit-content;
-  padding: 10px 20px 10px 20px;
+  padding: 50px 20px 10px 20px;
   top: 75%;
 }
 
@@ -183,24 +200,5 @@ form {
 input:focus {
   outline: none;
 }
-.v-button{
-  background-color:#683CE4;
-  display: inline-block;
-  border-radius:35px;
-  cursor:pointer;
-  color:#ffffff;
-  font-size:22px;
-  text-decoration:none;
-  text-align: center;
-  padding: 10px 10px 10px 10px;
-  margin: auto;
-  width: 290px;
-}
-.v-button:hover {
-  background-color:#4b2ba6;
-}
-.v-button:active {
-  position:relative;
-  top:1px;
-}
+
 </style>

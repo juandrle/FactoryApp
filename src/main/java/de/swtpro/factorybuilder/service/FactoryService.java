@@ -5,9 +5,12 @@ import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.GridRepository;
 import de.swtpro.factorybuilder.repository.ModelRepository;
 import de.swtpro.factorybuilder.utility.Position;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import de.swtpro.factorybuilder.entity.Model;
 import org.hibernate.result.Outputs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -20,9 +23,20 @@ public class FactoryService {
     @Autowired
     private FactoryRepository factoryRepository;
 
+    @Bean
+    private PasswordEncoder passwordEncoderService(){
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
     public Factory getFactoryByID(long id){ return factoryRepository.findById(id).orElse(null);}
 
     public PlacedModel getPlacedModelById(long id){ return modelRepository.findById(id).orElse(null);}
+
+    public Factory saveFactory(Factory factory) {
+        PasswordEncoder passwordEncoder = passwordEncoderService();
+        factory.setPassword(passwordEncoder.encode(factory.getPassword()));
+        return factoryRepository.save(factory);
+    }
 
     public void initializeField(long factoryID){
         Factory factory = getFactoryByID(factoryID);
