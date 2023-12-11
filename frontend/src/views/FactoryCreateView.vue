@@ -17,7 +17,7 @@ const sizes = ref([
 const factoryName = ref('')
 const factoryPassword = ref('')
 const selectedSize = ref()
-const {factorySize, updateFactorySize} = inject<{
+const {updateFactorySize} = inject<{
   factorySize: Ref<IVector3>,
   updateFactorySize: (newSize: IVector3) => void
 }>('factorySize')

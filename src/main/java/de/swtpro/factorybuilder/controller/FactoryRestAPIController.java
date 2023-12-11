@@ -19,7 +19,7 @@ public class FactoryRestAPIController {
     };
 
     @PostMapping("/create")
-    public ResponseEntity<Boolean> save (@RequestBody FactoryDTO factoryDTO){
+    public ResponseEntity<Long> save (@RequestBody FactoryDTO factoryDTO){
         Factory f = new Factory();
         f.setName(factoryDTO.name);
         f.setWidth(factoryDTO.width);
@@ -27,6 +27,6 @@ public class FactoryRestAPIController {
         f.setHeight(factoryDTO.height);
         f.setPassword(factoryDTO.password);
         factoryService.saveFactory(f);
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(f.getFactoryID());
     }
 }
