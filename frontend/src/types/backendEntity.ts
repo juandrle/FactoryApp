@@ -18,3 +18,7 @@ export interface IFactoryCreate {
     depth: number;
     height: number
 }
+export interface IFactoryDelete {
+    id: number,
+    element: any
+}

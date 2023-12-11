@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Optional;
+
 @Service
 public class FactoryService {
     @Autowired
@@ -36,6 +38,13 @@ public class FactoryService {
         PasswordEncoder passwordEncoder = passwordEncoderService();
         factory.setPassword(passwordEncoder.encode(factory.getPassword()));
         return factoryRepository.save(factory);
+    }
+
+    public Optional<Factory> getFactoryById(long id) {
+        return factoryRepository.findById(id);
+    }
+    public void deleteFactoryById(long id) {
+        factoryRepository.deleteById(id);
     }
 
     public void initializeField(long factoryID){

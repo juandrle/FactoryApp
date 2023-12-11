@@ -29,4 +29,9 @@ public class FactoryRestAPIController {
         factoryService.saveFactory(f);
         return ResponseEntity.ok(f.getFactoryID());
     }
+    @PostMapping("/delete")
+    public ResponseEntity<Boolean> delete (@RequestBody long idToDelete) {
+        factoryService.deleteFactoryById(idToDelete);
+        return ResponseEntity.ok(true);
+    }
 }
