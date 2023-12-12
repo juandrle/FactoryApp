@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import Factory from "@/components/Factory.vue";
+import Factory from "@/views/Factory.vue";
 import FactoryCreateView from "@/views/FactoryCreateView.vue";
 
 const router = createRouter({

@@ -1,17 +1,17 @@
 package de.swtpro.factorybuilder.service;
 
-import de.swtpro.factorybuilder.entity.Cube;
+import de.swtpro.factorybuilder.entity.PlacedModel;
 
 public interface GridService {
 
-    String addCubeToGrid(String gridID, Cube cube);
+    String addCubeToGrid(String gridID, PlacedModel cube);
 
-    Cube getCubeFromJSON(String cubeJSON);
+    PlacedModel getCubeFromJSON(String cubeJSON);
 
-    Cube parseJSON(String cubeJSON);
+    PlacedModel parseJSON(String cubeJSON);
 
-    String getJSONFromPojo(Cube cube);
+    String getJSONFromPojo(PlacedModel cube);
 
-    String generateJSON(Cube cube);
+    String generateJSON(PlacedModel cube);
 
 }

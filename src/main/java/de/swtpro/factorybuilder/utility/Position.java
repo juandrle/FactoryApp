@@ -1,8 +1,16 @@
 package de.swtpro.factorybuilder.utility;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public class Position {
 
-    public Position(int x, int y, int z){
+
+    public Position() {
+
+    }
+
+     public Position(int x, int y, int z){
         this.x = x;
         this.y = y;
         this.z = z;
