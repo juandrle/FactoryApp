@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class FactoryService {
     @Autowired
@@ -69,7 +72,7 @@ public class FactoryService {
         return field.getPlacedModelID();
     }
 
-    private void placeModelInoField(PlacedModel placedModel, Position position){
+    private void placeModelIntoField(PlacedModel placedModel, Position position){
         Field f = getFieldByPosition(position);
         f.setPlacedModelID(placedModel.getId());
         //Todo: save in repository
@@ -83,6 +86,74 @@ public class FactoryService {
         }
     }
 
+    private boolean checkField(Field f, PlacedModel thisModel, String ori, Factory factory){
+        boolean condition = false;
+        String counterOri = "";
+        int extraX = 0, extraY = 0;
+        Input input = thisModel.getInputByPosition(f.getPosition());
+        Output output = thisModel.getOutputByPosition(f.getPosition());
+
+        switch (ori){
+            case "North":
+                if(f.getPosition().getY()> 0){
+                    condition = true;
+                    extraY = -1;
+                }
+                counterOri = "South";
+                break;
+            case "South":
+                int height = factory.getHeight();
+                if(f.getPosition().getY()< height-1){
+                    condition = true;
+                    extraY = 1;
+                }
+                counterOri = "North";
+                break;
+            case "East":
+                int width = factory.getWidth();
+                if(f.getPosition().getX()< width-1){
+                    condition = true;
+                    extraX = 1;
+                }
+                counterOri = "West";
+                break;
+            case "West":
+                if(f.getPosition().getX()> 0){
+                    condition = true;
+                    extraX = -1;
+                }
+                counterOri = "East";
+                break;
+        }
+        if(condition){
+            Position tmpPosition = new Position(f.getPosition().getX()+extraX,f.getPosition().getY()+extraY,f.getPosition().getZ());
+            Field tmpField = getFieldByPosition(tmpPosition,thisModel.getFactoryID());
+            PlacedModel tmpPlacedModel  = getPlacedModelById(tmpField.getPlacedModelID());
+
+            if(thisModel.getId() == tmpPlacedModel.getId()) return true;
+
+            //zeigt mein input auf ein feld das kein output ist
+            if (input != null && input.getOrientation().equals(ori)){
+                if(!tmpPlacedModel.getOutputByPosition(tmpPosition).getOrientation().equals(counterOri)) return false;
+
+            }
+            //zeigt mein output auf ein feld das kein input ist
+            else if(output != null && output.getOrientation().equals(ori)){
+                if(!tmpPlacedModel.getInputByPosition(tmpPosition).getOrientation().equals(counterOri)) return false;
+
+            }
+            //zeigt mein feld auf ein feld das einen in/output in richtugn meines feldes hat
+            else{
+                if(tmpPlacedModel.getOutputByPosition(tmpPosition).getOrientation().equals(counterOri)) return false;
+                if(tmpPlacedModel.getInputByPosition(tmpPosition).getOrientation().equals(counterOri)) return false;
+
+            }
+        }
+        return true;
+    }
+
+
+
     private boolean checkForPlacement(PlacedModel thisModel){
         Factory factory= getFactoryByID(thisModel.getFactoryID());
         int height = factory.getHeight(), width = factory.getWidth(), depth = factory.getDepth();
@@ -90,156 +161,44 @@ public class FactoryService {
         PlacedModel tmpPlacedModel;
         Position tmpPosition;
 
-        //pruefe felder ob auf ihnen etwas platziert ist
+        //chech if fields are free
         for(Field f :thisModel.getPlacedFields()) {
             if (f.getPlacedModelID() != 0) return false;
         }
 
         for(Field f :thisModel.getPlacedFields()) {
-            Input input = thisModel.getInputByPosition(f.getPosition());
-            Output output = thisModel.getOutputByPosition(f.getPosition());
-
-            //Check North ------------------------------
-            if(f.getPosition().getY()> 0){
-                tmpPosition = new Position(f.getPosition().getX(),f.getPosition().getY()-1,f.getPosition().getZ());
-                tmpField = getFieldByPosition(tmpPosition,thisModel.getFactoryID());
-                tmpPlacedModel  = getPlacedModelById(tmpField.getPlacedModelID());
-
-                //zeigt mein input auf ein feld das kein output ist
-                if (input != null && input.getOrientation().equals("North")){
-                    if(tmpPlacedModel != null){
-                        if(!tmpPlacedModel.getOutputByPosition(tmpPosition).equals("South")) return false;
-                    }
-                }
-                //zeigt mein output auf ein feld das kein input ist
-                else if(output != null && output.getOrientation().equals("North")){
-                    if(tmpPlacedModel != null){
-                        if(!tmpPlacedModel.getInputByPosition(tmpPosition).equals("South")) return false;
-                    }
-                }
-                //zeigt mein feld auf ein feld das einen in/output in richtugn meines feldes hat
-                else{
-                    if(tmpPlacedModel != null){
-                        if(tmpPlacedModel.getOutputByPosition(tmpPosition).equals("South")) return false;
-                        if(tmpPlacedModel.getInputByPosition(tmpPosition).equals("South")) return false;
-                    }
-                }
-            }
-            //zeigt mein in/output auserhalb des Spielfeldrandes
-            else if(f.getPosition().getY() == 0){
-                if(thisModel.getOutputByPosition(f.getPosition()).getOrientation().equals("North"))return false;
-                if(thisModel.getInputByPosition(f.getPosition()).getOrientation().equals("North"))return false;
-            }
-            //end of North check -----------------------
-            //-----------------------------------------------------------------------------------------------------
-            //-----------------------------------------------------------------------------------------------------
-            //-----------------------------------------------------------------------------------------------------
-            //Check South ------------------------------
-            if(f.getPosition().getY()< height-1){
-                tmpPosition = new Position(f.getPosition().getX(),f.getPosition().getY()+1,f.getPosition().getZ());
-                tmpField = getFieldByPosition(tmpPosition,thisModel.getFactoryID());
-                tmpPlacedModel  = getPlacedModelById(tmpField.getPlacedModelID());
-
-                //zeigt mein input auf ein feld das kein output ist
-                if (input != null && input.getOrientation().equals("South")){
-                    if(tmpPlacedModel != null){
-                        if(!tmpPlacedModel.getOutputByPosition(tmpPosition).equals("North")) return false;
-                    }
-                }
-                //zeigt mein output auf ein feld das kein input ist
-                else if(output != null && output.getOrientation().equals("South")){
-                    if(tmpPlacedModel != null){
-                        if(!tmpPlacedModel.getInputByPosition(tmpPosition).equals("North")) return false;
-                    }
-                }
-                //zeigt mein feld auf ein feld das einen in/output in richtugn meines feldes hat
-                else{
-                    if(tmpPlacedModel != null){
-                        if(tmpPlacedModel.getOutputByPosition(tmpPosition).equals("North")) return false;
-                        if(tmpPlacedModel.getInputByPosition(tmpPosition).equals("North")) return false;
-                    }
-                }
-            }
-            //zeigt mein in/output auserhalb des Spielfeldrandes
-            else if(f.getPosition().getY() == height-1){
-                if(thisModel.getOutputByPosition(f.getPosition()).getOrientation().equals("South"))return false;
-                if(thisModel.getInputByPosition(f.getPosition()).getOrientation().equals("South"))return false;
-            }
-            //end of South check -----------------------
-            //-----------------------------------------------------------------------------------------------------
-            //-----------------------------------------------------------------------------------------------------
-            //-----------------------------------------------------------------------------------------------------
-            //Check West -------------------------------
-            if(f.getPosition().getX()> 0){
-                tmpPosition = new Position(f.getPosition().getX()+1,f.getPosition().getY(),f.getPosition().getZ());
-                tmpField = getFieldByPosition(tmpPosition,thisModel.getFactoryID());
-                tmpPlacedModel  = getPlacedModelById(tmpField.getPlacedModelID());
-
-                //zeigt mein input auf ein feld das kein output ist
-                if (input != null && input.getOrientation().equals("West")){
-                    if(tmpPlacedModel != null){
-                        if(!tmpPlacedModel.getOutputByPosition(tmpPosition).equals("East")) return false;
-                    }
-                }
-                //zeigt mein output auf ein feld das kein input ist
-                else if(output != null && output.getOrientation().equals("West")){
-                    if(tmpPlacedModel != null){
-                        if(!tmpPlacedModel.getInputByPosition(tmpPosition).equals("East")) return false;
-                    }
-                }
-                //zeigt mein feld auf ein feld das einen in/output in richtugn meines feldes hat
-                else{
-                    if(tmpPlacedModel != null){
-                        if(tmpPlacedModel.getOutputByPosition(tmpPosition).equals("East")) return false;
-                        if(tmpPlacedModel.getInputByPosition(tmpPosition).equals("East")) return false;
-                    }
-                }
-            }
-            //zeigt mein in/output auserhalb des Spielfeldrandes
-            else if(f.getPosition().getY() == height-1){
-                if(thisModel.getOutputByPosition(f.getPosition()).getOrientation().equals("West"))return false;
-                if(thisModel.getInputByPosition(f.getPosition()).getOrientation().equals("West"))return false;
-            }
-            //end of West check -----------------------------------------
-            //-----------------------------------------------------------------------------------------------------
-            //-----------------------------------------------------------------------------------------------------
-            //-----------------------------------------------------------------------------------------------------
-            //Check East -------------------------------
-            if(f.getPosition().getX()< width-1){
-                tmpPosition = new Position(f.getPosition().getX()+1,f.getPosition().getY(),f.getPosition().getZ());
-                tmpField = getFieldByPosition(tmpPosition,thisModel.getFactoryID());
-                tmpPlacedModel  = getPlacedModelById(tmpField.getPlacedModelID());
-
-                //zeigt mein input auf ein feld das kein output ist
-                if (input != null && input.getOrientation().equals("East")){
-                    if(tmpPlacedModel != null){
-                        if(!tmpPlacedModel.getOutputByPosition(tmpPosition).equals("West")) return false;
-                    }
-                }
-                //zeigt mein output auf ein feld das kein input ist
-                else if(output != null && output.getOrientation().equals("East")){
-                    if(tmpPlacedModel != null){
-                        if(!tmpPlacedModel.getInputByPosition(tmpPosition).equals("West")) return false;
-                    }
-                }
-                //zeigt mein feld auf ein feld das einen in/output in richtugn meines feldes hat
-                else{
-                    if(tmpPlacedModel != null){
-                        if(tmpPlacedModel.getOutputByPosition(tmpPosition).equals("West")) return false;
-                        if(tmpPlacedModel.getInputByPosition(tmpPosition).equals("West")) return false;
-                    }
-                }
-            }
-            //zeigt mein in/output auserhalb des Spielfeldrandes
-            else if(f.getPosition().getY() == height-1){
-                if(thisModel.getOutputByPosition(f.getPosition()).getOrientation().equals("East"))return false;
-                if(thisModel.getInputByPosition(f.getPosition()).getOrientation().equals("East"))return false;
-            }
-            //end of East check -----------------------------------------
-
+            //check north
+            if(!checkField(f,thisModel,"North",factory)) return false;
+            //check north
+            if(!checkField(f,thisModel,"South",factory)) return false;
+            //check north
+            if(!checkField(f,thisModel,"East",factory)) return false;
+            //check north
+            if(!checkField(f,thisModel,"West",factory)) return false;
         }
         //if everything is ok return true;
         return true;
+    }
+
+    public void rotateModel(PlacedModel thisModel, Position newPosition){
+        List<Field> newPosList= new ArrayList<>();
+        List<Input> newInputList = new ArrayList<>();
+        List<Output> newOutputList = new ArrayList<>();
+        Position tmpPos;
+        int tmpValue;
+
+        // check field if height or width still fits
+        for(Field f: thisModel.getPlacedFields()){
+            tmpPos = f.getPosition();
+            tmpValue = tmpPos.getX() - thisModel.getRootPos().getX();
+            tmpPos.setX(tmpPos.getY() - thisModel.getRootPos().getY() +newPosition.getX());
+            tmpPos.setY(tmpValue +newPosition.getY());
+            tmpPos.setZ(tmpPos.getZ() - thisModel.getRootPos().getZ()+newPosition.getZ());
+
+            newPosList.add(getFieldByPosition(tmpPos));
+        }
+
+        //turn in and outputs and turn orientation of thismodel and in and output with 90 degrees
     }
 
     private void removeModelFromField(Field field){
