@@ -2,31 +2,31 @@
   {
     "path": "/mock/.gltf/pipe_s.gltf",
     "icon": "/mock/svg/cube-outline.svg",
-    "entityID": "Color Cube 2"
+    "entityID": "1"
   },
   {
     "path": "/mock/.gltf/brennerofen.gltf",
     "icon": "/mock/svg/triangle-outline.svg",
-    "entityID": "Color Cube 4"
+    "entityID": "2"
   },
-    {
-        "path": "/mock/.gltf/erzreiniger.gltf",
-        "icon": "/mock/svg/triangle-outline.svg",
-        "entityID": "Color Cube 4"
-    },
-    {
-        "path": "/mock/.gltf/pipe_c.gltf",
-        "icon": "/mock/svg/triangle-outline.svg",
-        "entityID": "Color Cube 4"
-    },
-    {
-        "path": "/mock/.gltf/planiermaschine.gltf",
-        "icon": "/mock/svg/triangle-outline.svg",
-        "entityID": "Color Cube 4"
-    },
-    {
-        "path": "/mock/.gltf/saegemuehle.gltf",
-        "icon": "/mock/svg/triangle-outline.svg",
-        "entityID": "Color Cube 4"
-    }
+  {
+    "path": "/mock/.gltf/erzreiniger.gltf",
+    "icon": "/mock/svg/cube-outline.svg",
+    "entityID": "3"
+  },
+  {
+    "path": "/mock/.gltf/pipe_c.gltf",
+    "icon": "/mock/svg/triangle-outline.svg",
+    "entityID": "4"
+  },
+  {
+    "path": "/mock/.gltf/planiermaschine.gltf",
+    "icon": "/mock/svg/cube-outline.svg",
+    "entityID": "5"
+  },
+  {
+    "path": "/mock/.gltf/saegemuehle.gltf",
+    "icon": "/mock/svg/triangle-outline.svg",
+    "entityID": "6"
+  }
 ]
