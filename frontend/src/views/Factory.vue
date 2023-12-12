@@ -26,14 +26,16 @@ import {
   updateHighlightModel
 } from "@/utils/threeJS/helpFunctions";
 
-/*******************************/
-/*********** COFIG *************/
-/*******************************/
+/**
+ * Config
+ **/
 
 const ACTIVE_LAYER: number = 0
-/********************/
-/*** REF VARIABLES **/
-/********************/
+
+/**
+ * Ref Variables
+ **/
+
 const target = ref()
 const moveMode: Ref<String> = ref<'orbit' | 'fly'>('orbit')
 const moveOrSelectionMode: Ref<String> = ref<'set' | ''>('')
@@ -49,9 +51,10 @@ const lastObjectSelected: Ref<THREE.Group> = ref()
 const currObjSelectedOriginPos: Ref<IVector3> = ref({x: 0, y: 0, z: 0})
 const showCircMenu: Ref<Boolean> = ref(false)
 
-/********************/
-/*** VARIABLES ******/
-/********************/
+/**
+ * Variables
+ **/
+
 const {factorySize} = inject<{
   factorySize: Ref<IVector3>,
   updateFactorySize: (newSize: IVector3) => void
@@ -69,6 +72,9 @@ let cameraControls: THREE.OrbitControls
 let loader: THREE.GLTFLoader
 let highlight: THREE.Group
 
+/**
+ * FUNCTIONS -> Game Cycle
+ **/
 
 function init() {
   // provides & injections
@@ -118,20 +124,10 @@ function init() {
         console.error(error)
       }
   )
+
   createRoom(factorySize.value.x,factorySize.value.y,factorySize.value.z)
 }
 
-const createRoom = (x: number, y: number, z: number) => {
-  // Add Grid
-  createGrids(x, y, z, scene)
-  // creating roomtextures
-  createGroundWithTextures('factoryGround.jpeg', scene, x, y)
-  createRoofWithTextures('factoryRoof.jpeg', scene, x, y, z)
-  createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
-}
-
-
-// Loop
 const animate = () => {
 
   requestAnimationFrame(animate)
@@ -144,18 +140,31 @@ const animate = () => {
   renderer.render(scene, camera)
 }
 
-// Entry Point
+/**
+ * FUNCTIONS -> Helper
+ **/
 
-// Button onLoadFactory
-const onLoadFactoryButton = () => {
-  loadFactory(scene, loader, 'factory_id_sample')
-
+const createRoom = (x: number, y: number, z: number) => {
+  // Add Grid
+  createGrids(x, y, z, scene)
+  // creating roomtextures
+  createGroundWithTextures('factoryGround.jpeg', scene, x, y)
+  createRoofWithTextures('factoryRoof.jpeg', scene, x, y, z)
+  createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
 }
-// Button onToggleMoveMode
+
 const toggleMenuVisibility = () => {
   showCircMenu.value = !showCircMenu.value;
-
 };
+
+/**
+ * FUNCTIONS -> Buttons
+ **/
+
+const onLoadFactoryButton = () => {
+  loadFactory(scene, loader, 'factory_id_sample')
+}
+
 const onChangeEntityClicked = (situation: string) => {
   switch (situation) {
     case 'delete':
@@ -178,13 +187,16 @@ const onChangeEntityClicked = (situation: string) => {
       break
   }
 }
+
 const onToggleMoveModeButton = () => {
   moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
 
 }
+
 /**
  * LISTENERS
  **/
+
 window.addEventListener('resize', () => {
   // Variables
   sizes = {
@@ -198,6 +210,7 @@ window.addEventListener('resize', () => {
   // Resize Renderer
   renderer.setSize(sizes.width, sizes.height)
 })
+
 addEventListener('keydown', (event) => {
   if (event.key === 'v' || event.key === 'V') {
     moveOrSelectionMode.value = ''
@@ -216,6 +229,7 @@ addEventListener('keydown', (event) => {
     }
   }
 })
+
 addEventListener('mousemove', (event: MouseEvent) => {
   // Get all intersections with mouse and world
   const intersections = getIntersectionsMouse(event, camera, scene)
@@ -230,6 +244,7 @@ addEventListener('mousemove', (event: MouseEvent) => {
   }
 
 })
+
 addEventListener('click', () => {
   // Place cube
   if (showCircMenu.value) {
@@ -260,6 +275,7 @@ addEventListener('click', () => {
     manipulationMode.value = ''
   }
 })
+
 addEventListener('contextmenu', (event: MouseEvent) => {
   event.preventDefault()
   if (moveOrSelectionMode.value !== '' || manipulationMode.value !== '') return
@@ -275,9 +291,11 @@ addEventListener('contextmenu', (event: MouseEvent) => {
   if (currentObjectSelected.value)
     currObjSelectedOriginPos.value = currentObjectSelected.value.position
 })
+
 /**
  * WATCHERS
  * **/
+
 watch(activeEntity, () => {
   moveOrSelectionMode.value = 'set'
   scene.add(highlight)
@@ -287,6 +305,7 @@ watch(activeEntity, () => {
       }
   )
 })
+
 // Watch the moveMode to change camera option
 watch(moveMode, () => {
   var prevCamera = camera
@@ -308,7 +327,13 @@ watch(moveMode, () => {
 
   cameraControls = controls
 })
+
+/**
+ * START
+ * **/
+
 init()
+
 onMounted(() => {
   target.value.appendChild(renderer.domElement)
   dynamicDiv = document.getElementById('dynamicDiv')
@@ -322,6 +347,7 @@ onMounted(() => {
   // initial function calls
   animate()
 })
+
 </script>
 
 <template>
