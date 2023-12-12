@@ -7,6 +7,7 @@ export interface Factory {
   name: string;
   size: string;
   author: string;
+  link: string; 
 }
 
 const sizes = ref([
@@ -24,22 +25,56 @@ const owner = ref([
 ])
 
 const existing_factories = [
-  { id: 1, name: 'Erens Fabrik', size: '20x40x60', author: 'Eren Flamingo'},
-  { id: 2, name: 'Julias Fabrik', size: '20x40x60', author: 'Julia Flamingo'},
-  { id: 3, name: 'Davids Fabrik', size: '20x40x60', author: 'David Flamingo'},
-  { id: 4, name: 'Vincents Fabrik', size: '20x40x60', author: 'Vincent Flamingo'},
-  { id: 5, name: 'Viviens Fabrik', size: '20x40x60', author: 'Vivien Esel'},
-  { id: 6, name: 'Esels Fabrik', size: '20x40x60', author: 'Esel Esel'},
+  { id: 1, name: 'Erens Fabrik', size: '20x40x60', author: 'Eren Flamingo', link: '/factory'},
+  { id: 2, name: 'Julias Fabrik', size: '20x40x60', author: 'Julia Flamingo', link: '/factory'},
+  { id: 3, name: 'Davids Fabrik', size: '20x40x60', author: 'David Flamingo', link: '/factory'},
+  { id: 4, name: 'Vincents Fabrik', size: '20x40x60', author: 'Vincent Flamingo', link: '/factory'},
+  { id: 5, name: 'Viviens Fabrik', size: '20x40x60', author: 'Vivien Esel', link: '/factory'},
+  { id: 6, name: 'Esels Fabrik', size: '20x40x60', author: 'Esel Esel', link: '/factory'},
+  { id: 7, name: 'Vincents Fabrik', size: '20x40x60', author: 'Vincent Flamingo', link: '/factory'},
+  { id: 8, name: 'Viviens Fabrik', size: '20x40x60', author: 'Vivien Esel', link: '/factory'},
+  { id: 9, name: 'Esels Fabrik', size: '20x40x60', author: 'Esel Esel', link: '/factory'},
 ] as Factory[]; 
 
 // Nach Fabriknamen filtern 
 const searchTerm = ref(''); 
+const currentlyRotatedCard = ref<HTMLElement | null>(null)
 
 const filteredFactories = computed( () => {
   return existing_factories.filter(factory => {
     return factory.name.toLowerCase().includes(searchTerm.value.toLocaleLowerCase()); 
   }); 
 }); 
+
+
+const rotateCard = (clickTarget:EventTarget | null) => {
+  // const card = document.querySelector('.factorycard') as HTMLDivElement
+
+  if(!clickTarget) return;
+  const card = clickTarget as HTMLElement;
+  if (card) {
+    const front = card.querySelector('.card-front') as HTMLElement
+    const back = card.querySelector('.card-back') as HTMLElement
+    
+    // Karte drehen
+    if (currentlyRotatedCard.value === clickTarget) {
+      back.style.display = 'none' // Rückseite ausblenden
+      front.style.display = 'flex' // Vorderseite anzeigen
+      currentlyRotatedCard.value = null // Zustand aktualisieren
+    } else if(currentlyRotatedCard.value === null) {
+      back.style.display = 'flex' // Rückseite anzeigen
+      front.style.display = 'none' // Vorderseite ausblenden
+      currentlyRotatedCard.value = clickTarget as HTMLElement // Zustand aktualisieren
+    } else {
+      (currentlyRotatedCard.value.querySelector('.card-back') as HTMLElement).style.display = 'none'; // Rückseite ausblenden
+      (currentlyRotatedCard.value.querySelector('.card-front') as HTMLElement).style.display = 'flex';
+      back.style.display = 'flex' // Rückseite anzeigen
+      front.style.display = 'none' // Vorderseite ausblenden
+      currentlyRotatedCard.value = clickTarget as HTMLElement // Zustand aktualisieren
+    }
+    
+  }
+}
 
 </script>
 
@@ -71,7 +106,7 @@ const filteredFactories = computed( () => {
           </div>
         </div>
         <div class="factory-cards">
-          <FactoryCard v-for=" factory in filteredFactories" :key="factory.id" :factory="factory"></FactoryCard>
+          <FactoryCard v-for=" factory in filteredFactories" :rotateCard="rotateCard"  :key="factory.id" :factory="factory"></FactoryCard>
         </div>
       </div>
     </div>
@@ -79,7 +114,7 @@ const filteredFactories = computed( () => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .container {
   display: flex;
   min-width: 100vw;
@@ -162,8 +197,9 @@ input {
   padding: 8px;
 }
 .factory-cards{
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 40px;
+  justify-items: center;
 }
 </style>
