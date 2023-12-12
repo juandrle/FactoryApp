@@ -67,7 +67,6 @@ let sizes: {
 let scene: THREE.Scene
 let renderer: THREE.WebGLRenderer
 let camera: THREE.PerspectiveCamera
-let cameraControls: THREE.OrbitControls
 let loader: THREE.GLTFLoader
 let highlight: THREE.Group
 let ccm: CameraControlsManager
@@ -196,10 +195,6 @@ const onChangeEntityClicked = (situation: string) => {
       console.log('cloning Entity')
       break
   }
-}
-
-const onToggleMoveModeButton = () => {
-  moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
 }
 
 /**
@@ -340,7 +335,6 @@ init()
     </div>
     <div className="button-bar">
       <button @click="onLoadFactoryButton">Test Load Factory</button>
-      <button @click="onToggleMoveModeButton">Toggle Camera Mode</button>
     </div>
     <div className="debug-bar">
       <div>Active Entity: {{ activeEntity.entityID }}</div>
