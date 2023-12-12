@@ -23,8 +23,6 @@ import {
   selectionObject,
   updateHighlightModel
 } from '@/utils/threeJS/helpFunctions'
-
-// Camera
 import { CameraMode } from '@/enum/CameraMode'
 import { CameraControlsManager } from '../classes/CameraControlsManager.js'
 
