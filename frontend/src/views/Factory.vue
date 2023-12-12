@@ -25,6 +25,7 @@ import {
 } from '@/utils/threeJS/helpFunctions'
 import { CameraMode } from '@/enum/CameraMode'
 import { CameraControlsManager } from '../classes/CameraControlsManager.js'
+import { SetCameraInfo } from '@/utils/threeJS/camera'
 
 /**
  * Config
@@ -78,7 +79,6 @@ let ccm: CameraControlsManager
 function init() {
   // provides & injections
   provide('showCircleMenu', showCircMenu)
-  console.log(factorySize)
   sizes = {
     width: window.innerWidth,
     height: window.innerHeight,
@@ -98,9 +98,12 @@ function init() {
 
   scene.add(directionalLight)
   camera = new THREE.PerspectiveCamera(50, sizes.ratio)
-  camera.position.set(40, -15, 15)
-  camera.up.set(0, 0, 1)
-  camera.lookAt(0, 0, 0)
+
+  SetCameraInfo(camera, {
+    position: { x: 40, y: -15, z: 15 },
+    up: { x: 0, y: 0, z: 1 },
+    lookAt: { x: 0, y: 1, z: 1 }
+  })
 
   ccm = new CameraControlsManager(camera, renderer.domElement, CameraMode.ORBIT)
 
@@ -144,7 +147,7 @@ onMounted(() => {
 const animate = () => {
   requestAnimationFrame(animate)
   ccm.update()
-  
+
   // Render new frame
   renderer.render(scene, camera)
 }
@@ -316,13 +319,11 @@ watch(activeEntity, () => {
   )
 })
 
-
 /**
  * START
  * **/
 
 init()
-
 </script>
 
 <template>

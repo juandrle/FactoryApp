@@ -69,7 +69,7 @@ class PointerLockControls extends EventDispatcher {
 
 	getDirection( v ) {
 
-		return v.set( 0, 0, - 1 ).applyQuaternion( this.camera.quaternion );
+		return v.set( 0, 0, 1 ).applyQuaternion( this.camera.quaternion );
 
 	}
 

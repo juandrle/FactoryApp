@@ -9,3 +9,9 @@ export type ISizes = {
     height: number,
     ratio: number,
 }
+
+export type ICameraInfo = {
+    position: IVector3,
+    lookAt: IVector3,
+    up: IVector3
+}
