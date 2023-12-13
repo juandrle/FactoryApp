@@ -37,7 +37,7 @@ const ACTIVE_LAYER: number = 0
 const target = ref()
 const moveMode: Ref<String> = ref<'orbit' | 'fly'>('orbit')
 const moveOrSelectionMode: Ref<String> = ref<'set' | ''>('')
-const manipulationMode: Ref<String> = ref<'move' | 'rotate' | ''>('')
+const manipulationMode: Ref<String> = ref<'move' | 'rotate' | 'clone' | ''>('')
 const allEntitys: Ref<IBackendEntityPreview[]> = ref([])
 const activeEntity: Ref<IBackendEntityPreview> = ref({
   path: '/fallback/.gltf/cube.gltf',
@@ -73,7 +73,6 @@ let highlight: THREE.Group
 function init() {
   // provides & injections
   provide('showCircleMenu', showCircMenu)
-  console.log(factorySize)
   sizes = {
     width: window.innerWidth,
     height: window.innerHeight,
@@ -174,6 +173,13 @@ const onChangeEntityClicked = (situation: string) => {
       console.log('scripting Entity')
       break
     case 'clone':
+      const newObj = currentObjectSelected.value.clone()
+      scene.add(newObj)
+      highlightObjectWithColor(currentObjectSelected, false)
+      console.log(currentObjectSelected.value)
+      currentObjectSelected.value = newObj
+      console.log(currentObjectSelected.value)
+      manipulationMode.value = 'clone'
       console.log('cloning Entity')
       break
   }
@@ -225,15 +231,19 @@ addEventListener('mousemove', (event: MouseEvent) => {
       // Object model wird asynchron geladen
   {
     moveHighlight(highlight, ACTIVE_LAYER, intersections)
-  } else if (currentObjectSelected.value && manipulationMode.value === 'move') {
+  } else if (currentObjectSelected.value && (manipulationMode.value === 'move' || manipulationMode.value === 'clone')) {
     moveHighlight(currentObjectSelected.value, ACTIVE_LAYER, intersections)
   }
 
 })
-addEventListener('click', () => {
+addEventListener('click', (event) => {
+  const intersections = getIntersectionsMouse(event, camera, scene)
   // Place cube
   if (showCircMenu.value) {
     showCircMenu.value = false
+    if (manipulationMode.value === 'clone') {
+      selectionObject(currentObjectSelected,lastObjectSelected,intersections)
+      }
     if (manipulationMode.value === '')
       highlightObjectWithColor(currentObjectSelected, false)
     return
@@ -248,7 +258,7 @@ addEventListener('click', () => {
       })
   ) {
     placeEntity(loader, scene, highlight.position, activeEntity.value.path)
-  } else if (manipulationMode.value === 'move' &&
+  } else if ((manipulationMode.value === 'move' || manipulationMode.value == 'clone') &&
       placeRequest({
         x: currentObjectSelected.value.position.x,
         y: currentObjectSelected.value.position.y,
@@ -328,7 +338,7 @@ onMounted(() => {
   <div className="target" ref="target">
     <div id="dynamicDiv" style="background-color: #2c3e50; position: absolute">
       <CircularMenu :toggleMenuVisibility="toggleMenuVisibility"
-                    @changeEntity="onChangeEntityClicked"
+                    @changeEntity="onChangeEntityClicked($event)"
       ></CircularMenu>
     </div>
     <div className="button-bar">
