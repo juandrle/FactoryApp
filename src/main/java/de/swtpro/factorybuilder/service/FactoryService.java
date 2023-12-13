@@ -182,23 +182,40 @@ public class FactoryService {
 
     public void rotateModel(PlacedModel thisModel, Position newPosition){
         List<Field> newPosList= new ArrayList<>();
-        List<Input> newInputList = new ArrayList<>();
-        List<Output> newOutputList = new ArrayList<>();
-        Position tmpPos;
-        int tmpValue;
 
         // check field if height or width still fits
-        for(Field f: thisModel.getPlacedFields()){
-            tmpPos = f.getPosition();
-            tmpValue = tmpPos.getX() - thisModel.getRootPos().getX();
-            tmpPos.setX(tmpPos.getY() - thisModel.getRootPos().getY() +newPosition.getX());
-            tmpPos.setY(tmpValue +newPosition.getY());
-            tmpPos.setZ(tmpPos.getZ() - thisModel.getRootPos().getZ()+newPosition.getZ());
+        for(Field f: thisModel.getPlacedFields())
+            newPosList.add(getFieldByPosition(adjustPosition(thisModel,newPosition,f.getPosition())));
 
-            newPosList.add(getFieldByPosition(tmpPos));
+        for(Output o: thisModel.getOutputs()) {
+            newPosList.add(getFieldByPosition(adjustPosition(thisModel, newPosition, o.getPosition())));
+            o.setOrientation(rotateOrientation(o.getOrientation()));
         }
+        for(Input i: thisModel.getInputs()){
+            newPosList.add(getFieldByPosition(adjustPosition(thisModel, newPosition, i.getPosition())));
+            i.setOrientation(rotateOrientation(i.getOrientation()));
+        }
+        thisModel.setOrientation(rotateOrientation(thisModel.getOrientation()));
 
-        //turn in and outputs and turn orientation of thismodel and in and output with 90 degrees
+        //TODO update repos
+    }
+
+    private Position adjustPosition(PlacedModel thisModel, Position newPosition, Position tmpPos){
+        int tmpValue = tmpPos.getX() - thisModel.getRootPos().getX();
+        tmpPos.setX(tmpPos.getY() - thisModel.getRootPos().getY() +newPosition.getX());
+        tmpPos.setY(tmpValue +newPosition.getY());
+        tmpPos.setZ(tmpPos.getZ() - thisModel.getRootPos().getZ()+newPosition.getZ());
+        return tmpPos;
+    }
+
+    private String rotateOrientation(String orientation){
+        return switch (orientation) {
+            case "North" -> "East";
+            case "East" -> "South";
+            case "South" -> "West";
+            case "West" -> "North";
+            default -> "";
+        };
     }
 
     private void removeModelFromField(Field field){

@@ -2,7 +2,7 @@ package de.swtpro.factorybuilder.entity;
 
 import jakarta.persistence.Embeddable;
 
-import javax.swing.text.Position;
+import de.swtpro.factorybuilder.utility.Position;
 @Embeddable
 public class Input implements Processing{
     private String orientation;
