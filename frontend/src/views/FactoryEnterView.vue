@@ -153,7 +153,6 @@ const rotateCard = (clickTarget:EventTarget | null) => {
   color: white;
 }
 .contentDiv {
-  /* border: 1px solid green; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -170,6 +169,9 @@ input {
   border: 2px solid #683ce4;
   border-radius: 30px;
   color: white;
+}
+input:focus{
+  outline: none;
 }
 .filter-div {
   display: flex;
