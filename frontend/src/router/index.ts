@@ -19,9 +19,19 @@ const router = createRouter({
       component: Factory
     },
     {
+      path: '/enter',
+      name: 'enter',
+      component: FactoryEnterView
+    },
+    {
       path: '/create',
       name: 'create',
       component: FactoryCreateView
+    }, 
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
     }
   ]
 })
