@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import de.swtpro.factorybuilder.entity.Cube;
+import de.swtpro.factorybuilder.entity.PlacedModel;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +19,7 @@ public class GridServiceImpl implements GridService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GridServiceImpl.class);
 
     @Override
-    public String addCubeToGrid(String gridID, Cube cube) {
+    public String addCubeToGrid(String gridID, PlacedModel cube) {
 
         // Grid aus Datenbank laden – noch nicht implementiert
         // z.B. grid.setCube(…) …
@@ -29,16 +29,16 @@ public class GridServiceImpl implements GridService {
     }
     
     @Override
-    public Cube getCubeFromJSON(String cubeJSON) {
-        Cube testCube = parseJSON(cubeJSON);
+    public PlacedModel getCubeFromJSON(String cubeJSON) {
+        PlacedModel testCube = parseJSON(cubeJSON);
         return testCube;
     }
 
     @Override
-    public Cube parseJSON(String cubeJSON) {
+    public PlacedModel parseJSON(String cubeJSON) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            Cube cube = mapper.readValue(cubeJSON, Cube.class);
+            PlacedModel cube = mapper.readValue(cubeJSON, PlacedModel.class);
             LOGGER.info(cubeJSON);
             return cube;
         } catch (JsonMappingException e) {
@@ -51,12 +51,12 @@ public class GridServiceImpl implements GridService {
     }
 
     @Override
-    public String getJSONFromPojo(Cube cube) {
+    public String getJSONFromPojo(PlacedModel cube) {
         return generateJSON(cube);
     }
 
     @Override
-    public String generateJSON(Cube cube) {
+    public String generateJSON(PlacedModel cube) {
         ObjectWriter JSONWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
         try {
             String json = JSONWriter.writeValueAsString(JSONWriter);

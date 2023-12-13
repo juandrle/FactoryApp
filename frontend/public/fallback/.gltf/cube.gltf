@@ -100,7 +100,7 @@
   ],
   "meshes": [
     {
-      "name": "Entity-Mesh",
+      "name": "Cube-Mesh",
       "primitives": [
         {
           "attributes": {
