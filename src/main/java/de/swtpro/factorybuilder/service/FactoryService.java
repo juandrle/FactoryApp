@@ -5,37 +5,48 @@ import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.GridRepository;
 import de.swtpro.factorybuilder.repository.ModelRepository;
 import de.swtpro.factorybuilder.utility.Position;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import de.swtpro.factorybuilder.entity.Model;
-import org.hibernate.result.Outputs;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+//import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.Optional;
+
 @Service
 public class FactoryService {
-    @Autowired
-    private GridRepository gridRepository;
-    @Autowired
-    private ModelRepository modelRepository;
-    @Autowired
-    private FactoryRepository factoryRepository;
 
-    @Bean
-    private PasswordEncoder passwordEncoderService(){
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final GridRepository gridRepository;
+
+    private final ModelRepository modelRepository;
+
+    private final FactoryRepository factoryRepository;
+
+    FactoryService(GridRepository gridRepository, ModelRepository modelRepository, FactoryRepository factoryRepository){
+        this.gridRepository = gridRepository;
+        this.modelRepository = modelRepository;
+        this.factoryRepository = factoryRepository;
     }
+
+//    @Bean
+//    private PasswordEncoder passwordEncoderService(){
+//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//    }
 
     public Factory getFactoryByID(long id){ return factoryRepository.findById(id).orElse(null);}
 
     public PlacedModel getPlacedModelById(long id){ return modelRepository.findById(id).orElse(null);}
 
     public Factory saveFactory(Factory factory) {
-        PasswordEncoder passwordEncoder = passwordEncoderService();
-        factory.setPassword(passwordEncoder.encode(factory.getPassword()));
+//        PasswordEncoder passwordEncoder = passwordEncoderService();
+//        factory.setPassword(passwordEncoder.encode(factory.getPassword()));
         return factoryRepository.save(factory);
+    }
+
+    public Optional<Factory> getFactoryById(long id) {
+        return factoryRepository.findById(id);
+    }
+    public void deleteFactoryById(long id) {
+        factoryRepository.deleteById(id);
     }
 
     public void initializeField(long factoryID){
@@ -47,10 +58,10 @@ public class FactoryService {
                     Field field = new Field();
                     field.setPosition(new Position(i,j,k));
                     field.setPlacedModelID(null);
+                    gridRepository.save(field);
                 }
             }
         }
-        //Todo: put fields in repository
     }
 
 
