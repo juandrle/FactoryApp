@@ -13,7 +13,7 @@ defineProps({
   <RouterLink :to="link" class="v-button">{{text}}</RouterLink>
 </template>
 
-<style>
+<style scoped>
 .v-button{
     background-color:#683CE4;
 	display: inline-block;

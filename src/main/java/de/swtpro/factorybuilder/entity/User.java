@@ -23,25 +23,17 @@ public class User implements Serializable {
     @NotBlank
     private String password;
 
-    @NotBlank(message = "Password can not be empty!")
-    private String passwordCheck;
+    // @NotBlank(message = "Password can not be empty!")
+    // private String passwordCheck;
 
     private String role = "USER";
 
     private Position position;
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     private Position pointOfView;
 
-    @Column
-    private Long lastFactoryId;
+    // @Column
+    // private Long lastFactoryId;
 
     @ElementCollection
     @Column(name = "factory_id")
@@ -80,13 +72,13 @@ public class User implements Serializable {
         this.pointOfView = pointOfView;
     }
 
-    public Long getLastFactoryId() {
-        return lastFactoryId;
-    }
+    // public Long getLastFactoryId() {
+    //     return lastFactoryId;
+    // }
 
-    public void setLastFactoryId(Long lastFactoryId) {
-        this.lastFactoryId = lastFactoryId;
-    }
+    // public void setLastFactoryId(Long lastFactoryId) {
+    //     this.lastFactoryId = lastFactoryId;
+    // }
 
     public List<Long> getUsedFactories() {
         return usedFactories;
@@ -96,13 +88,21 @@ public class User implements Serializable {
         this.usedFactories = usedFactories;
     }
 
-    public String getPasswordCheck() {
-        return passwordCheck;
+    public String getRole() {
+        return role;
     }
 
-    public void setPasswordCheck(String passwordCheck) {
-        this.passwordCheck = passwordCheck;
+    public void setRole(String role) {
+        this.role = role;
     }
+
+    // public String getPasswordCheck() {
+    //     return passwordCheck;
+    // }
+
+    // public void setPasswordCheck(String passwordCheck) {
+    //     this.passwordCheck = passwordCheck;
+    // }
 
 
 

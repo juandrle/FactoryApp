@@ -41,14 +41,14 @@ public class SecurityConfiguration {
         SecurityFilterChain filterChainApp(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authz -> authz 
         .requestMatchers(HttpMethod.GET, "/assets/*").permitAll()
-        .requestMatchers("/registrieren").permitAll()
+        .requestMatchers("/signup").permitAll()
         
 
         .requestMatchers("/home", "/factory", "/create").hasRole("USER")
         .anyRequest().authenticated())
-        .formLogin(withDefaults()); // oder httpBasic oder ... // optional Redirect auf Wunschseite nach Logut 
+        .formLogin(withDefaults()) // oder httpBasic oder ... // optional Redirect auf Wunschseite nach Logut 
 
-        // .logout().logoutUrl("/logout").logoutSuccessUrl("/frage"); 
+        .logout().logoutUrl("/logout").logoutSuccessUrl("/frage"); 
 
         return http.build(); 
     }

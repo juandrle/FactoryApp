@@ -34,7 +34,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/registrieren")
+    @GetMapping("/signup")
     public String getRequeString(Locale locale, Model m){
 
         UserFormular currentUserFormular = new UserFormular();
@@ -54,7 +54,7 @@ public class UserController {
             // Logger.error("postAdress{}", userFormularError.toString());
         }else{
             User currentUser = new User();
-            uf.toBenutzer(currentUser);
+            uf.toUser(currentUser);
             m.addAttribute("user", currentUser);
             boolean nameTaken = userServiceImpl.checkUsername(currentUser.getUsername());
 

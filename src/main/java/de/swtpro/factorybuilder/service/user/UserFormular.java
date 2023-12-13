@@ -1,6 +1,11 @@
 package de.swtpro.factorybuilder.service.user;
 
+import java.util.List;
+
 import de.swtpro.factorybuilder.entity.User;
+import de.swtpro.factorybuilder.utility.Position;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -19,31 +24,28 @@ public class UserFormular {
     @NotBlank(message = "Password can not be empty!")
     private String passwordCheck;
 
-    private String role = "USER";
+   
+    private Position position;
 
-    // @PositiveOrZero(message = "Punkte müssen größer oder gleich Null sein")
-    // private int points;
+    private Position pointOfView;
+
     
     public UserFormular(){
         this.username="";
         this.password="";
-        this.role = "USER";
-        // this.punkte = 0;
     }
 
-    public void toBenutzer(User b){
+    public void toUser(User b){
         b.setUsername(this.username);
         b.setPassword(this.password);
-        b.setPasswordCheck(passwordCheck);
-        b.setRole(this.role);
-        // b.setPunkte(this.punkte);
+        b.setRole("USER");
+        
     }
 
-    public void fromBenutzer(User b){
+    public void fromUser(User b){
         this.username = b.getUsername();
         this.password = b.getPassword();
-        this.role = b.getRole();
-        // this.punkte = b.getPunkte();
+       
     }
 
     public String getUsername() {
@@ -70,12 +72,22 @@ public class UserFormular {
         this.passwordCheck = passwordCheck;
     }
 
-    public String getRole() {
-        return role;
+    public Position getPosition() {
+        return position;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setPosition(Position position) {
+        this.position = position;
     }
+
+    public Position getPointOfView() {
+        return pointOfView;
+    }
+
+    public void setPointOfView(Position pointOfView) {
+        this.pointOfView = pointOfView;
+    }
+
+
 
 }
