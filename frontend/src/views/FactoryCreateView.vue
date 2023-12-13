@@ -27,8 +27,10 @@ function createFactory() {
   <div class="container">
     <div class="s-item">
       <div class="content-s-item">
+      <a href="/">
         <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
         <p class="logo-titel">Machine Deluxe 3000</p>
+      </a>
       </div>
     </div>
     <div class="m-item">
@@ -59,61 +61,38 @@ function createFactory() {
   </div>
 </template>
 
-<style>
+<style scoped>
+.container .m-item {
+  align-items: center;
+}
 form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   background-color: #342844;
   padding: 1.875rem 1.125rem;
-  border-radius: 25px;
+  border-radius: 30px;
 }
-
-.container {
-  display: flex;
-  min-width: 100vw;
-  min-height: 100vh;
-  /*background-image: url('../assets/single_rectangles.svg'); 
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: right bottom; */
-}
-
-.container .s-item {
-  display: flex;
-  flex: 1 1 25%;
-  position: relative;
-  align-items: flex-end;
-  padding: 2rem;
-}
-
-.container .m-item {
-  flex: 1 1 50%;
-  display: flex;
-  justify-content: center;
-}
-
-.game-name {
-  position: absolute;
-  top: 10%;
-  font-weight: 400;
-}
-
 .radio-option {
   display: flex;
-  align-items: center;
-  width: 50%;
-  padding: 2.5% 15%;
+  /* align-items: center; */
+  width: 40%;
+  /* padding: 2.5% 15%; */
   font-size: large;
   accent-color: #683ce4;
-  gap: 0.5rem;
+  gap: 0.5rem; 
 }
 
-/* .radio-option:checked::before {
-  color: green;
-} */
-
+.radio-option input{
+  width: auto;
+}
 .size-radio-container {
-  flex-wrap: wrap;
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 2.5rem 1rem 2.5rem;
 }
 
 .button-create {
@@ -132,8 +111,6 @@ form {
 .content-s-item {
   display: flex;
   position: absolute;
-  align-items: center;
-  gap: 0.625rem;
   bottom: 90%;
   top: 2.5%;
 }
@@ -143,11 +120,19 @@ form {
   height: min-content;
 }
 
+.content-s-item a{
+  display: flex;
+  gap: 0.625rem;
+  text-decoration: none;
+  align-items: center;
+  color: white;
+}
+
 .factory-settings {
   position: relative;
   min-width: 100%;
   top: 4rem;
-  padding: 11.5rem 6.25rem;
+  /* padding: 11.5rem 6.25rem; */
 }
 
 .factory-name {
@@ -155,6 +140,7 @@ form {
   flex-direction: column;
   gap: 1.5rem;
   margin: 1rem 2.5rem 1rem 2.5rem;
+  align-items: center;
 }
 
 .factory-name input {
@@ -164,6 +150,7 @@ form {
   border: 2px solid #683ce4;
   border-radius: 30px;
   color: white;
+  width: 600px;
 }
 
 .text-input:focus,

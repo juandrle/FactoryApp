@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import Factory from "@/components/Factory.vue";
+import Factory from "@/components/factory.vue";
 import FactoryCreateView from "@/views/FactoryCreateView.vue";
+import FactoryEnterView from "@/views/FactoryEnterView.vue";
 import LoginView from "@/views/LoginView.vue";
 
 const router = createRouter({
@@ -21,12 +22,7 @@ const router = createRouter({
       path: '/create',
       name: 'create',
       component: FactoryCreateView
-    },
-    {
-      path: "/login",
-      name: "login",
-      component: LoginView
-    },
+    }
   ]
 })
 
