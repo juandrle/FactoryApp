@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VueElement, ref } from 'vue';
+import { ref } from 'vue';
 import Button from '../components/Button.vue'
   const buttonData = ref([
     {text: 'Fabrik erstellen', link: "/create"},
@@ -41,7 +41,13 @@ import Button from '../components/Button.vue'
   flex: 1 1 50%; 
   display: flex;
   justify-content: center;
-  /* border: solid 1px green; */
+}
+.game-name{
+  position: absolute;
+  top: 5%; 
+  font: normal normal bold 70px/84px Overpass;
+  letter-spacing: 0px;
+  font-weight: 400;
 }
 .button-container{
   display: flex;
@@ -50,11 +56,5 @@ import Button from '../components/Button.vue'
   left: 45%;
   bottom: 15%; 
   gap: 1rem;
-}
-.game-name{
-  position: absolute;
-  top: 20%; 
-  font: normal normal bold 70px/84px Overpass;
-  letter-spacing: 0px;
 }
 </style>

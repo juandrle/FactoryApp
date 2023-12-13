@@ -62,6 +62,9 @@ function createFactory() {
 </template>
 
 <style scoped>
+.container .m-item {
+  align-items: center;
+}
 form {
   display: flex;
   flex-direction: column;
@@ -70,38 +73,6 @@ form {
   padding: 1.875rem 1.125rem;
   border-radius: 30px;
 }
-
-.container {
-  display: flex;
-  min-width: 100vw;
-  min-height: 100vh;
-  /*background-image: url('../assets/single_rectangles.svg'); 
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: right bottom; */
-}
-
-.container .s-item {
-  display: flex;
-  flex: 1 1 25%;
-  position: relative;
-  align-items: flex-end;
-  padding: 2rem;
-}
-
-.container .m-item {
-  flex: 1 1 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.game-name {
-  position: absolute;
-  top: 5%;
-  font-weight: 400;
-}
-
 .radio-option {
   display: flex;
   /* align-items: center; */
@@ -115,10 +86,6 @@ form {
 .radio-option input{
   width: auto;
 }
-/* .radio-option:checked::before {
-  color: green;
-} */
-
 .size-radio-container {
   display: flex;
   flex-direction: row;

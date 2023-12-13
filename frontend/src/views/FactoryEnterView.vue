@@ -16,6 +16,7 @@ const sizes = ref([
   { label: '90x150x16', value: '90x150x16' },
   { label: '120x200x20', value: '120x200x20' }
 ])
+const currSize = ref()
 
 const owner = ref([
   { label: 'Vivien', value: 'Vivien' },
@@ -23,6 +24,7 @@ const owner = ref([
   { label: 'Dill', value: 'Dill' },
   { label: 'David', value: 'David' }
 ])
+const currOwner = ref()
 
 const existing_factories = [
   { id: 1, name: 'Erens Fabrik', size: '20x40x60', author: 'Eren Flamingo', link: '/factory'},
@@ -94,13 +96,12 @@ const rotateCard = (clickTarget:EventTarget | null) => {
         <div class="filter-div">
           <input placeholder="Suche..." v-model="searchTerm"/>
           <div class="custom-select">
-            <select v-model="owner">
-              <option value="" disabled selected>Select your option</option>
+            <select v-model="currOwner">
               <option v-for="o in owner" :value="o.label">{{ o.label }}</option>
             </select>
           </div>
           <div class="custom-select">
-            <select v-model="sizes">
+            <select v-model="currSize">
               <option v-for="size in sizes" :value="size.label">{{ size.label }}</option>
             </select>
           </div>
@@ -115,11 +116,6 @@ const rotateCard = (clickTarget:EventTarget | null) => {
 </template>
 
 <style scoped>
-.container {
-  display: flex;
-  min-width: 100vw;
-  min-height: 100vh;
-}
 .container .s-item {
   display: flex;
   flex: 1 1 25%;
@@ -149,7 +145,6 @@ const rotateCard = (clickTarget:EventTarget | null) => {
   width: 2.5rem;
   height: min-content;
 }
-
 .content-s-item a{
   display: flex;
   gap: 0.625rem;
@@ -158,11 +153,13 @@ const rotateCard = (clickTarget:EventTarget | null) => {
   color: white;
 }
 .contentDiv {
-  border: 1px solid green;
+  /* border: 1px solid green; */
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: min-content;
+  position: relative;
+  top: 20%;
 }
 input {
   display: block;
@@ -183,7 +180,7 @@ input {
   position: relative;
   width: 150px;
 }
-.custom-select select{
+select{
   width: 100%;
   padding: 12px 20px;
   border: 2px solid #683ce4; 
@@ -191,7 +188,7 @@ input {
   background-color: transparent;
   color: white;
 }
-.custom-select option{
+option{
   background-color: #683ce4;
   color: white;
   padding: 8px;

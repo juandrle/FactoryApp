@@ -21,9 +21,10 @@
 }
 
 body {
-  min-height: 100vh;
   color: var(--color-text-light);
   background: var(--color-background-light);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   line-height: 1.6;
   font-family: 'Overpass', sans-serif;
   font-size: 15px;
