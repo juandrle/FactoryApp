@@ -1,15 +1,55 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-import Button from '../components/Button.vue'
+import {computed, inject, Ref, ref, watch} from 'vue'
+import Button from '../components/temp/Button.vue'
+import type {IVector3} from "@/types/global";
+import router from "@/router";
+import {factoryCreateRequest} from "@/utils/backendComms/postRequests";
+import type {IFactoryCreate} from "@/types/backendEntity";
 
 const buttonData = ref([{text: 'Fabrik erstellen und bestellen', link: '/factory'}])
 
 const sizes = ref([
-  {label: '10', value: 'size1', name: 'factory_size'},
-  {label: '25', value: 'size2', name: 'factory_size'},
-  {label: '50', value: 'size3', name: 'factory_size'},
-  {label: '100', value: 'size4', name: 'factory_size'}
+  {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
+  {label: '60x100x12', value: {x: 60, y: 100, z: 12} as IVector3},
+  {label: '90x150x16', value: {x: 90, y: 150, z: 16} as IVector3},
+  {label: '120x200x20', value: {x: 120, y: 200, z: 20} as IVector3}
 ])
+const factoryName = ref('')
+const factoryPassword = ref('')
+const selectedSize = ref()
+const {updateFactorySize} = inject<{
+  factorySize: Ref<IVector3>,
+  updateFactorySize: (newSize: IVector3) => void
+}>('factorySize')
+const combinedSize = computed((size) => {
+  return {
+    x: size.width as number,
+    y: size.length as number,
+    z: size.height as number
+  }
+})
+
+function createFactory() {
+  if (selectedSize.value) {
+    updateFactorySize({
+      x: selectedSize.value.x,
+      y: selectedSize.value.y,
+      z: selectedSize.value.z
+    })
+    const factory: IFactoryCreate = {
+      name: factoryName.value,
+      password: factoryPassword.value,
+      width: selectedSize.value.x,
+      depth: selectedSize.value.y,
+      height: selectedSize.value.z
+    }
+    // if (await factoryCreateRequest(factory)) console.log('worked!')
+    router.push('/factory')
+  } else {
+    console.error("Please select a size before creating the factory.")
+  }
+}
+
 </script>
 
 <template>
@@ -23,23 +63,22 @@ const sizes = ref([
     <div class="m-item">
       <h1 class="game-name">Fabrik erstellen</h1>
       <div class="factory-settings">
-        <form action="/factory" method="">
-          <div class="factory-name">
-            <input placeholder="Name"/>
-            <input placeholder="Passwort"/>
-          </div>
-          <div class="size-radio-container">
-            <div class="radio-option" v-for="size in sizes" :key="size.value">
-              <input type="radio" :id="size.value" :name="size.name" :value="size.value"/>
-              <label :for="size.value">{{ size.label }} m²</label>
+        <form @submit.prevent="createFactory">
+          <div class="form">
+            <div class="factory-name">
+              <input v-model="factoryName" placeholder="Name"/>
+              <input v-model="factoryPassword" placeholder="Passwort"/>
+            </div>
+            <div class="size-radio-container">
+              <div class="radio-option" v-for="size in sizes" :key="size.label">
+                <input type="radio" v-model="selectedSize" :id="size.label" :value="size.value"/>
+                <label :for="size.label">{{ size.label }}</label>
+              </div>
             </div>
           </div>
-          <Button
-              class="button-create"
-              v-for="item in buttonData"
-              :text="item.text"
-              :key="item.text"
-              :link="item.link"></Button>
+          <div class="button-create">
+            <button class="v-button v-form-button" type="submit">Fabrik erstellen</button>
+          </div>
         </form>
       </div>
 
@@ -49,10 +88,13 @@ const sizes = ref([
 </template>
 
 <style>
-form {
+.form {
   background-color: #342844;
   padding: 1.875rem 1.125rem;
   border-radius: 25px;
+}
+.v-form-button {
+  border-color: transparent;
 }
 
 .container {
@@ -108,8 +150,7 @@ form {
 .button-create {
   display: flex;
   flex-direction: column;
-  width: fit-content;
-  padding: 10px 20px 10px 20px;
+  padding: 50px 20px 10px 20px;
   top: 75%;
 }
 
@@ -159,4 +200,5 @@ form {
 input:focus {
   outline: none;
 }
+
 </style>
