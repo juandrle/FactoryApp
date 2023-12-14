@@ -24,7 +24,6 @@ class CameraControlsManager {
 
   switchTo(newMode: CameraMode) {
     if (this.currentMode === CameraMode.ORBIT) {
-      console.log(this.camera.position, '1')
       this.orbitCameraInfos = ExtractCameraInfo(this.camera)
     }
 
@@ -37,7 +36,7 @@ class CameraControlsManager {
     switch (newMode) {
       case CameraMode.FREE: {
         SetCameraInfo(this.camera, {
-          position: { x: 0, y: 0, z: 1 },
+          position: { x: 0, y: -10, z: 1 },
           up: { x: 0, y: 0, z: 1 },
           lookAt: { x: 0, y: 1, z: 1 }
         })
@@ -53,11 +52,14 @@ class CameraControlsManager {
         break
       }
     }
+
+
+    console.log(this.camera.up)
   }
 
-  update() {
+  update(deltaTime: number) {
     if (this.currentMode === CameraMode.FREE) {
-      this.controlls.update()
+      this.controlls.update(deltaTime)
     }
   }
 }

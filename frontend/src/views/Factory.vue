@@ -71,12 +71,15 @@ let camera: THREE.PerspectiveCamera
 let loader: THREE.GLTFLoader
 let highlight: THREE.Group
 let ccm: CameraControlsManager
+let previousTime: number = 0;
+
 
 /**
  * FUNCTIONS -> Game Cycle
  **/
 
 function init() {
+
   // provides & injections
   provide('showCircleMenu', showCircMenu)
   sizes = {
@@ -85,33 +88,33 @@ function init() {
     ratio: window.innerWidth / window.innerHeight
   }
   scene = new THREE.Scene()
-
+  
   scene.background = new THREE.Color('#12111A')
   renderer = new THREE.WebGLRenderer()
-
+  
   renderer.setSize(sizes.width, sizes.height)
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
-
+  
   scene.add(ambientLight)
   const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
   directionalLight.position.set(1, 1, 1).normalize()
-
+  
   scene.add(directionalLight)
   camera = new THREE.PerspectiveCamera(50, sizes.ratio)
-
+  
   SetCameraInfo(camera, {
     position: { x: 40, y: -15, z: 15 },
     up: { x: 0, y: 0, z: 1 },
     lookAt: { x: 0, y: 1, z: 1 }
   })
-
+  
   ccm = new CameraControlsManager(camera, renderer.domElement, CameraMode.ORBIT)
-
+  
   loader = new GLTFLoader()
-
+  
   // Add axis helper
-  // const axesHelper: any = new THREE.AxesHelper(20)
-  // scene.add(axesHelper)
+  const axesHelper: any = new THREE.AxesHelper(20)
+  scene.add(axesHelper)
 
   loader.load(
     '/fallback/.gltf/cube.gltf',
@@ -141,18 +144,21 @@ onMounted(() => {
     activeEntity.value = allEntitys.value[0]
   })
   // initial function calls
-  animate()
+  animate(0)
 })
 
-const animate = () => {
+const animate = (currentTime: number) => {
   requestAnimationFrame(animate)
-  ccm.update()
+
+  const deltaTime = (currentTime - previousTime) * 0.001; // Umrechnung in Sekunden
+  previousTime = currentTime;
+  ccm.update(deltaTime)
 
   // Render new frame
   renderer.render(scene, camera)
 }
 
-/**
+/** 
  * FUNCTIONS -> Helper
  **/
 

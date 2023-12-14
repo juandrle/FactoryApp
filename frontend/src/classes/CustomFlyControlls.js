@@ -1,16 +1,38 @@
-import { PointerLockControls } from './CustomPointerLock'
 import * as THREE from 'three'
+import { clamp } from 'three/src/math/MathUtils'
+import { PointerLockControls } from './CustomPointerLock'
+
 
 class CustomFlyControls {
   movementSpeed = 0.5
   movement = null
   camera = null
+  currentMouse = null
+  prevMouse = null
+  rotation = new THREE.Quaternion()
+  translation = new THREE.Vector3()
+  phi = 0
+  theta = 0
+  thetaSpeed = 1
+  phiSpeed = 1
+
+  controls = null;
+
   constructor(camera, domElement) {
     this.camera = camera
     this.movement = { x: 0, y: 0, z: 0 }
-    this.pointerLockControls = new PointerLockControls(camera, domElement)
-    this.pointerLockControls.lock()
-    this.pointerLockControls.pointerSpeed = this.movementSpeed
+    this.thetaSpeed = 1
+    this.phiSpeed = 1
+    this.moved = false;
+    this.currentMouse = {
+      x: 0,
+      y: 0,
+      xDelta: 0,
+      yDelta: 0
+    }
+
+    this.controls = new PointerLockControls(camera, domElement)
+    this.controls.lock()
 
     this.onKeyDown = (event) => {
       switch (event.code) {
@@ -65,9 +87,9 @@ class CustomFlyControls {
   dispose() {
     window.removeEventListener('keydown', this.onKeyDown)
     window.removeEventListener('keyup', this.onKeyUp)
-    this.pointerLockControls.unlock()
-    this.pointerLockControls.dispose()
-    this.pointerLockControls.disconnect()
+
+    this.controls.unlock()
+    this.controls.dispose()
   }
 
   update() {
