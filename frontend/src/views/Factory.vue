@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, watch, provide, inject} from 'vue'
+import {ref, onMounted, watch, provide, inject, onUnmounted} from 'vue'
 import type {Ref} from 'vue'
 import type {IVector3} from '@/types/global'
 import type {IBackendEntityPreview} from '@/types/backendEntity'
@@ -7,7 +7,7 @@ import * as THREE from 'three'
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
 import {FlyControls} from 'three/addons/controls/FlyControls.js'
 
-import {getIntersectionsMouse} from '../utils/threeJS/3d'
+import {getIntersectionsMouse} from '@/utils/threeJS/3d'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from "@/components/temp/Button.vue";
@@ -16,7 +16,7 @@ import {placeRequest} from "@/utils/backendComms/postRequests";
 import {getAllEntitys, loadFactory} from "@/utils/backendComms/getRequests";
 import {
   createGrids,
-  createGroundWithTextures,
+  createGroundWithTextures, createPlaneWithTextures,
   createRoofWithTextures,
   createWallsWithTexture,
   highlightObjectWithColor, moveHighlight,
@@ -79,54 +79,75 @@ function init() {
     height: window.innerHeight,
     ratio: window.innerWidth / window.innerHeight
   }
-  scene = new THREE.Scene()
+  setupScene();
+  setupRenderer();
+  setupCamera();
+  setupLights();
+  setupControls();
+  setupLoader();
+  loadHighlightModel();
+  createRoom(factorySize.value.x, factorySize.value.y, factorySize.value.z)
+}
 
-  scene.background = new THREE.Color('#12111A')
-  renderer = new THREE.WebGLRenderer()
+/********************/
+/****** SETUP *******/
+/********************/
+const setupScene = () => {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color('#12111A');
+}
 
-  renderer.setSize(sizes.width, sizes.height)
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+const setupRenderer = () => {
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(sizes.width, sizes.height);
+}
 
-  scene.add(ambientLight)
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
-  directionalLight.position.set(1, 1, 1).normalize()
+const setupCamera = () => {
+  camera = new THREE.PerspectiveCamera(50, sizes.ratio);
+  camera.position.set(40, -15, 15);
+  camera.up.set(0, 0, 1);
+  camera.lookAt(0, 0, 0);
+}
 
-  scene.add(directionalLight)
-  camera = new THREE.PerspectiveCamera(50, sizes.ratio)
-  camera.position.set(40, -15, 15)
-  camera.up.set(0, 0, 1)
-  camera.lookAt(0, 0, 0)
+const setupLights = () => {
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
 
-  cameraControls = new OrbitControls(camera, renderer.domElement)
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  directionalLight.position.set(1, 1, 1).normalize();
+  scene.add(directionalLight);
+}
 
-  loader = new GLTFLoader()
+const setupControls = () => {
+  cameraControls = new OrbitControls(camera, renderer.domElement);
+}
 
-  // Add axis helper
-  // const axesHelper: any = new THREE.AxesHelper(20)
-  // scene.add(axesHelper)
+const setupLoader = () => {
+  loader = new GLTFLoader();
+}
 
+const loadHighlightModel = () => {
   loader.load(
       '/fallback/.gltf/cube.gltf',
-      function (gltf: any) {
-        highlight = gltf.scene
-        highlight.position.set(0, 0, 0)
-        scene.add(highlight)
-        highlight.name = 'highlight'
+      (gltf: any) => {
+        highlight = gltf.scene;
+        highlight.position.set(0, 0, 0);
+        scene.add(highlight);
+        highlight.name = 'highlight';
       },
       undefined,
-      function (error: any) {
-        console.error(error)
+      (error: Error) => {
+        console.error(error);
       }
-  )
-  createRoom(factorySize.value.x,factorySize.value.y,factorySize.value.z)
+  );
 }
 
 const createRoom = (x: number, y: number, z: number) => {
   // Add Grid
   createGrids(x, y, z, scene)
   // creating roomtextures
-  createGroundWithTextures('factoryGround.jpeg', scene, x, y)
-  createRoofWithTextures('factoryRoof.jpeg', scene, x, y, z)
+  createPlaneWithTextures('factoryGround.jpeg', scene, x, y, z, false)
+  createPlaneWithTextures('factoryRoof.jpeg', scene, x, y, z, true)
   createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
 }
 
@@ -140,7 +161,6 @@ const animate = () => {
     cameraControls.update(0.05)
   }
   // Render new frame
-
   renderer.render(scene, camera)
 }
 
@@ -154,7 +174,6 @@ const onLoadFactoryButton = () => {
 // Button onToggleMoveMode
 const toggleMenuVisibility = () => {
   showCircMenu.value = !showCircMenu.value;
-
 };
 const onChangeEntityClicked = (situation: string) => {
   switch (situation) {
@@ -168,6 +187,8 @@ const onChangeEntityClicked = (situation: string) => {
       break
     case 'move':
       manipulationMode.value = 'move'
+      currObjSelectedOriginPos.value = currentObjectSelected.value.position.clone()
+      console.log(currObjSelectedOriginPos.value)
       console.log('moving Entity')
       break
     case 'script':
@@ -183,9 +204,9 @@ const onToggleMoveModeButton = () => {
 
 }
 /**
- * LISTENERS
+ * handlers
  **/
-window.addEventListener('resize', () => {
+const handleResize = () => {
   // Variables
   sizes = {
     width: window.innerWidth,
@@ -197,8 +218,8 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix()
   // Resize Renderer
   renderer.setSize(sizes.width, sizes.height)
-})
-addEventListener('keydown', (event) => {
+}
+const handleKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'v' || event.key === 'V') {
     moveOrSelectionMode.value = ''
     manipulationMode.value = ''
@@ -206,17 +227,23 @@ addEventListener('keydown', (event) => {
     if (currentObjectSelected.value) highlightObjectWithColor(currentObjectSelected, false)
     scene.remove(highlight)
   }
+  if (event.key === 'Escape') {
+    if (moveOrSelectionMode.value === '') {
+      replaceEntity(currObjSelectedOriginPos.value, currentObjectSelected, currentObjectSelected)
+      manipulationMode.value = ''
+    }
+  }
   if (manipulationMode.value === 'rotate') {
     const currObjSelRot = currentObjectSelected.value.rotation
     if (event.key === 'ArrowLeft') {
-      currObjSelRot.set(0, 0, currObjSelRot.z + (Math.PI / 2))
+      currObjSelRot.set(Math.PI / 2, currObjSelRot.y + (Math.PI / 2), 0)
     }
     if (event.key === 'ArrowRight') {
-      currObjSelRot.set(0, 0, currObjSelRot.z - (Math.PI / 2))
+      currObjSelRot.set(Math.PI / 2, currObjSelRot.y - (Math.PI / 2), 0)
     }
   }
-})
-addEventListener('mousemove', (event: MouseEvent) => {
+}
+const handleMouseMove = (event: MouseEvent) => {
   // Get all intersections with mouse and world
   const intersections = getIntersectionsMouse(event, camera, scene)
 
@@ -229,8 +256,8 @@ addEventListener('mousemove', (event: MouseEvent) => {
     moveHighlight(currentObjectSelected.value, ACTIVE_LAYER, intersections)
   }
 
-})
-addEventListener('click', () => {
+}
+const handleClick = () => {
   // Place cube
   if (showCircMenu.value) {
     showCircMenu.value = false
@@ -259,8 +286,9 @@ addEventListener('click', () => {
     replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
     manipulationMode.value = ''
   }
-})
-addEventListener('contextmenu', (event: MouseEvent) => {
+}
+
+const handleContextMenu = (event: MouseEvent) => {
   event.preventDefault()
   if (moveOrSelectionMode.value !== '' || manipulationMode.value !== '') return
   const intersections = getIntersectionsMouse(event, camera, scene)
@@ -274,7 +302,7 @@ addEventListener('contextmenu', (event: MouseEvent) => {
   }
   if (currentObjectSelected.value)
     currObjSelectedOriginPos.value = currentObjectSelected.value.position
-})
+}
 /**
  * WATCHERS
  * **/
@@ -310,6 +338,12 @@ watch(moveMode, () => {
 })
 init()
 onMounted(() => {
+  // add eventListeners
+  window.addEventListener('resize', handleResize)
+  window.addEventListener('keydown', handleKeyDown)
+  window.addEventListener('mousemove', handleMouseMove)
+  window.addEventListener('click', handleClick)
+  window.addEventListener('contextmenu', handleContextMenu)
   target.value.appendChild(renderer.domElement)
   dynamicDiv = document.getElementById('dynamicDiv')
   // Renderer gets appended to target
@@ -322,20 +356,28 @@ onMounted(() => {
   // initial function calls
   animate()
 })
+onUnmounted(() => {
+  // remove eventListeners
+  window.removeEventListener('resize', handleResize);
+  window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('mousemove', handleMouseMove);
+  window.removeEventListener('click', handleClick);
+  window.removeEventListener('contextmenu', handleContextMenu);
+})
 </script>
 
 <template>
-  <div className="target" ref="target">
+  <div class="target" ref="target">
     <div id="dynamicDiv" style="background-color: #2c3e50; position: absolute">
       <CircularMenu :toggleMenuVisibility="toggleMenuVisibility"
                     @changeEntity="onChangeEntityClicked"
       ></CircularMenu>
     </div>
-    <div className="button-bar">
-      <button @click="onLoadFactoryButton">Test Load Factory</button>
-      <button @click="onToggleMoveModeButton">Toggle Camera Mode</button>
+    <div class="button-bar">
+      <button @click="onLoadFactoryButton" link="">Test Load Factory</button>
+      <button @click="onToggleMoveModeButton" link="">Toggle Camera Mode</button>
     </div>
-    <div className="debug-bar">
+    <div class="debug-bar">
       <div>Current Camera Mode: {{ moveMode }}</div>
       <div>Active Entity: {{ activeEntity.entityID }}</div>
     </div>
