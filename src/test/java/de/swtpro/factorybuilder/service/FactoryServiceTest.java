@@ -3,6 +3,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.swtpro.factorybuilder.entity.Factory;
+import de.swtpro.factorybuilder.entity.Field;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.GridRepository;
 import de.swtpro.factorybuilder.repository.ModelRepository;
@@ -58,5 +59,20 @@ public class FactoryServiceTest {
         factoryService.deleteFactoryById(idToDelete);
 
         verify(factoryRepository).deleteById(idToDelete);
+    }
+    @Test
+    public void testInitializeField() {
+        long factoryID = 0L;
+        int height = 2, width = 3, depth = 4;
+        Factory mockFactory = mock(Factory.class);
+        when(mockFactory.getHeight()).thenReturn(height);
+        when(mockFactory.getWidth()).thenReturn(width);
+        when(mockFactory.getDepth()).thenReturn(depth);
+
+        when(factoryService.getFactoryById(factoryID)).thenReturn(Optional.of(mockFactory));
+
+        factoryService.initializeField(factoryID);
+
+        verify(gridRepository, times(height * width * depth)).save(any(Field.class));
     }
 }
