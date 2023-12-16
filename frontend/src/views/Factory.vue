@@ -16,8 +16,7 @@ import {placeRequest} from "@/utils/backendComms/postRequests";
 import {getAllEntitys, loadFactory} from "@/utils/backendComms/getRequests";
 import {
   createGrids,
-  createGroundWithTextures, createPlaneWithTextures,
-  createRoofWithTextures,
+  createPlaneWithTextures,
   createWallsWithTexture,
   highlightObjectWithColor, moveHighlight,
   placeEntity,
