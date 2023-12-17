@@ -3,7 +3,7 @@ package de.swtpro.factorybuilder.service;
 import de.swtpro.factorybuilder.entity.*;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.GridRepository;
-import de.swtpro.factorybuilder.repository.ModelRepository;
+import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.utility.Position;
 //import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 //import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,13 +20,13 @@ public class FactoryService {
 
     private final GridRepository gridRepository;
 
-    private final ModelRepository modelRepository;
+    private final PlacedModelRepository placedModelRepository;
 
     private final FactoryRepository factoryRepository;
 
-    FactoryService(GridRepository gridRepository, ModelRepository modelRepository, FactoryRepository factoryRepository) {
+    FactoryService(GridRepository gridRepository, PlacedModelRepository placedModelRepository, FactoryRepository factoryRepository) {
         this.gridRepository = gridRepository;
-        this.modelRepository = modelRepository;
+        this.placedModelRepository = placedModelRepository;
         this.factoryRepository = factoryRepository;
     }
 
@@ -40,7 +40,7 @@ public class FactoryService {
     }
 
     public PlacedModel getPlacedModelById(long id) {
-        return modelRepository.findById(id).orElse(null);
+        return placedModelRepository.findById(id).orElse(null);
     }
 
     public Factory saveFactory(Factory factory) {
@@ -102,7 +102,7 @@ public class FactoryService {
 
     /**
      * public Model getModelById(Long id) {
-     * return modelRepository.findById(id).orElse(null);
+     * return placedModelRepository.findById(id).orElse(null);
      * }
      **/
     public Long getPlacedModelIdFromField(@PathVariable Long id) {

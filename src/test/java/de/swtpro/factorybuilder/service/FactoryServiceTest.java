@@ -6,7 +6,7 @@ import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Field;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.GridRepository;
-import de.swtpro.factorybuilder.repository.ModelRepository;
+import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ public class FactoryServiceTest {
     private GridRepository gridRepository;
     // for future tests
     @Mock
-    private ModelRepository modelRepository;
+    private PlacedModelRepository placedModelRepository;
 
     @Mock
     private FactoryRepository factoryRepository;
