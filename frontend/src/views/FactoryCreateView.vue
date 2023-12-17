@@ -1,25 +1,54 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-import Button from '../components/Button.vue'
+import {computed, inject, Ref, ref, watch} from 'vue'
+import Button from '../components/temp/Button.vue'
+import type {IVector3} from "@/types/global";
+import router from "@/router";
+import {factoryCreateRequest} from "@/utils/backendComms/postRequests";
+import type {IFactoryCreate} from "@/types/backendEntity";
 
 const buttonData = ref([{text: 'Fabrik erstellen und bestellen', link: '/factory'}])
 
 const sizes = ref([
-  {label: '30x50x8', value: 'size1', width: 30, length: 50, height: 8},
-  {label: '60x100x12', value: 'size2', width: 60, length: 100, height: 12},
-  {label: '90x150x16', value: 'size3', width: 90, length: 150, height: 16},
-  {label: '120x200x20', value: 'size4', width: 120, length: 200, height: 20}
+  {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
+  {label: '60x100x12', value: {x: 60, y: 100, z: 12} as IVector3},
+  {label: '90x150x16', value: {x: 90, y: 150, z: 16} as IVector3},
+  {label: '120x200x20', value: {x: 120, y: 200, z: 20} as IVector3}
 ])
+const factoryName = ref('')
+const factoryPassword = ref('')
 const selectedSize = ref()
+const {updateFactorySize} = inject<{
+  factorySize: Ref<IVector3>,
+  updateFactorySize: (newSize: IVector3) => void
+}>('factorySize')
+const combinedSize = computed((size) => {
+  return {
+    x: size.width as number,
+    y: size.length as number,
+    z: size.height as number
+  }
+})
 
 function createFactory() {
   if (selectedSize.value) {
-    console.log(selectedSize.value)
+    updateFactorySize({
+      x: selectedSize.value.x,
+      y: selectedSize.value.y,
+      z: selectedSize.value.z
+    })
+    const factory: IFactoryCreate = {
+      name: factoryName.value,
+      password: factoryPassword.value,
+      width: selectedSize.value.x,
+      depth: selectedSize.value.y,
+      height: selectedSize.value.z
+    }
+    // if (await factoryCreateRequest(factory)) console.log('worked!')
+    router.push('/factory')
   } else {
     console.error("Please select a size before creating the factory.")
   }
 }
-
 
 </script>
 
@@ -37,22 +66,21 @@ function createFactory() {
       <h1 class="game-name">Fabrik erstellen</h1>
       <div class="factory-settings">
         <form @submit.prevent="createFactory">
-          <div class="factory-name">
-            <input placeholder="Name"/>
-            <input placeholder="Passwort"/>
-          </div>
-          <div class="size-radio-container">
-            <div class="radio-option" v-for="size in sizes" :key="size.value">
-              <input type="radio" v-model="selectedSize" :id="size.value" :value="size.value"/>
-              <label :for="size.value">{{ size.label }}</label>
+          <div class="form">
+            <div class="factory-name">
+              <input v-model="factoryName" placeholder="Name"/>
+              <input v-model="factoryPassword" placeholder="Passwort"/>
+            </div>
+            <div class="size-radio-container">
+              <div class="radio-option" v-for="size in sizes" :key="size.label">
+                <input type="radio" v-model="selectedSize" :id="size.label" :value="size.value"/>
+                <label :for="size.label">{{ size.label }}</label>
+              </div>
             </div>
           </div>
-          <Button
-              class="button-create"
-              v-for="item in buttonData"
-              :text="item.text"
-              :key="item.text"
-              :link="item.link"></Button>
+          <div class="button-create">
+            <button class="v-button v-form-button" type="submit">Fabrik erstellen</button>
+          </div>
         </form>
       </div>
 
@@ -98,8 +126,7 @@ form {
 .button-create {
   display: flex;
   flex-direction: column;
-  width: fit-content;
-  padding: 10px 20px 10px 20px;
+  padding: 50px 20px 10px 20px;
   top: 75%;
 }
 
@@ -157,4 +184,5 @@ form {
 input:focus {
   outline: none;
 }
+
 </style>

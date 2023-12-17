@@ -6,23 +6,23 @@
         <label for="menu-toggler"></label> -->
         <ul>
         <li class="menu-item">
-            <a class="fa-solid fa-arrows-rotate" href=""></a>
+            <a class="fa-solid fa-arrows-rotate" @click='rotateClicked'></a>
             <p>Drehen</p>
         </li>
         <li class="menu-item">
-            <a class="fa-solid fa-arrows-up-down-left-right" href="#"></a>
+            <a class="fa-solid fa-arrows-up-down-left-right" @click='moveClicked'></a>
             <p>Versetzen</p>
         </li>
         <li class="menu-item">
-            <a class="fa-solid fa-trash" href="#"></a>
+            <a class="fa-solid fa-trash" @click='delClicked'></a>
             <p>Löschen</p>
         </li>
         <li class="menu-item">
-            <a class="fa-solid fa-code" href="#"></a>
+            <a class="fa-solid fa-code" @click='scriptClicked'></a>
             <p>Skripten</p>
         </li>
         <li class="menu-item">
-            <a class="fa-regular fa-clone" href="#"></a>
+            <a class="fa-regular fa-clone" @click='cloneClicked'></a>
             <p>Klonen</p>
         </li>
         
@@ -32,19 +32,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-
-const isButtonVisible = ref(false);
-
-// Event listener for the "V" key
-onMounted(() => {
-  window.addEventListener('keydown', (event) => {
-    if (event.key === 'v' || event.key === 'V') {
-      isButtonVisible.value = !isButtonVisible.value;
-    }
-  });
-});
-
+import {onMounted, inject, Ref} from 'vue';
+const emit = defineEmits<{
+  changeEntity: [string];
+}>()
+const delClicked = () =>{
+  emit('changeEntity', 'delete')
+}
+const rotateClicked = () => {
+  emit('changeEntity', 'rotate')
+}
+const moveClicked = () => {
+  emit('changeEntity', 'move')
+}
+const scriptClicked = () => {
+  emit('changeEntity', 'script')
+}
+const cloneClicked = () => {
+  emit('changeEntity', 'clone')
+}
+const isButtonVisible: Ref<Boolean> = inject('showCircleMenu')
 
 </script>
 
@@ -56,6 +63,7 @@ onMounted(() => {
 
 .visible .menu-item {
   opacity: 1;
+  user-select: none;
 }
 
 .visible .menu-item:nth-child(1) {
@@ -151,16 +159,15 @@ onMounted(() => {
   transform: rotate(-378deg) translate(22px) translateY(-31px);
 }
 
-.menu-item a:hover {
+.menu-item a:hover{
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
     color: white;
     background: rgba(255, 255, 255, 0.3);
-    font-size: 44.44px
+    font-size: 44.44px;
 }
 
 .menu-item a:hover + p {
     font-size: 12px;
     text-align: center;
 }
-
 </style>

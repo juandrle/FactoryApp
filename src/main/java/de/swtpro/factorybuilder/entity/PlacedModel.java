@@ -8,6 +8,8 @@ import de.swtpro.factorybuilder.utility.Position;
 
 import jakarta.persistence.*;
 
+import static jakarta.persistence.CascadeType.ALL;
+
 @Entity
 public class PlacedModel implements Serializable{
     
@@ -33,7 +35,7 @@ public class PlacedModel implements Serializable{
     
     // where are we on the grid
 
-    @ElementCollection
+    @OneToMany(cascade = ALL, mappedBy = "placedModel")
     private List<Field> placedFields;
 
     private String orientation;
@@ -42,8 +44,6 @@ public class PlacedModel implements Serializable{
     private int capacity;
 
     private long modelId;
-
-    private long FactoryID;
 
     public void PlacedModel() { }//TODO: plaziermethode machen
 
