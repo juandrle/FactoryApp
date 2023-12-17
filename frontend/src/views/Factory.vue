@@ -112,9 +112,9 @@ const setupLoader = () => {
   loader = new GLTFLoader()
 }
 
-const loadHighlightModel = () => {
+const initalLoadHighlightModel = (modelUrl: string) => {
   loader.load(
-    '/fallback/.gltf/cube.gltf',
+    modelUrl,
     (gltf: any) => {
       highlight = gltf.scene
       highlight.position.set(0, 0, 0)
@@ -273,12 +273,18 @@ const handleContextMenu = (event: MouseEvent) => {
 
 watch(activeEntity, () => {
   moveOrSelectionMode.value = 'set'
-  scene.add(highlight)
-  updateHighlightModel(highlight, backendUrl + activeEntity.value.modelFile, scene, loader).then(
-    (newHighlight: THREE.Group) => {
-      highlight = newHighlight
-    }
-  )
+
+  if (highlight !== undefined) {
+    updateHighlightModel(highlight, backendUrl + activeEntity.value.modelFile, scene, loader).then(
+      (newHighlight: THREE.Group) => {
+        highlight = newHighlight
+      }
+    )
+  } else {
+    initalLoadHighlightModel('mock/.gltf/cube.gltf') // geht
+    // initalLoadHighlightModel(backendUrl + activeEntity.value.modelFile) // geht nicht 
+    // initalLoadHighlightModel('mock/.gltf/brennerofen.gltf') // geht auch nicht ???? liegt also am model und nicht am link oder der resource selbst
+  }
 })
 
 watch(moveMode, () => {
@@ -315,6 +321,7 @@ onMounted(() => {
   window.addEventListener('contextmenu', handleContextMenu)
   target.value.appendChild(renderer.domElement)
   dynamicDiv = document.getElementById('dynamicDiv')
+
   // Renderer gets appended to target
   getAllEntitys().then((json) => {
     // Alle entittys sind nun zugänglich für uns
@@ -349,7 +356,6 @@ function init() {
   setupLights()
   setupControls()
   setupLoader()
-  loadHighlightModel()
   createRoom(factorySize.value.x, factorySize.value.y, factorySize.value.z, scene)
 }
 
