@@ -1,6 +1,6 @@
 <template>
   <div class="entity-bar">
-    <div :class="{entity: true, active: activeEntity.entityID === entities[index].entityID}" v-for="entity, index in entities" @click="$emit('updateActiveEntity', index)">
+    <div :class="{entity: true, active: activeEntity.id === entities[index].id}" v-for="entity, index in entities" @click="$emit('updateActiveEntity', index)">
       <img :src="backendUrl + entity.icon" />
     </div>
   </div>
