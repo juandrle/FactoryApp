@@ -67,20 +67,15 @@ public class FactoryService {
         }
     }
 
-
-    public Field getFieldByPosition(Position pos){
+    public Field getFieldByPosition(Position pos, long factoryID){
         for(Field f: gridRepository.findAll()){
             Position fieldPos = f.getPosition();
-            if( fieldPos.getX() == pos.getX() &&
-                    fieldPos.getY() == pos.getY() &&
-                    fieldPos.getZ() == pos.getZ())
+            if(fieldPos.getX() == pos.getX() &&
+               fieldPos.getY() == pos.getY() &&
+               fieldPos.getZ() == pos.getZ() &&
+               f.getFactoryID() == factoryID)
                 return f;
         }
-        return null;
-    }
-
-    public Field getFieldByPosition(Position pos, long factoryID){
-        //todo getField by position;
         return null;
     }
 
@@ -98,7 +93,7 @@ public class FactoryService {
     }
 
     private void placeModelIntoField(PlacedModel placedModel, Position position){
-        Field f = getFieldByPosition(position);
+        Field f = getFieldByPosition(position,placedModel.getFactoryID());
         f.setPlacedModelID(placedModel.getId());
         //Todo: save in repository
     }
@@ -207,22 +202,29 @@ public class FactoryService {
 
     public void rotateModel(PlacedModel thisModel, Position newPosition){
         List<Field> newPosList= new ArrayList<>();
-
+        PlacedModel backupModel = thisModel;
         // check field if height or width still fits
         for(Field f: thisModel.getPlacedFields())
-            newPosList.add(getFieldByPosition(adjustPosition(thisModel,newPosition,f.getPosition())));
+            newPosList.add(getFieldByPosition(adjustPosition(thisModel,newPosition,f.getPosition()),thisModel.getFactoryID()));
 
         for(Output o: thisModel.getOutputs()) {
-            newPosList.add(getFieldByPosition(adjustPosition(thisModel, newPosition, o.getPosition())));
+            newPosList.add(getFieldByPosition(adjustPosition(thisModel, newPosition, o.getPosition()),thisModel.getFactoryID()));
             o.setOrientation(rotateOrientation(o.getOrientation()));
         }
         for(Input i: thisModel.getInputs()){
-            newPosList.add(getFieldByPosition(adjustPosition(thisModel, newPosition, i.getPosition())));
+            newPosList.add(getFieldByPosition(adjustPosition(thisModel, newPosition, i.getPosition()),thisModel.getFactoryID()));
             i.setOrientation(rotateOrientation(i.getOrientation()));
         }
         thisModel.setOrientation(rotateOrientation(thisModel.getOrientation()));
 
-        //TODO update repos
+        if(checkForPlacement(thisModel)){
+            for(Field f: backupModel.getPlacedFields()){
+                removeModelFromField(f);
+            }
+            for(Field f: thisModel.getPlacedFields()){
+                placeModelIntoField(thisModel,f.getPosition());
+            }
+        }
     }
 
     private Position adjustPosition(PlacedModel thisModel, Position newPosition, Position tmpPos){
@@ -244,8 +246,7 @@ public class FactoryService {
     }
 
     private void removeModelFromField(Field field){
-        PlacedModel placedModel = getPlacedModelById(field.getPlacedModelID());
-
+        field.setPlacedModelID(null);
         //Todo: switch repository entry
     }
 
