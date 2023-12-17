@@ -1,9 +1,11 @@
 import type {IPlaceRequest} from "@/types/placeRequest";
 import type {IFactoryCreate, IFactoryDelete} from "@/types/backendEntity";
+import {backendUrl} from "@/utils/config/config.js"
+
 
 export const placeRequest = async (placeRequest: IPlaceRequest): Promise<boolean> => {
     try {
-        const response = await fetch("http://localhost:8080/api/entity/place", {
+        const response = await fetch(backendUrl + "/api/entity/place", {
             method: "POST",
             body: JSON.stringify(placeRequest),
             headers: {"Content-type": "application/json"},
@@ -34,6 +36,7 @@ export const factoryCreateRequest = async (factory: IFactoryCreate) => {
         return 0
     }
 }
+
 export const factoryDeleteRequest = async (factory: IFactoryDelete) => {
     try {
         const url = 'api/factory/delete'
