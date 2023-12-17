@@ -24,7 +24,7 @@ public class FactoryService {
 
     private final FactoryRepository factoryRepository;
 
-    FactoryService(GridRepository gridRepository, ModelRepository modelRepository, FactoryRepository factoryRepository){
+    FactoryService(GridRepository gridRepository, ModelRepository modelRepository, FactoryRepository factoryRepository) {
         this.gridRepository = gridRepository;
         this.modelRepository = modelRepository;
         this.factoryRepository = factoryRepository;
@@ -35,9 +35,13 @@ public class FactoryService {
 //        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 //    }
 
-    public Factory getFactoryByID(long id){ return factoryRepository.findById(id).orElse(null);}
+    public Factory getFactoryByID(long id) {
+        return factoryRepository.findById(id).orElse(null);
+    }
 
-    public PlacedModel getPlacedModelById(long id){ return modelRepository.findById(id).orElse(null);}
+    public PlacedModel getPlacedModelById(long id) {
+        return modelRepository.findById(id).orElse(null);
+    }
 
     public Factory saveFactory(Factory factory) {
 //        PasswordEncoder passwordEncoder = passwordEncoderService();
@@ -48,16 +52,23 @@ public class FactoryService {
     public Optional<Factory> getFactoryById(long id) {
         return factoryRepository.findById(id);
     }
+
     public void deleteFactoryById(long id) {
         factoryRepository.deleteById(id);
     }
 
-    public void initializeField(long factoryID){
-        Factory factory = getFactoryByID(factoryID);
 
-        for(int i= 0; i < factory.getHeight(); i++){
-            for(int j= 0; j < factory.getWidth(); j++){
-                for(int k = 0; k < factory.getDepth(); k++){
+    public void initializeField(long factoryID) {
+        Factory factory;
+        try {
+            factory = getFactoryById(factoryID).orElseThrow();
+        } catch (Exception e) {
+            System.out.println("Factory with factoryID " + factoryID + " doesn't exist");
+            return;
+        }
+        for (int i = 0; i < factory.getHeight(); i++) {
+            for (int j = 0; j < factory.getWidth(); j++) {
+                for (int k = 0; k < factory.getDepth(); k++) {
                     Field field = new Field();
                     field.setPosition(new Position(i,j,k));
                     field.setPlacedModelID(null);
@@ -67,26 +78,33 @@ public class FactoryService {
         }
     }
 
-    public Field getFieldByPosition(Position pos, long factoryID){
-        for(Field f: gridRepository.findAll()){
+    // actually added real Method in FieldService
+    public Field getFieldByPosition(Position pos) {
+        for (Field f : gridRepository.findAll()) {
             Position fieldPos = f.getPosition();
-            if(fieldPos.getX() == pos.getX() &&
-               fieldPos.getY() == pos.getY() &&
-               fieldPos.getZ() == pos.getZ() &&
-               f.getFactoryID() == factoryID)
+            if (fieldPos.getX() == pos.getX() &&
+                    fieldPos.getY() == pos.getY() &&
+                    fieldPos.getZ() == pos.getZ())
                 return f;
         }
+        return null;
+    }
+
+    // done in FieldService
+    public Field getFieldByPosition(Position pos, long factoryID) {
+        //todo getField by position;
         return null;
     }
 
     public Field getFieldById(Long id) {
         return gridRepository.findById(id).orElse(null);
     }
-/**
-    public Model getModelById(Long id) {
-        return modelRepository.findById(id).orElse(null);
-    }
- **/
+
+    /**
+     * public Model getModelById(Long id) {
+     * return modelRepository.findById(id).orElse(null);
+     * }
+     **/
     public Long getPlacedModelIdFromField(@PathVariable Long id) {
         Field field = getFieldById(id);
         return field.getPlacedModelID();
@@ -98,9 +116,9 @@ public class FactoryService {
         //Todo: save in repository
     }
 
-    public void putModelOnField(PlacedModel placedModel, Position rootPosition){
+    public void putModelOnField(PlacedModel placedModel, Position rootPosition) {
         //TODO: create model from input of frontend
-        if(checkForPlacement(new PlacedModel())){
+        if (checkForPlacement(new PlacedModel())) {
             //todo place it on the field and call placeModelInoField(to refresh the database
             //also answer frontend
         }
@@ -199,7 +217,6 @@ public class FactoryService {
         //if everything is ok return true;
         return true;
     }
-
     public void rotateModel(PlacedModel thisModel, Position newPosition){
         List<Field> newPosList= new ArrayList<>();
         PlacedModel backupModel = thisModel;
@@ -250,18 +267,17 @@ public class FactoryService {
         //Todo: switch repository entry
     }
 
-    public void removeModelFromFactory(PlacedModel placedModel){
+    public void removeModelFromFactory(PlacedModel placedModel) {
 
         Factory factory = getFactoryByID(placedModel.getFactoryID());
-        for(Field f: placedModel.getPlacedFields()){
+        for (Field f : placedModel.getPlacedFields()) {
             removeModelFromField(f);
         }
         //TODO: delete placedmodel from grid, model and factory repos
     }
 
 
-
-    public boolean moveModel(long modelID){
+    public boolean moveModel(long modelID) {
         PlacedModel placedModel = getPlacedModelById(modelID);
         //Todo: remove from field and remove from repository
         //placeMachineToField(machine,newPos);

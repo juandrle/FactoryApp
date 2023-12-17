@@ -26,7 +26,8 @@ public class FactoryRestAPIController {
         f.setDepth(factoryDTO.depth);
         f.setHeight(factoryDTO.height);
         f.setPassword(factoryDTO.password);
-        factoryService.saveFactory(f);
+        f = factoryService.saveFactory(f);
+        factoryService.initializeField(f.getFactoryID());
         return ResponseEntity.ok(f.getFactoryID());
     }
     @PostMapping("/delete")

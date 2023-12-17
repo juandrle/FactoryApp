@@ -1,15 +1,24 @@
 package de.swtpro.factorybuilder.service;
 
 import de.swtpro.factorybuilder.entity.Field;
+import de.swtpro.factorybuilder.repository.GridRepository;
+import de.swtpro.factorybuilder.utility.Position;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class FieldService {
+    private final GridRepository gridRepository;
+
+    FieldService(GridRepository gridRepository) {
+        this.gridRepository = gridRepository;
+    }
 
 
-
-    public void removeMachineFromField(Field field){
-        //Todo: switch repository entry
+    public Optional<Field> getFieldByPosition(Position pos, long factoryId){
+        return gridRepository.findByPosAndFactoryID(pos, factoryId);
     }
 
 

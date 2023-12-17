@@ -10,7 +10,6 @@ public class Field implements Serializable {
     @Id
     private long id;
     private long factoryID;
-
     private long placedModelID;
 
     @Column(unique = true)
@@ -38,4 +37,7 @@ public class Field implements Serializable {
 
     public void setPlacedModelID(Long id) { this.placedModelID = id; }
 
+    public long getId() {
+        return id;
+    }
 }
