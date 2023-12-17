@@ -1,7 +1,7 @@
 <template>
   <div class="entity-bar">
     <div :class="{entity: true, active: activeEntity.entityID === entities[index].entityID}" v-for="entity, index in entities" @click="$emit('updateActiveEntity', index)">
-      <img :src="entity.icon" />
+      <img :src="backendUrl + entity.icon" />
     </div>
   </div>
 </template>
@@ -9,6 +9,7 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
 import type { IBackendEntityPreview } from '@/types/backendEntity'
+import {backendUrl} from '@/utils/config/config.js'
 
 const props = defineProps<{
   entities: IBackendEntityPreview[],

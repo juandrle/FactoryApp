@@ -8,13 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ModelRepository extends JpaRepository<Model, Long> {
-
-
     @Override
     List<Model> findAll();
 
     @Override
     Optional<Model> findById(Long aLong);
-
 
 }

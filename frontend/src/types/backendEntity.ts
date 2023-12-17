@@ -7,9 +7,9 @@ export interface IBackendEntity {
 }
 
 export interface IBackendEntityPreview {
-    path: string;
+    modelFile: string;
     icon: string;
-    entityID: string;
+    id: string;
 }
 export interface IFactoryCreate {
     name: string;

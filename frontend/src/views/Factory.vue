@@ -14,6 +14,7 @@ import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
 import { placeRequest } from '@/utils/backendComms/postRequests'
 import { getAllEntitys, loadFactory } from '@/utils/backendComms/getRequests'
+import {backendUrl} from "@/utils/config/config";
 import {
   createGrids,
   createPlaneWithTextures,
@@ -262,7 +263,8 @@ const handleClick = () => {
     y: highlight.position.y,
     z: highlight.position.z,
     orientation: 'N',
-    entityID: 'cube'
+    entityID: 'cube',
+    factoryID: 1
   }).then((success: boolean) => {
     if (moveOrSelectionMode.value === 'set' && success) {
       placeEntity(loader, scene, highlight.position, activeEntity.value.path)
@@ -292,9 +294,10 @@ const handleContextMenu = (event: MouseEvent) => {
  * WATCHERS
  * **/
 watch(activeEntity, () => {
+  console.log(activeEntity)
   moveOrSelectionMode.value = 'set'
   scene.add(highlight)
-  updateHighlightModel(highlight, activeEntity.value.path, scene, loader).then(
+  updateHighlightModel(highlight, backendUrl + activeEntity.value.modelFile, scene, loader).then(
     (newHighlight: THREE.Group) => {
       highlight = newHighlight
     }

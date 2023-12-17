@@ -26,5 +26,5 @@ export const getAllEntitys: () => Promise<IBackendEntityPreview[]> = async () =>
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     // Führe die tatsächliche Anfrage aus und gib die Daten zurück
-    return fetch('/mock/backend/mockBackendGetAllEntitys.json').then((res) => res.json())
+    return fetch("http://localhost:8080/api/entity/getAll").then((res) => res.json())
 }
