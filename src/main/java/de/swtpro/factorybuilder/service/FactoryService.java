@@ -217,8 +217,8 @@ public class FactoryService {
         //if everything is ok return true;
         return true;
     }
-    public void rotateModel(PlacedModel thisModel, Position newPosition){
-        List<Field> newPosList= new ArrayList<>();
+    public void rotateModel(PlacedModel thisModel, Position newPosition) {
+        List<Field> newPosList = new ArrayList<>();
         PlacedModel backupModel = thisModel;
         // check field if height or width still fits
         for(Field f: thisModel.getPlacedFields())
