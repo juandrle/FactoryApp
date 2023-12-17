@@ -1,4 +1,4 @@
-import {IPlaceRequest} from "@/types/placeRequest";
+import type {IPlaceRequest} from "@/types/placeRequest";
 import type {IFactoryCreate, IFactoryDelete} from "@/types/backendEntity";
 
 export const placeRequest = async (placeRequest: IPlaceRequest): Promise<boolean> => {

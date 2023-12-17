@@ -33,12 +33,17 @@ public class EntityRestAPIController{
     private record PlaceRequestDTO(int x, int y, int z, String entityID, String orientation, long factoryID) {
     };
     private record ResponseDTO(long id, String modelGltf){};
-    //TODO:
+
     @CrossOrigin
     @PostMapping("/place")
     public boolean place (@RequestBody PlaceRequestDTO placeRequestDTO){
         Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        return factoryService.createPlacedModel(placeRequestDTO.entityID,pos,placeRequestDTO.factoryID);
+
+        boolean placed = factoryService.createPlacedModel(placeRequestDTO.entityID,pos,placeRequestDTO.factoryID);
+
+        LOGGER.info("Place" + String.valueOf(placed));
+
+        return placed;
     }
 
     @CrossOrigin

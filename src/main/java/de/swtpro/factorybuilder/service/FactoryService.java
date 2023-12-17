@@ -127,7 +127,7 @@ public class FactoryService {
         //Model m = modelRepository.findById(1L).orElse(null);
         //TODO: convert model to placed model and save
         //return checkForPlacement(m);
-        return false;
+        return true;
     }
 
     private void putModelOnField(PlacedModel placedModel, Position rootPosition) {

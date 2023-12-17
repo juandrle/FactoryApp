@@ -73,7 +73,6 @@ let highlight: THREE.Group
 function init() {
   // provides & injections
   provide('showCircleMenu', showCircMenu)
-  console.log(factorySize)
   sizes = {
     width: window.innerWidth,
     height: window.innerHeight,
@@ -266,8 +265,9 @@ const handleClick = () => {
     entityID: 'cube',
     factoryID: 1
   }).then((success: boolean) => {
+    console.log(success)
     if (moveOrSelectionMode.value === 'set' && success) {
-      placeEntity(loader, scene, highlight.position, activeEntity.value.path)
+      placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
     } else if (manipulationMode.value === 'move' && success) {
       replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
       manipulationMode.value = ''
@@ -294,7 +294,6 @@ const handleContextMenu = (event: MouseEvent) => {
  * WATCHERS
  * **/
 watch(activeEntity, () => {
-  console.log(activeEntity)
   moveOrSelectionMode.value = 'set'
   scene.add(highlight)
   updateHighlightModel(highlight, backendUrl + activeEntity.value.modelFile, scene, loader).then(
