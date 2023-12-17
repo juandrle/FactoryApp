@@ -119,7 +119,7 @@ public class FactoryService {
     public void putModelOnField(PlacedModel placedModel, Position rootPosition) {
         //TODO: create model from input of frontend
         if (checkForPlacement(new PlacedModel())) {
-            //todo place it on the field and call placeModelInoField(to refresh the database
+            //todo place it on the field and call placeModelIntoField(to refresh the database
             //also answer frontend
         }
     }

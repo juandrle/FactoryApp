@@ -1,10 +1,22 @@
 import {IPlaceRequest} from "@/types/placeRequest";
 import type {IFactoryCreate, IFactoryDelete} from "@/types/backendEntity";
 
-export const placeRequest = (placeRequest: IPlaceRequest) => {
-    // console.log(placeRequest, "... würde jetzt ans backend gesendet werden")
-    return true
-}
+export const placeRequest = async (placeRequest: IPlaceRequest): Promise<boolean> => {
+    try {
+        const response = await fetch("http://localhost:8080/api/entity/place", {
+            method: "POST",
+            body: JSON.stringify(placeRequest),
+            headers: {"Content-type": "application/json"},
+        });
+
+        const json = await response.json();
+        return json;
+    } catch (error) {
+        console.error("Error placing request:", error);
+        return false;
+    }
+};
+
 
 export const factoryCreateRequest = async (factory: IFactoryCreate) => {
     try {
