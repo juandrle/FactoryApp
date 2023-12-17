@@ -217,3 +217,12 @@ export const highlightObjectWithColor = (object: THREE.Group, color: boolean) =>
             }
         })
 }
+
+export const createRoom = (x: number, y: number, z: number, scene: THREE.scene) => {
+    // Add Grid
+    createGrids(x, y, z, scene)
+    // creating roomtextures
+    createPlaneWithTextures('factoryGround.jpeg', scene, x, y, z, false)
+    createPlaneWithTextures('factoryRoof.jpeg', scene, x, y, z, true)
+    createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
+  }

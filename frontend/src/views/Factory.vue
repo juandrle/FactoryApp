@@ -24,7 +24,8 @@ import {
   placeEntity,
   replaceEntity,
   selectionObject,
-  updateHighlightModel
+  updateHighlightModel,
+  createRoom
 } from '@/utils/threeJS/helpFunctions'
 
 /**
@@ -125,19 +126,6 @@ const loadHighlightModel = () => {
       console.error(error)
     }
   )
-}
-
-/*
- * Helper
- **/
-
-const createRoom = (x: number, y: number, z: number) => {
-  // Add Grid
-  createGrids(x, y, z, scene)
-  // creating roomtextures
-  createPlaneWithTextures('factoryGround.jpeg', scene, x, y, z, false)
-  createPlaneWithTextures('factoryRoof.jpeg', scene, x, y, z, true)
-  createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
 }
 
 /*
@@ -362,7 +350,7 @@ function init() {
   setupControls()
   setupLoader()
   loadHighlightModel()
-  createRoom(factorySize.value.x, factorySize.value.y, factorySize.value.z)
+  createRoom(factorySize.value.x, factorySize.value.y, factorySize.value.z, scene)
 }
 
 const animate = () => {
