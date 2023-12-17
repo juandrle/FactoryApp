@@ -3,10 +3,12 @@ package de.swtpro.factorybuilder.service;
 import de.swtpro.factorybuilder.entity.*;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.GridRepository;
+import de.swtpro.factorybuilder.repository.ModelRepository;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.utility.Position;
 //import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import jakarta.persistence.Entity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -22,11 +24,14 @@ public class FactoryService {
 
     private final PlacedModelRepository placedModelRepository;
 
+    private final ModelRepository modelRepository;
+
     private final FactoryRepository factoryRepository;
 
-    FactoryService(GridRepository gridRepository, PlacedModelRepository placedModelRepository, FactoryRepository factoryRepository) {
+    FactoryService(GridRepository gridRepository, PlacedModelRepository placedModelRepository, ModelRepository modelRepository, FactoryRepository factoryRepository) {
         this.gridRepository = gridRepository;
         this.placedModelRepository = placedModelRepository;
+        this.modelRepository = modelRepository;
         this.factoryRepository = factoryRepository;
     }
 
@@ -116,7 +121,16 @@ public class FactoryService {
         //Todo: save in repository
     }
 
-    public void putModelOnField(PlacedModel placedModel, Position rootPosition) {
+    public boolean createPlacedModel(String modelID, Position rootPosition, long factoryID){
+        //TODO get in and outputs from frontend
+        //TODO fix id from model
+        //Model m = modelRepository.findById(1L).orElse(null);
+        //TODO: convert model to placed model and save
+        //return checkForPlacement(m);
+        return false;
+    }
+
+    private void putModelOnField(PlacedModel placedModel, Position rootPosition) {
         //TODO: create model from input of frontend
         if (checkForPlacement(new PlacedModel())) {
             //todo place it on the field and call placeModelIntoField(to refresh the database

@@ -4,6 +4,7 @@ import de.swtpro.factorybuilder.repository.ModelRepository;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.service.FactoryService;
 
+import de.swtpro.factorybuilder.utility.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +28,15 @@ public class EntityRestAPIController{
     @Autowired
     FactoryService factoryService;
 
-    private record PlaceRequestDTO(int x, int y, int z, String entityID, String orientation) {
+    private record PlaceRequestDTO(int x, int y, int z, String entityID, String orientation, long factoryID) {
     };
 
     @CrossOrigin
     @PostMapping("/place")
     public boolean place (@RequestBody PlaceRequestDTO placeRequestDTO){
         LOGGER.info(placeRequestDTO.toString());
+        Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
 
-
-
-
-
-
-        return true;
+        return factoryService.createPlacedModel(placeRequestDTO.entityID,pos,placeRequestDTO.factoryID);
     }
 }

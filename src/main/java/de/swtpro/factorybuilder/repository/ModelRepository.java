@@ -15,4 +15,6 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
 
     @Override
     Optional<Model> findById(Long aLong);
+
+
 }
