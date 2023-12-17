@@ -33,7 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    
+    runtimeOnly 'com.h2database:h2'
 }
 test {
     finalizedBy jacocoTestReport // report is always generated after tests run
