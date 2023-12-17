@@ -44,7 +44,7 @@ import Button from '../components/Button.vue'
 }
 .game-name{
   position: absolute;
-  top: 5%; 
+  top: 17%; 
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0px;
   font-weight: 400;

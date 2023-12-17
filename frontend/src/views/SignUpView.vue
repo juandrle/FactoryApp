@@ -3,7 +3,7 @@ import { VueElement, ref } from 'vue';
 // import Button from '../components/Button.vue'
 
 const buttonData = ref([
-  { text: 'Login', link: "/login" }
+  { text: 'Sign Up', link: "/signup" }
 ])
 
 const selectedSize = ref()
@@ -24,17 +24,18 @@ function createFactory() {
       <div class="container2">
         <form @submit.prevent="createFactory">
           <div class="form-container">
-            <h2>Login</h2>
+            <h2>Sign Up</h2>
             <div class="factory-name">
               <input placeholder="Namen eingeben" />
               <input placeholder="Passwort eingeben" />
+              <input placeholder="Passwort bestätigen" />
             </div>
             <div class="b-container">
-              <button>Login</button>
+              <button>Sign Up</button>
             </div>
             <div class="b-container2">
-              <p>Haven't signed up yet?</p>
-              <a href="/signup">Sign Up</a>
+              <p>Already have an account?</p>
+              <a href="/login">Sign In</a>
             </div>
           </div>
         </form>
