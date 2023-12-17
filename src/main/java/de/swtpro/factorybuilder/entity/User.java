@@ -2,7 +2,7 @@ package de.swtpro.factorybuilder.entity;
 
 import java.util.List;
 
-import de.swtpro.factorybuilder.utility.Position;
+// import de.swtpro.factorybuilder.utility.Position;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -28,9 +28,9 @@ public class User implements Serializable {
 
     private String role = "USER";
 
-    private Position position;
+    // private Position position;
 
-    private Position pointOfView;
+    // private Position pointOfView;
 
     // @Column
     // private Long lastFactoryId;
@@ -56,21 +56,21 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Position getPosition() {
-        return position;
-    }
+    // public Position getPosition() {
+    //     return position;
+    // }
 
-    public void setPosition(Position position) {
-        this.position = position;
-    }
+    // public void setPosition(Position position) {
+    //     this.position = position;
+    // }
 
-    public Position getPointOfView() {
-        return pointOfView;
-    }
+    // public Position getPointOfView() {
+    //     return pointOfView;
+    // }
 
-    public void setPointOfView(Position pointOfView) {
-        this.pointOfView = pointOfView;
-    }
+    // public void setPointOfView(Position pointOfView) {
+    //     this.pointOfView = pointOfView;
+    // }
 
     // public Long getLastFactoryId() {
     //     return lastFactoryId;
