@@ -1,6 +1,7 @@
 package de.swtpro.factorybuilder.service;
 
 import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
+import de.swtpro.factorybuilder.controller.EntityRestAPIController;
 import de.swtpro.factorybuilder.entity.*;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.GridRepository;
@@ -10,6 +11,9 @@ import de.swtpro.factorybuilder.utility.Position;
 //import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.persistence.Entity;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -20,6 +24,8 @@ import java.util.List;
 
 @Service
 public class FactoryService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FactoryService.class);
 
     private final GridRepository gridRepository;
 
@@ -125,7 +131,8 @@ public class FactoryService {
     public boolean createPlacedModel(String modelID, Position rootPosition, long factoryID) {
         // TODO get in and outputs from frontend
         // TODO fix id from model
-        // Model m = modelRepository.findById(1L).orElse(null);
+        Model m = modelRepository.findById(1L).orElse(null);
+        LOGGER.info("Model: " + String.valueOf(m.getId()));
         // TODO: convert model to placed model and save
         // return checkForPlacement(m);
         return true;
