@@ -9,9 +9,12 @@ import de.swtpro.factorybuilder.repository.GridRepository;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -72,7 +75,11 @@ public class FactoryServiceTest {
         when(factoryService.getFactoryById(factoryID)).thenReturn(Optional.of(mockFactory));
 
         factoryService.initializeField(factoryID);
+        ArgumentCaptor<List<Field>> fieldArgumentCaptor = ArgumentCaptor.forClass((Class) List.class);
 
-        verify(gridRepository, times(height * width * depth)).save(any(Field.class));
+        verify(gridRepository, times(1)).saveAll(fieldArgumentCaptor.capture());
+
+        List<Field> capturedFields = fieldArgumentCaptor.getValue();
+        assertEquals(height * width * depth, capturedFields.size());
     }
 }
