@@ -156,6 +156,7 @@ const onToggleMenuVisibility = () => {
 const onChangeEntityClicked = (situation: string) => {
   switch (situation) {
     case 'delete':
+      console.log(currentObjectSelected.value)
       scene.remove(currentObjectSelected.value)
       console.log('deleting Entity')
       break
