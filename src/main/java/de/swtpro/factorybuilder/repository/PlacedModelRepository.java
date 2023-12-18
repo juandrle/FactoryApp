@@ -13,4 +13,6 @@ public interface PlacedModelRepository extends JpaRepository<PlacedModel, Long> 
 
     @Override
     Optional<PlacedModel> findById(Long aLong);
+    
+    List<PlacedModel> findByFactoryID(long factoryID);
 }

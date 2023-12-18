@@ -4,6 +4,8 @@ export interface IBackendEntity {
     z: number;
     path: string; 
     orientation: string;
+    factoryid: string;
+    id:number;
 }
 
 export interface IBackendEntityPreview {

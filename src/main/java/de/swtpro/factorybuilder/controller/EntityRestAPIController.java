@@ -1,7 +1,9 @@
 package de.swtpro.factorybuilder.controller;
 
 
+import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
 import de.swtpro.factorybuilder.entity.Model;
+import de.swtpro.factorybuilder.entity.PlacedModel;
 import de.swtpro.factorybuilder.repository.ModelRepository;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.service.FactoryService;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/entity")
 public class EntityRestAPIController{
@@ -25,7 +28,6 @@ public class EntityRestAPIController{
     }
     // do we need the repos in here as well ?
     ModelRepository modelRepository;
-    PlacedModelRepository placedModelRepository;
 
     @Autowired
     FactoryService factoryService;
@@ -52,4 +54,11 @@ public class EntityRestAPIController{
         LOGGER.info(modelRepository.findAll().toString());
         return modelRepository.findAll();
     }
+
+    @CrossOrigin
+    @GetMapping("getAll/{factoryId}")
+    public List<PlacedModelDTO> getAllByFactoryId(@PathVariable int factoryId) {
+        return factoryService.getEntitysFromFactory(factoryId);
+    }
+    
 }

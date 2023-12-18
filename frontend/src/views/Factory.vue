@@ -2,7 +2,7 @@
 import { ref, onMounted, watch, provide, inject, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
 import type { IVector3 } from '@/types/global'
-import type { IBackendEntityPreview } from '@/types/backendEntity'
+import type { IBackendEntityPreview, IBackendEntity } from '@/types/backendEntity'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { FlyControls } from 'three/addons/controls/FlyControls.js'
@@ -13,7 +13,7 @@ import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
 import { placeRequest } from '@/utils/backendComms/postRequests'
-import { getAllEntitys, loadFactory } from '@/utils/backendComms/getRequests'
+import { getAllEntitys, getAllEntitysInFactory } from '@/utils/backendComms/getRequests'
 import { backendUrl } from '@/utils/config/config'
 import {
   createGrids,
@@ -133,7 +133,16 @@ const initalLoadHighlightModel = (modelUrl: string) => {
  */
 
 const onLoadFactoryButton = () => {
-  loadFactory(scene, loader, 'factory_id_sample')
+  getAllEntitysInFactory(1).then((backendEntitys: IBackendEntity[]) => {
+    backendEntitys.forEach((backendEntity) => {
+      placeEntity(
+        loader,
+        scene,
+        { x: backendEntity.x, y: backendEntity.y, z: backendEntity.z },
+        backendUrl + backendEntity.path
+      )
+    })
+  })
 }
 
 const onToggleMenuVisibility = () => {
@@ -282,7 +291,7 @@ watch(activeEntity, () => {
     )
   } else {
     initalLoadHighlightModel('mock/.gltf/cube.gltf') // geht
-    // initalLoadHighlightModel(backendUrl + activeEntity.value.modelFile) // geht nicht 
+    // initalLoadHighlightModel(backendUrl + activeEntity.value.modelFile) // geht nicht
     // initalLoadHighlightModel('mock/.gltf/brennerofen.gltf') // geht auch nicht ???? liegt also am model und nicht am link oder der resource selbst
   }
 })
