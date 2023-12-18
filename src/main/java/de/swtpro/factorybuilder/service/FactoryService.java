@@ -306,13 +306,21 @@ public class FactoryService {
         // Todo: switch repository entry
     }
 
-    public void removeModelFromFactory(PlacedModel placedModel) {
-
-        Factory factory = getFactoryByID(placedModel.getFactoryID());
-        for (Field f : placedModel.getPlacedFields()) {
+    public boolean removeModelFromFactory(long placedModelID) {
+        // TODO: placedModelID to String (UUID from frontend)
+        PlacedModel placedModel = getPlacedModelById(placedModelID);
+        // Factory factory = getFactoryByID(placedModel.getFactoryID());
+        List<Field> fieldsOfPlacedModel = placedModel.getPlacedFields();
+        // TODO: delete placedmodel from grid, placedModel and factory repos
+        placedModelRepository.deleteById(placedModelID);
+        // what does a valid delete look like ?
+        // valid delete from repository? -> return true
+        for (Field f : fieldsOfPlacedModel) {
             removeModelFromField(f);
         }
-        // TODO: delete placedmodel from grid, model and factory repos
+        // non valid delete from repository -> reinitialize fields and return false
+        // hard coded for skeleton round-trip
+        return true;
     }
 
     public boolean moveModel(long modelID) {

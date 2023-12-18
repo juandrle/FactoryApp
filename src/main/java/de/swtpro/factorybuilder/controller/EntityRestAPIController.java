@@ -47,14 +47,14 @@ public class EntityRestAPIController{
 
     @CrossOrigin
     @PostMapping("/delete")
-    public boolean delete (@RequestBody PlaceRequestDTO placeRequestDTO){
+    public boolean delete (@RequestBody long idToDelete){
         // factoryID long or int ?
         // factoryService.getEntitysFromFactory(placeRequestDTO.factoryID);
-        // create IEntityDelete in backendEntity
-        // go into factory (if UUID isn't unique)
         // delete by entityID (from placedModelRepository)
-        factoryService.removeModelFromFactory(null);
-        return false;
+
+        boolean deleted = factoryService.removeModelFromFactory(idToDelete);
+        LOGGER.info("deleted entity: " + String.valueOf(idToDelete) + String.valueOf(deleted));
+        return deleted;
     }
 
     @CrossOrigin
