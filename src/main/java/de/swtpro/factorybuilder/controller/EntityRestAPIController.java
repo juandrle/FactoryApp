@@ -40,11 +40,8 @@ public class EntityRestAPIController{
     @PostMapping("/place")
     public boolean place (@RequestBody PlaceRequestDTO placeRequestDTO){
         Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-
         boolean placed = factoryService.createPlacedModel(placeRequestDTO.entityID,pos,placeRequestDTO.factoryID);
-
-        LOGGER.info("Place: " + String.valueOf(placed));
-
+        LOGGER.info("placed entity: " + String.valueOf(placed));
         return placed;
     }
 

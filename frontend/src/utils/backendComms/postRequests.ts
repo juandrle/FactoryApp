@@ -5,17 +5,18 @@ import {backendUrl} from "@/utils/config/config.js"
 
 export const placeRequest = async (placeRequest: IPlaceRequest): Promise<boolean> => {
     try {
-        const response = await fetch(backendUrl + "/api/entity/place", {
+        const url = backendUrl + '/api/entity/place'
+        const requestBody = JSON.stringify(placeRequest)
+        const response = await fetch(url, {
             method: "POST",
-            body: JSON.stringify(placeRequest),
-            headers: {"Content-type": "application/json"},
+            headers: {'Content-type': 'application/json'},
+            body: requestBody,
         });
-
         const json = await response.json();
-        return json;
+        return json
     } catch (error) {
-        console.error("Error placing request:", error);
-        return false;
+        console.error("Error placing entity:", error)
+        return false
     }
 };
 

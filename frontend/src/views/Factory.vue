@@ -252,7 +252,7 @@ const handleClick = () => {
     entityID: 'cube',
     factoryID: 1
   }).then((success: boolean) => {
-    console.log(success)
+    console.log('placing entity: ' + success)
     if (moveOrSelectionMode.value === 'set' && success) {
       placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
     } else if (manipulationMode.value === 'move' && success) {
