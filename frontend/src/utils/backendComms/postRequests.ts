@@ -1,5 +1,5 @@
 import type {IPlaceRequest} from "@/types/placeRequest";
-import type {IFactoryCreate, IFactoryDelete} from "@/types/backendEntity";
+import type {IEntityDelete, IFactoryCreate, IFactoryDelete} from "@/types/backendEntity";
 import {backendUrl} from "@/utils/config/config.js"
 
 
@@ -18,8 +18,24 @@ export const placeRequest = async (placeRequest: IPlaceRequest): Promise<boolean
         console.error("Error placing entity:", error)
         return false
     }
-};
+}
 
+export const entityDeleteRequest = async (entity: IEntityDelete): Promise<boolean> => {
+    try {
+        const url = backendUrl + '/api/entity/delete'
+        const requestBody = JSON.stringify(entity.id)
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {'Content-type': 'application/json'},
+            body: requestBody,
+        });
+        const json = await response.json();
+        return json
+    } catch (error) {
+        console.error("Error deleting entity:", error)
+        return false
+    }
+}
 
 export const factoryCreateRequest = async (factory: IFactoryCreate) => {
     try {

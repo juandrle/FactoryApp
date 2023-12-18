@@ -24,3 +24,8 @@ export interface IFactoryDelete {
     id: number,
     element: any
 }
+
+export interface IEntityDelete {
+    factoryid: number;
+    id: number;
+}
