@@ -18,11 +18,6 @@ class CameraControlsManager {
     this.switchTo(mode)
   }
 
-  toggleMode() {
-    if (this.currentMode == CameraMode.FREE) this.switchTo(CameraMode.ORBIT)
-    else this.switchTo(CameraMode.FREE)
-  }
-
   switchTo(newMode: CameraMode) {
     switch (this.currentMode) {
       case CameraMode.ORBIT:
@@ -40,7 +35,7 @@ class CameraControlsManager {
 
     this.currentMode = newMode
 
-    switch (newMode) {
+    switch (this.currentMode) {
       case CameraMode.FREE: {
         if (this.freeCameraInfos) {
           SetCameraInfo(this.camera, this.freeCameraInfos)

@@ -4,9 +4,7 @@ import type { Ref } from 'vue'
 import type { IVector3 } from '@/types/global'
 import type { IBackendEntityPreview, IBackendEntity } from '@/types/backendEntity'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { FlyControls } from 'three/addons/controls/FlyControls.js'
-import { CameraControlsManager } from '@/classes/CameraControlsManager'
+import { ControlsManager } from '@/classes/ControlsManager'
 import { getIntersectionsMouse } from '@/utils/threeJS/3d'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
@@ -15,7 +13,7 @@ import CircularMenu from '@/components/ui/CircularMenu.vue'
 import { placeRequest } from '@/utils/backendComms/postRequests'
 import { getAllEntitys, getAllEntitysInFactory } from '@/utils/backendComms/getRequests'
 import { backendUrl } from '@/utils/config/config'
-import { CameraMode } from '@/enum/CameraMode'
+import { ControlMode } from '@/enum/ControlMode'
 import {
   createGrids,
   createPlaneWithTextures,
@@ -72,7 +70,7 @@ let renderer: THREE.WebGLRenderer
 let camera: THREE.PerspectiveCamera
 let loader: THREE.GLTFLoader
 let highlight: THREE.Group
-let ccm: CameraControlsManager
+let cm: ControlsManager;
 let previousTime: number = 0
 
 /**
@@ -106,7 +104,7 @@ const setupLights = () => {
 }
 
 const setupControls = () => {
-  ccm = new CameraControlsManager(camera, renderer.domElement, CameraMode.ORBIT)
+  cm = new ControlsManager(camera, renderer.domElement)
 }
 
 const setupLoader = () => {
@@ -220,7 +218,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
       currObjSelRot.set(Math.PI / 2, currObjSelRot.y - Math.PI / 2, 0)
     }
   }
-  if (event.key === 'Q' || event.key === 'q') ccm.toggleMode()
+  if (event.key === 'Q' || event.key === 'q') cm.toggleMode()
 }
 
 const handleMouseMove = (event: MouseEvent) => {
@@ -357,7 +355,7 @@ const animate = (timestamp: any) => {
 
   requestAnimationFrame(animate)
 
-  ccm.update(deltaTime)
+  cm.update(deltaTime)
   renderer.render(scene, camera)
 }
 
