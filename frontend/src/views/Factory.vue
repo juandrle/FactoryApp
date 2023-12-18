@@ -13,11 +13,9 @@ import CircularMenu from '@/components/ui/CircularMenu.vue'
 import { placeRequest } from '@/utils/backendComms/postRequests'
 import { getAllEntitys, getAllEntitysInFactory } from '@/utils/backendComms/getRequests'
 import { backendUrl } from '@/utils/config/config'
-import { ControlMode } from '@/enum/ControlMode'
+import { ControlMode } from '@/enum/ControlMode';
+
 import {
-  createGrids,
-  createPlaneWithTextures,
-  createWallsWithTexture,
   highlightObjectWithColor,
   moveHighlight,
   placeEntity,
@@ -72,6 +70,8 @@ let loader: THREE.GLTFLoader
 let highlight: THREE.Group
 let cm: ControlsManager;
 let previousTime: number = 0
+let currentMode: ControlMode | null;
+
 
 /**
  * Setup
@@ -105,6 +105,7 @@ const setupLights = () => {
 
 const setupControls = () => {
   cm = new ControlsManager(camera, renderer.domElement)
+  currentMode = cm.currentMode;
 }
 
 const setupLoader = () => {
@@ -380,6 +381,7 @@ init()
     </div>
     <div class="debug-bar">
       <div>Active Entity: {{ activeEntity.id }}</div>
+      <div>Current Mode: {{ currentMode }}</div>
     </div>
     <EntityBar
       :entities="allEntitys"
