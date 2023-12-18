@@ -9,6 +9,7 @@ class CameraControlsManager {
   public controlls: CustomFlyControls | OrbitControls | null = null
   public camera: any = null
   public orbitCameraInfos: ICameraInfos | null = null
+  public freeCameraInfos: ICameraInfos | null = null
   private domElement: any = null
 
   constructor(camera: any, domElement: any, mode: CameraMode) {
@@ -23,8 +24,14 @@ class CameraControlsManager {
   }
 
   switchTo(newMode: CameraMode) {
-    if (this.currentMode === CameraMode.ORBIT) {
-      this.orbitCameraInfos = ExtractCameraInfo(this.camera)
+    switch (this.currentMode) {
+      case CameraMode.ORBIT:
+        this.orbitCameraInfos = ExtractCameraInfo(this.camera)
+        break
+
+      case CameraMode.FREE:
+        this.freeCameraInfos = ExtractCameraInfo(this.camera)
+        break
     }
 
     if (this.controlls) {
@@ -35,11 +42,15 @@ class CameraControlsManager {
 
     switch (newMode) {
       case CameraMode.FREE: {
-        SetCameraInfo(this.camera, {
-          position: { x: 0, y: -10, z: 1 },
-          up: { x: 0, y: 0, z: 1 },
-          lookAt: { x: 0, y: 1, z: 1 }
-        })
+        if (this.freeCameraInfos) {
+          SetCameraInfo(this.camera, this.freeCameraInfos)
+        } else {
+          SetCameraInfo(this.camera, {
+            position: { x: 0, y: -10, z: 1 },
+            up: { x: 0, y: 0, z: 1 },
+            lookAt: { x: 0, y: 1, z: 1 }
+          })
+        }
 
         this.controlls = new CustomFlyControls(this.camera, this.domElement)
         break
@@ -52,9 +63,6 @@ class CameraControlsManager {
         break
       }
     }
-
-
-    console.log(this.camera.up)
   }
 
   update(deltaTime: number) {
