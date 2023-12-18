@@ -253,7 +253,8 @@ public class FactoryService {
         return true;
     }
 
-    public void rotateModel(PlacedModel thisModel, Position newPosition) {
+    public boolean rotateModel(long thisModelID, Position newPosition) {
+        PlacedModel thisModel = getPlacedModelById(thisModelID);
         List<Field> newPosList = new ArrayList<>();
         PlacedModel backupModel = thisModel;
         // check field if height or width still fits
@@ -280,7 +281,11 @@ public class FactoryService {
             for (Field f : thisModel.getPlacedFields()) {
                 placeModelIntoField(thisModel, f.getPosition());
             }
+            return true;
         }
+
+        //TODO pruefe ob die gedregte version an die stelle passt ansonsten passe dies an mit vince klären
+        return false;
     }
 
     private Position adjustPosition(PlacedModel thisModel, Position newPosition, Position tmpPos) {
@@ -323,7 +328,7 @@ public class FactoryService {
         return true;
     }
 
-    public boolean moveModel(long modelID) {
+    public boolean moveModel(long modelID, Position newRootPosition) {
         PlacedModel placedModel = getPlacedModelById(modelID);
         // Todo: remove from field and remove from repository
         // placeMachineToField(machine,newPos);

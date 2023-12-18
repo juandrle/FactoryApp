@@ -58,6 +58,23 @@ public class EntityRestAPIController{
     }
 
     @CrossOrigin
+    @PostMapping("/rotate")
+    public boolean rotate (@RequestBody long idToRotate, PlaceRequestDTO placeRequestDTO){
+        Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
+        boolean rotated = factoryService.rotateModel(idToRotate,pos);
+        LOGGER.info("rotate entity: " + String.valueOf(idToRotate) + String.valueOf(rotated));
+        return rotated;
+    }
+    @CrossOrigin
+    @PostMapping("/move")
+    public boolean move (@RequestBody long idToMove, PlaceRequestDTO placeRequestDTO){
+        Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
+        boolean moved = factoryService.moveModel(idToMove,pos);
+        LOGGER.info("move entity: " + String.valueOf(idToMove) + String.valueOf(moved));
+        return moved;
+    }
+
+    @CrossOrigin
     @GetMapping("/getAll")
     public List<Model> getAll(){
         LOGGER.info(modelRepository.findAll().toString());
