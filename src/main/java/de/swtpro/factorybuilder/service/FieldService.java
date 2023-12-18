@@ -20,6 +20,9 @@ public class FieldService {
     public Optional<Field> getFieldByPosition(Position pos, long factoryId){
         return gridRepository.findByPosAndFactoryID(pos, factoryId);
     }
+    public Field saveField(Field f) {
+        return gridRepository.save(f);
+    }
 
 
        /*

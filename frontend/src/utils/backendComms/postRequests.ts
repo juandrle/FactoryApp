@@ -22,7 +22,7 @@ export const placeRequest = async (placeRequest: IPlaceRequest): Promise<boolean
 
 export const factoryCreateRequest = async (factory: IFactoryCreate) => {
     try {
-        const url = 'api/factory/create'
+        const url = backendUrl + "/api/factory/create"
         const requestBody = JSON.stringify(factory)
         const response = await fetch(url, {
             method: 'POST',
@@ -33,6 +33,7 @@ export const factoryCreateRequest = async (factory: IFactoryCreate) => {
         const jsonData: number = await response.json()
         return jsonData
     } catch (err) {
+        console.error(err)
         return 0
     }
 }

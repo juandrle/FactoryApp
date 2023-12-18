@@ -43,14 +43,14 @@ public class EntityRestAPIController{
 
         boolean placed = factoryService.createPlacedModel(placeRequestDTO.entityID,pos,placeRequestDTO.factoryID);
 
-        LOGGER.info("Place" + String.valueOf(placed));
+        LOGGER.info("Place: " + String.valueOf(placed));
 
         return placed;
     }
 
     @CrossOrigin
     @GetMapping("/getAll")
-    public List<Model> getAll (){
+    public List<Model> getAll(){
         LOGGER.info(modelRepository.findAll().toString());
         return modelRepository.findAll();
     }

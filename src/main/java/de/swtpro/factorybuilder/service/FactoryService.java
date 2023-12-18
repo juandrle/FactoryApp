@@ -1,6 +1,7 @@
 package de.swtpro.factorybuilder.service;
 
 import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
+import de.swtpro.factorybuilder.controller.FactoryRestAPIController;
 import de.swtpro.factorybuilder.entity.*;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.GridRepository;
@@ -10,6 +11,8 @@ import de.swtpro.factorybuilder.utility.Position;
 //import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.persistence.Entity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -21,6 +24,8 @@ import java.util.List;
 @Service
 public class FactoryService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FactoryService.class);
+
     private final GridRepository gridRepository;
 
     private final PlacedModelRepository placedModelRepository;
@@ -30,7 +35,7 @@ public class FactoryService {
     private final FactoryRepository factoryRepository;
 
     FactoryService(GridRepository gridRepository, PlacedModelRepository placedModelRepository,
-            ModelRepository modelRepository, FactoryRepository factoryRepository) {
+                   ModelRepository modelRepository, FactoryRepository factoryRepository) {
         this.gridRepository = gridRepository;
         this.placedModelRepository = placedModelRepository;
         this.modelRepository = modelRepository;
@@ -72,16 +77,18 @@ public class FactoryService {
             System.out.println("Factory with factoryID " + factoryID + " doesn't exist");
             return;
         }
-        for (int i = 0; i < factory.getHeight(); i++) {
-            for (int j = 0; j < factory.getWidth(); j++) {
-                for (int k = 0; k < factory.getDepth(); k++) {
+        List<Field> fields = new ArrayList<>();
+        for (int i = 0; i < factory.getWidth(); i++) {
+            for (int j = 0; j < factory.getDepth(); j++) {
+                for (int k = 0; k < factory.getHeight(); k++) {
                     Field field = new Field();
-                    field.setPosition(new Position(i, j, k));
-                    field.setPlacedModelID(null);
-                    gridRepository.save(field);
+                    field.setPosition(new Position(i - factory.getWidth() / 2, j - factory.getDepth() / 2, k));
+                    field.setFactoryID(factoryID);
+                    fields.add(field);
                 }
             }
         }
+        gridRepository.saveAll(fields);
     }
 
     // actually added real Method in FieldService
@@ -113,12 +120,12 @@ public class FactoryService {
      **/
     public Long getPlacedModelIdFromField(@PathVariable Long id) {
         Field field = getFieldById(id);
-        return field.getPlacedModelID();
+        return field.getPlacedModel().getModelId();
     }
 
     private void placeModelIntoField(PlacedModel placedModel, Position position) {
         Field f = getFieldByPosition(position, placedModel.getFactoryID());
-        f.setPlacedModelID(placedModel.getId());
+        f.setPlacedModel(placedModel);
         // Todo: save in repository
     }
 
@@ -183,7 +190,7 @@ public class FactoryService {
             Position tmpPosition = new Position(f.getPosition().getX() + extraX, f.getPosition().getY() + extraY,
                     f.getPosition().getZ());
             Field tmpField = getFieldByPosition(tmpPosition, thisModel.getFactoryID());
-            PlacedModel tmpPlacedModel = getPlacedModelById(tmpField.getPlacedModelID());
+            PlacedModel tmpPlacedModel = getPlacedModelById(tmpField.getPlacedModel().getId());
 
             if (thisModel.getId() == tmpPlacedModel.getId())
                 return true;
@@ -222,7 +229,7 @@ public class FactoryService {
 
         // check if fields are free
         for (Field f : thisModel.getPlacedFields()) {
-            if (f.getPlacedModelID() != 0)
+            if (f.getPlacedModel() != null)
                 return false;
         }
 
@@ -293,7 +300,7 @@ public class FactoryService {
     }
 
     private void removeModelFromField(Field field) {
-        field.setPlacedModelID(null);
+        field.setPlacedModel(null);
         // Todo: switch repository entry
     }
 
@@ -332,9 +339,9 @@ public class FactoryService {
                     placedModel.getFactoryID(),
                     placedModel.getId(),
                     placedModel.getOrientation(),
-                    placedModel.getRootPos().getX(), 
-                    placedModel.getRootPos().getY(), 
-                    placedModel.getRootPos().getZ(), 
+                    placedModel.getRootPos().getX(),
+                    placedModel.getRootPos().getY(),
+                    placedModel.getRootPos().getZ(),
                     m.getModelFile() // Füge den Pfad hinzu, wie erforderlich
             );
             dtos.add(dto);

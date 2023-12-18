@@ -19,11 +19,8 @@ public class  Factory implements Serializable {
     private String name;
 
     private String password;
-    @NotBlank
     private int width;
-    @NotBlank
     private int height;
-    @NotBlank
     private int depth;
 
     private String picturePath;

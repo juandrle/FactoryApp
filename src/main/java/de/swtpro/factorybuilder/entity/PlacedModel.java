@@ -7,6 +7,7 @@ import java.util.List;
 import de.swtpro.factorybuilder.utility.Position;
 
 import jakarta.persistence.*;
+import org.springframework.lang.Nullable;
 
 import static jakarta.persistence.CascadeType.ALL;
 
@@ -14,7 +15,6 @@ import static jakarta.persistence.CascadeType.ALL;
 public class PlacedModel implements Serializable{
     
     @Id
-    @GeneratedValue
     private long id;
 
     @Version

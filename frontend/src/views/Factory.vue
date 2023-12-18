@@ -57,6 +57,10 @@ const { factorySize } = inject<{
   factorySize: Ref<IVector3>
   updateFactorySize: (newSize: IVector3) => void
 }>('factorySize')
+const { factoryID } = inject<{
+  factoryID: Ref<number>
+  updateFactoryID: (newID: number) => void
+}>('factoryID')
 let dynamicDiv: HTMLElement | null
 let sizes: {
   width: number
@@ -133,7 +137,7 @@ const initalLoadHighlightModel = (modelUrl: string) => {
  */
 
 const onLoadFactoryButton = () => {
-  getAllEntitysInFactory(1).then((backendEntitys: IBackendEntity[]) => {
+  getAllEntitysInFactory(factoryID.value).then((backendEntitys: IBackendEntity[]) => {
     backendEntitys.forEach((backendEntity) => {
       placeEntity(
         loader,
@@ -174,9 +178,6 @@ const onChangeEntityClicked = (situation: string) => {
   }
 }
 
-const onToggleMoveModeButton = () => {
-  moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
-}
 
 /**
  * Handlers
@@ -319,7 +320,7 @@ onMounted(() => {
     activeEntity.value = allEntitys.value[0]
   })
   // initial function calls
-  animate()
+  animate(0)
 })
 
 onUnmounted(() => {
@@ -377,7 +378,6 @@ init()
     </div>
     <div class="button-bar">
       <button @click="onLoadFactoryButton" link="">Test Load Factory</button>
-      <button @click="onToggleMoveModeButton" link="">Toggle Camera Mode</button>
     </div>
     <div class="debug-bar">
       <div>Active Entity: {{ activeEntity.id }}</div>
