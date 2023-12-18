@@ -15,12 +15,18 @@ public class Model {
     @Lob
     String modelGltf;
 
+    @Lob
+    String icon;
+
     public long getId() {
         return id;
     }
 
     public String getModelFile() {
         return modelGltf;
+    }
+    public String getIcon () {
+        return icon;
     }
 
     public void setId(long id) {
@@ -29,5 +35,9 @@ public class Model {
 
     public void setModelFile(String modelGltf) {
         this.modelGltf = modelGltf;
+    }
+
+    public void setIcon ( String icon) {
+        this.icon = icon;
     }
 }

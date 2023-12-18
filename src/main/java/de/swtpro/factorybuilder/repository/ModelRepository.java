@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface ModelRepository extends JpaRepository<PlacedModel, Long> {
+public interface ModelRepository extends JpaRepository<Model, Long> {
+    @Override
+    List<Model> findAll();
 
     @Override
-    List<PlacedModel> findAll();
+    Optional<Model> findById(Long aLong);
 
-    @Override
-    Optional<PlacedModel> findById(Long aLong);
 }

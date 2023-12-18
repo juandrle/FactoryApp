@@ -1,6 +1,6 @@
 package de.swtpro.factorybuilder.entity;
 
-import javax.swing.text.Position;
+import de.swtpro.factorybuilder.utility.Position;
 
 public interface Processing {
      public String getOrientation();
