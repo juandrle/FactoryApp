@@ -144,6 +144,10 @@ const password = ref('')
   padding: 6px;
   border-radius: 50%; /* damit Button rund ist */
 }
+.dustbin-btn:hover {
+  background-color: red;
+  color: white;
+}
 .dustbin {
   height: 22.5px;
   width: auto;
