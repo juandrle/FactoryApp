@@ -15,6 +15,46 @@ function createFactory() {
     console.error("Please select a size before creating the factory.")
   }
 }
+const userForm = ref({
+  username: '',
+  password: '',
+  passwordCheck: '',
+});
+
+const signupUser = async () => {
+  const userData = {
+    username: userForm.value.username,
+    password: userForm.value.password,
+    passwordCheck: userForm.value.passwordCheck, // Add other necessary fields
+  };
+
+  try {
+    const response = await fetch('/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log('User signup successful:', responseData);
+
+      // Optionally, you can redirect the user to the home page or perform other actions
+    } else {
+      const errorData = await response.json();
+      console.error('User signup failed:', errorData);
+
+      // You can display an error message to the user or perform other error handling
+    }
+  } catch (error) {
+    
+
+    // Handle other errors, such as network issues
+  }
+};
+
 
 </script>
 
@@ -22,7 +62,7 @@ function createFactory() {
   <div>
     <div class="container-left">
       <div class="container2">
-        <form @submit.prevent="createFactory">
+        <form @submit.prevent="signupUser">
           <div class="form-container">
             <h2>Sign Up</h2>
             <div class="factory-name">
@@ -31,7 +71,7 @@ function createFactory() {
               <input placeholder="Passwort bestätigen" />
             </div>
             <div class="b-container">
-              <button>Sign Up</button>
+              <button type="submit">Sign Up</button>
             </div>
             <div class="b-container2">
               <p>Already have an account?</p>
