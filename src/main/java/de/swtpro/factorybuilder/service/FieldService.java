@@ -33,6 +33,7 @@ public class FieldService {
                     field.setPosition(new Position(i - factory.getWidth() / 2, j - factory.getDepth() / 2, k));
                     field.setFactoryID(factory.getFactoryID());
                     fields.add(field);
+
                 }
             }
         }

@@ -51,9 +51,10 @@ public class EntityRestAPIController {
     public boolean place(@RequestBody PlaceRequestDTO placeRequestDTO) {
         Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
         // Long Parse for workaround to not error
-        boolean placed = placedModelService.createPlacedModel(modelService.getByID(Long.parseLong(placeRequestDTO.entityID)).orElseThrow(), pos, placeRequestDTO.factoryID);
-        LOGGER.info("placed entity: " + String.valueOf(placed));
-        return placed;
+//        boolean placed = placedModelService.createPlacedModel(modelService.getByID(Long.parseLong(placeRequestDTO.entityID)).orElseThrow(), pos, placeRequestDTO.factoryID);
+//        LOGGER.info("placed entity: " + String.valueOf(placed));
+//        return placed;
+        return true;
     }
 
     @CrossOrigin

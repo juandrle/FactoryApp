@@ -3,9 +3,9 @@ import type {IEntityDelete, IFactoryCreate, IFactoryDelete} from "@/types/backen
 import {backendUrl} from "@/utils/config/config.js"
 
 
-export const placeRequest = async (placeRequest: IPlaceRequest): Promise<boolean> => {
+export const placeRequest = async (placeRequest: IPlaceRequest, suffix: string): Promise<boolean> => {
     try {
-        const url = backendUrl + '/api/entity/place'
+        const url = backendUrl + '/api/entity' + suffix
         const requestBody = JSON.stringify(placeRequest)
         const response = await fetch(url, {
             method: "POST",
