@@ -38,7 +38,7 @@ public class FactoryServiceTest {
         Factory expectedFactory = new Factory();
         when(factoryRepository.findById(id)).thenReturn(Optional.of(expectedFactory));
 
-        Factory result = factoryService.getFactoryByID(id);
+        Factory result = factoryService.getFactoryById(id).orElse(null);
 
         assertEquals(expectedFactory, result);
         verify(factoryRepository).findById(id);

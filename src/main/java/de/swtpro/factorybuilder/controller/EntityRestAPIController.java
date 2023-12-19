@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/entity")
-public class EntityRestAPIController{
+public class EntityRestAPIController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityRestAPIController.class);
 
@@ -37,58 +37,61 @@ public class EntityRestAPIController{
     PlacedModelService placedModelService;
 
     private record PlaceRequestDTO(int x, int y, int z, String entityID, String orientation, long factoryID) {
-    };
-    private record ResponseDTO(long id, String modelGltf){};
+    }
+
+    ;
+
+    private record ResponseDTO(long id, String modelGltf) {
+    }
+
+    ;
 
     @CrossOrigin
     @PostMapping("/place")
-    public boolean place (@RequestBody PlaceRequestDTO placeRequestDTO){
+    public boolean place(@RequestBody PlaceRequestDTO placeRequestDTO) {
         Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        boolean placed = placedModelService.createPlacedModel(placeRequestDTO.entityID,pos,placeRequestDTO.factoryID);
+        // Long Parse for workaround to not error
+        boolean placed = placedModelService.createPlacedModel(modelService.getByID(Long.parseLong(placeRequestDTO.entityID)).orElseThrow(), pos, placeRequestDTO.factoryID);
         LOGGER.info("placed entity: " + String.valueOf(placed));
         return placed;
     }
 
     @CrossOrigin
     @PostMapping("/delete")
-    public boolean delete (@RequestBody long idToDelete){
+    public boolean delete(@RequestBody long idToDelete) {
         // factoryID long or int ?
         // factoryService.getEntitysFromFactory(placeRequestDTO.factoryID);
         // delete by entityID (from placedModelRepository)
 
-        boolean deleted = factoryService.removeModelFromFactory(idToDelete);
+        boolean deleted = placedModelService.removeModelFromFactory(idToDelete);
         LOGGER.info("deleted entity: " + String.valueOf(idToDelete) + String.valueOf(deleted));
         return deleted;
     }
 
     @CrossOrigin
     @PostMapping("/rotate")
-    public boolean rotate (@RequestBody long idToRotate, PlaceRequestDTO placeRequestDTO){
+    public boolean rotate(@RequestBody long idToRotate, PlaceRequestDTO placeRequestDTO) {
         Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        boolean rotated = placedModelService.rotateModel(idToRotate,pos);
+
+        boolean rotated = placedModelService.rotateModel(idToRotate, pos, factoryService.getFactoryById(placeRequestDTO.factoryID).orElseThrow());
+
         LOGGER.info("rotate entity: " + String.valueOf(idToRotate) + String.valueOf(rotated));
         return rotated;
     }
+
     @CrossOrigin
     @PostMapping("/move")
-    public boolean move (@RequestBody long idToMove, PlaceRequestDTO placeRequestDTO){
+    public boolean move(@RequestBody long idToMove, PlaceRequestDTO placeRequestDTO) {
         Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        boolean moved = placedModelService.moveModel(idToMove,pos);
+        boolean moved = placedModelService.moveModel(idToMove, pos);
         LOGGER.info("move entity: " + String.valueOf(idToMove) + String.valueOf(moved));
         return moved;
     }
 
     @CrossOrigin
     @GetMapping("/getAll")
-    public List<Model> getAll(){
-        LOGGER.info(modelRepository.findAll().toString());
-        return modelRepository.findAll();
+    public List<Model> getAll() {
+        return modelService.getAll();
     }
 
-    @CrossOrigin
-    @GetMapping("getAll/{factoryId}")
-    public List<PlacedModelDTO> getAllByFactoryId(@PathVariable int factoryId) {
-        return factoryService.getEntitysFromFactory(factoryId);
-    }
-    
 }

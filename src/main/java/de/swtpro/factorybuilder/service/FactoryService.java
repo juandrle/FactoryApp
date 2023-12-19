@@ -1,24 +1,14 @@
 package de.swtpro.factorybuilder.service;
 
-import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
 import de.swtpro.factorybuilder.entity.*;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
-import de.swtpro.factorybuilder.repository.FieldRepository;
-import de.swtpro.factorybuilder.repository.ModelRepository;
-import de.swtpro.factorybuilder.repository.PlacedModelRepository;
-import de.swtpro.factorybuilder.utility.Position;
 //import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import java.util.Optional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class FactoryService {

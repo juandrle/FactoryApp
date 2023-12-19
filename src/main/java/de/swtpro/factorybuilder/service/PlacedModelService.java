@@ -11,8 +11,10 @@ import java.util.Optional;
 @Service
 public class PlacedModelService {
     PlacedModelRepository placedModelRepository;
-    PlacedModelService(PlacedModelRepository placedModelRepository){
+    FieldService fieldService;
+    PlacedModelService(PlacedModelRepository placedModelRepository, FieldService fieldService){
         this.placedModelRepository = placedModelRepository;
+        this.fieldService = fieldService;
     }
     public Optional<PlacedModel> getPlacedModelById(long id) {
         return placedModelRepository.findById(id);
@@ -85,8 +87,12 @@ public class PlacedModelService {
         if (condition) {
             Position tmpPosition = new Position(f.getPosition().getX() + extraX, f.getPosition().getY() + extraY,
                     f.getPosition().getZ());
-            Field tmpField = getFieldByPosition(tmpPosition, thisModel.getFactoryID());
-            PlacedModel tmpPlacedModel = getPlacedModelById(tmpField.getPlacedModel().getId()).orElse(null);
+            // Wegen switch case kein Nullcheck nötig
+            // TODO: fieldservice rausbekommen?
+            Field tmpField = fieldService.getFieldByPosition(tmpPosition, thisModel.getFactoryID()).orElse(null);
+            assert tmpField != null;
+            // TODO: Null Check
+            PlacedModel tmpPlacedModel = tmpField.getPlacedModel();
 
             if (thisModel.getId() == tmpPlacedModel.getId())
                 return true;
@@ -116,11 +122,6 @@ public class PlacedModelService {
         return true;
     }
     private boolean checkForPlacement(PlacedModel thisModel, Factory factory) {
-        int height = factory.getHeight(), width = factory.getWidth(), depth = factory.getDepth();
-        Field tmpField;
-        PlacedModel tmpPlacedModel;
-        Position tmpPosition;
-
         // check if fields are free
         for (Field f : thisModel.getPlacedFields()) {
             if (f.getPlacedModel() != null)
@@ -145,33 +146,34 @@ public class PlacedModelService {
         return true;
     }
 
-    public boolean rotateModel(long thisModelID, Position newPosition) {
+    public boolean rotateModel(long thisModelID, Position newPosition, Factory factory) {
+        // TODO: nullCheck
         PlacedModel thisModel = getPlacedModelById(thisModelID).orElse(null);
         List<Field> newPosList = new ArrayList<>();
         PlacedModel backupModel = thisModel;
         // check field if height or width still fits
         for (Field f : thisModel.getPlacedFields())
-            newPosList.add(getFieldByPosition(adjustPosition(thisModel, newPosition, f.getPosition()),
-                    thisModel.getFactoryID()));
+            newPosList.add(fieldService.getFieldByPosition(adjustPosition(thisModel, newPosition, f.getPosition()),
+                    thisModel.getFactoryID()).orElse(null));
 
         for (Output o : thisModel.getOutputs()) {
-            newPosList.add(getFieldByPosition(adjustPosition(thisModel, newPosition, o.getPosition()),
-                    thisModel.getFactoryID()));
+            newPosList.add(fieldService.getFieldByPosition(adjustPosition(thisModel, newPosition, o.getPosition()),
+                    thisModel.getFactoryID()).orElse(null));
             o.setOrientation(rotateOrientation(o.getOrientation()));
         }
         for (Input i : thisModel.getInputs()) {
-            newPosList.add(getFieldByPosition(adjustPosition(thisModel, newPosition, i.getPosition()),
-                    thisModel.getFactoryID()));
+            newPosList.add(fieldService.getFieldByPosition(adjustPosition(thisModel, newPosition, i.getPosition()),
+                    thisModel.getFactoryID()).orElse(null));
             i.setOrientation(rotateOrientation(i.getOrientation()));
         }
         thisModel.setOrientation(rotateOrientation(thisModel.getOrientation()));
 
-        if (checkForPlacement(thisModel)) {
+        if (checkForPlacement(thisModel, factory)) {
             for (Field f : backupModel.getPlacedFields()) {
                 removeModelFromField(f);
             }
             for (Field f : thisModel.getPlacedFields()) {
-                placeModelIntoField(thisModel, f.getPosition());
+                placeModelIntoField(thisModel, f);
             }
             return true;
         }
@@ -210,6 +212,18 @@ public class PlacedModelService {
         }
         // non valid delete from repository -> reinitialize fields and return false
         // hard coded for skeleton round-trip
+        return true;
+    }
+    public boolean moveModel(long modelID, Position newRootPosition) {
+        PlacedModel placedModel = getPlacedModelById(modelID).orElse(null);
+        if (placedModel == null) return false;
+        for (Field f: placedModel.getPlacedFields()) {
+            f.setPlacedModel(null);
+        }
+        // TODO: change position to new Position
+        // placeMachineToField(machine,newPos);
+        // Todo: which informations are needed for this operatino?
+        // Todo: switch fields and machine repos
         return true;
     }
 }
