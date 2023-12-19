@@ -8,10 +8,13 @@ import de.swtpro.factorybuilder.repository.ModelRepository;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.service.FactoryService;
 
+import de.swtpro.factorybuilder.service.ModelService;
+import de.swtpro.factorybuilder.service.PlacedModelService;
 import de.swtpro.factorybuilder.utility.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,14 +26,15 @@ public class EntityRestAPIController{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityRestAPIController.class);
 
-    public EntityRestAPIController(ModelRepository modelRepository) {
-        this.modelRepository = modelRepository;
-    }
     // do we need the repos in here as well ?
-    ModelRepository modelRepository;
+    @Autowired
+    ModelService modelService;
 
     @Autowired
     FactoryService factoryService;
+
+    @Autowired
+    PlacedModelService placedModelService;
 
     private record PlaceRequestDTO(int x, int y, int z, String entityID, String orientation, long factoryID) {
     };
@@ -40,7 +44,7 @@ public class EntityRestAPIController{
     @PostMapping("/place")
     public boolean place (@RequestBody PlaceRequestDTO placeRequestDTO){
         Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        boolean placed = factoryService.createPlacedModel(placeRequestDTO.entityID,pos,placeRequestDTO.factoryID);
+        boolean placed = placedModelService.createPlacedModel(placeRequestDTO.entityID,pos,placeRequestDTO.factoryID);
         LOGGER.info("placed entity: " + String.valueOf(placed));
         return placed;
     }
@@ -61,7 +65,7 @@ public class EntityRestAPIController{
     @PostMapping("/rotate")
     public boolean rotate (@RequestBody long idToRotate, PlaceRequestDTO placeRequestDTO){
         Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        boolean rotated = factoryService.rotateModel(idToRotate,pos);
+        boolean rotated = placedModelService.rotateModel(idToRotate,pos);
         LOGGER.info("rotate entity: " + String.valueOf(idToRotate) + String.valueOf(rotated));
         return rotated;
     }
@@ -69,7 +73,7 @@ public class EntityRestAPIController{
     @PostMapping("/move")
     public boolean move (@RequestBody long idToMove, PlaceRequestDTO placeRequestDTO){
         Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        boolean moved = factoryService.moveModel(idToMove,pos);
+        boolean moved = placedModelService.moveModel(idToMove,pos);
         LOGGER.info("move entity: " + String.valueOf(idToMove) + String.valueOf(moved));
         return moved;
     }

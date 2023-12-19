@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Field;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
-import de.swtpro.factorybuilder.repository.GridRepository;
+import de.swtpro.factorybuilder.repository.FieldRepository;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ import java.util.Optional;
 public class FactoryServiceTest {
     // for future tests
     @Mock
-    private GridRepository gridRepository;
+    private FieldService fieldService;
     // for future tests
     @Mock
     private PlacedModelRepository placedModelRepository;
@@ -74,10 +74,8 @@ public class FactoryServiceTest {
 
         when(factoryService.getFactoryById(factoryID)).thenReturn(Optional.of(mockFactory));
 
-        factoryService.initializeField(factoryID);
+        fieldService.initializeField(mockFactory);
         ArgumentCaptor<List<Field>> fieldArgumentCaptor = ArgumentCaptor.forClass((Class) List.class);
-
-        verify(gridRepository, times(1)).saveAll(fieldArgumentCaptor.capture());
 
         List<Field> capturedFields = fieldArgumentCaptor.getValue();
         assertEquals(height * width * depth, capturedFields.size());
