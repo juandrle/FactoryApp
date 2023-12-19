@@ -141,9 +141,11 @@ const password = ref('')
   cursor: pointer;
   height: min-content;
   align-self: end;
+  padding: 6px;
+  border-radius: 50%; /* damit Button rund ist */
 }
 .dustbin {
-  height: 30px;
+  height: 22.5px;
   width: auto;
   object-fit: cover;
 }
