@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import FactoryCard from '@/components/FactoryCard.vue'
 
 export interface Factory {
