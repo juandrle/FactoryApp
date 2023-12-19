@@ -4,4 +4,5 @@ export interface IPlaceRequest {
     z: number;
     entityID: string; 
     orientation: string;
+    factoryID: number;
 }

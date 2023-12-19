@@ -39,50 +39,32 @@ export const createGrids = (x: number, y: number, z: number, scene: THREE.Scene)
         zStart++
     }
 }
-export const createGroundWithTextures = (
-    texturePath: string,
-    scene: THREE.Scene,
-    width: number,
-    depth: number
-) => {
-    const textureLoader: THREE.TextureLoader = new THREE.TextureLoader()
-    const texture = textureLoader.load(texturePath)
-
-    texture.minFilter = THREE.LinearFilter
-    texture.magFilter = THREE.LinearFilter
-
-    const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({map: texture})
-
-    const groundPane: THREE.PlaneGeometry = new THREE.PlaneGeometry(width, depth)
-
-    const groundMesh: THREE.Mesh = new THREE.Mesh(groundPane, material)
-    groundMesh.name = "buildingMesh"
-
-    scene.add(groundMesh)
-}
-export const createRoofWithTextures = (
+export const createPlaneWithTextures = (
     texturePath: string,
     scene: THREE.Scene,
     width: number,
     depth: number,
-    height: number
+    height: number,
+    createRoof: boolean
 ) => {
-    const textureLoader: THREE.TextureLoader = new THREE.TextureLoader()
-    const texture = textureLoader.load(texturePath)
+    const textureLoader = new THREE.TextureLoader();
+    const texture = textureLoader.load(texturePath);
 
-    texture.minFilter = THREE.LinearFilter
-    texture.magFilter = THREE.LinearFilter
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
 
-    const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({map: texture})
+    const material = new THREE.MeshStandardMaterial({ map: texture });
+    const planeGeometry = new THREE.PlaneGeometry(width, depth);
+    const planeMesh = new THREE.Mesh(planeGeometry, material);
 
-    const roofPane: THREE.PlaneGeometry = new THREE.PlaneGeometry(width, depth)
+    if (createRoof) {
+        planeMesh.position.set(0, 0, height);
+        planeMesh.rotateX(Math.PI);
+    }
 
-    const roofMesh: THREE.Mesh = new THREE.Mesh(roofPane, material)
-    roofMesh.position.set(0, 0, height)
-    roofMesh.rotateX(Math.PI)
-    roofMesh.name = "buildingMesh"
-    scene.add(roofMesh)
-}
+    planeMesh.name = "buildingMesh";
+    scene.add(planeMesh);
+};
 export const createWallsWithTexture = (
     texturePath: string,
     scene: THREE.Scene,
@@ -235,3 +217,12 @@ export const highlightObjectWithColor = (object: THREE.Group, color: boolean) =>
             }
         })
 }
+
+export const createRoom = (x: number, y: number, z: number, scene: THREE.scene) => {
+    // Add Grid
+    createGrids(x, y, z, scene)
+    // creating roomtextures
+    createPlaneWithTextures('factoryGround.jpeg', scene, x, y, z, false)
+    createPlaneWithTextures('factoryRoof.jpeg', scene, x, y, z, true)
+    createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
+  }

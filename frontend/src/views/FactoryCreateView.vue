@@ -21,6 +21,10 @@ const {updateFactorySize} = inject<{
   factorySize: Ref<IVector3>,
   updateFactorySize: (newSize: IVector3) => void
 }>('factorySize')
+const {updateFactoryID} = inject<{
+  factoryID: Ref<number>,
+  updateFactoryID: (newID: number) => void
+}>('factoryID')
 const combinedSize = computed((size) => {
   return {
     x: size.width as number,
@@ -43,8 +47,11 @@ function createFactory() {
       depth: selectedSize.value.y,
       height: selectedSize.value.z
     }
-    // if (await factoryCreateRequest(factory)) console.log('worked!')
-    router.push('/factory')
+    factoryCreateRequest(factory).then((newID: number) => {
+      updateFactoryID(newID)
+      console.log(newID)
+      router.push('/factory')
+    })
   } else {
     console.error("Please select a size before creating the factory.")
   }

@@ -1,6 +1,5 @@
 package de.swtpro.factorybuilder.entity;
 
-
 import de.swtpro.factorybuilder.utility.Position;
 
 public interface Processing {

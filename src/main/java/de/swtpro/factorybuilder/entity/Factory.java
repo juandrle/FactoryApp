@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "factory")
-public class Factory implements Serializable {
+public class  Factory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +19,8 @@ public class Factory implements Serializable {
     private String name;
 
     private String password;
-    @NotBlank
     private int width;
-    @NotBlank
     private int height;
-    @NotBlank
     private int depth;
 
     private String picturePath;
