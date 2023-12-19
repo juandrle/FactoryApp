@@ -2,14 +2,6 @@
 import {computed, onMounted, ref} from 'vue'
 import FactoryCard from '@/components/FactoryCard.vue'
 
-export interface Factory {
-  id: number
-  name: string
-  size: string
-  author: string
-  link: string
-}
-
 const sizes = ref([
   { label: 'All', value: '' },
   { label: '30x50x8', value: '30x50x8' },
@@ -28,29 +20,45 @@ const owner = ref([
 ])
 const currOwner = ref('')
 
-const existing_factories = [
-  { id: 1, name: 'Erens Fabrik', size: '30x50x8', author: 'Eren Flamingo', link: '/factory' },
-  { id: 2, name: 'Julias Fabrik', size: '20x40x60', author: 'Julia Flamingo', link: '/factory' },
-  { id: 3, name: 'Davids Fabrik', size: '60x100x12', author: 'David Flamingo', link: '/factory' },
-  {
-    id: 4,
-    name: 'Vincents Fabrik',
-    size: '120x200x20',
-    author: 'Vincent Flamingo',
-    link: '/factory'
-  },
-  { id: 5, name: 'Viviens Fabrik', size: '20x40x60', author: 'Vivien Esel', link: '/factory' },
-  { id: 6, name: 'Esels Fabrik', size: '20x40x60', author: 'Esel Esel', link: '/factory' },
-  {
-    id: 7,
-    name: 'Vincents Fabrik',
-    size: '60x100x12',
-    author: 'Vincent Flamingo',
-    link: '/factory'
-  },
-  { id: 8, name: 'Viviens Fabrik', size: '60x100x12', author: 'Vivien Esel', link: '/factory' },
-  { id: 9, name: 'Esels Fabrik', size: '60x100x12', author: 'Esel Esel', link: '/factory' }
-] as Factory[]
+//fetch all existing factories
+const existing_factories = ref([])
+
+onMounted(async () => {
+  try {
+    const response = await fetch('/api/entity/getAll/');
+    if (!response.ok) {
+      throw new Error('Fehler beim Abrufen der Daten');
+    }
+    const data = await response.json();
+    existing_factories.value = data;
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Daten:', error);
+  }
+});
+
+// const existing_factories = [
+//   { id: 1, name: 'Erens Fabrik', size: '30x50x8', author: 'Eren Flamingo', link: '/factory' },
+//   { id: 2, name: 'Julias Fabrik', size: '20x40x60', author: 'Julia Flamingo', link: '/factory' },
+//   { id: 3, name: 'Davids Fabrik', size: '60x100x12', author: 'David Flamingo', link: '/factory' },
+//   {
+//     id: 4,
+//     name: 'Vincents Fabrik',
+//     size: '120x200x20',
+//     author: 'Vincent Flamingo',
+//     link: '/factory'
+//   },
+//   { id: 5, name: 'Viviens Fabrik', size: '20x40x60', author: 'Vivien Esel', link: '/factory' },
+//   { id: 6, name: 'Esels Fabrik', size: '20x40x60', author: 'Esel Esel', link: '/factory' },
+//   {
+//     id: 7,
+//     name: 'Vincents Fabrik',
+//     size: '60x100x12',
+//     author: 'Vincent Flamingo',
+//     link: '/factory'
+//   },
+//   { id: 8, name: 'Viviens Fabrik', size: '60x100x12', author: 'Vivien Esel', link: '/factory' },
+//   { id: 9, name: 'Esels Fabrik', size: '60x100x12', author: 'Esel Esel', link: '/factory' }
+// ] as Factory[]
 
 // Nach Fabriknamen filtern
 const searchTerm = ref('')
@@ -58,20 +66,22 @@ const currentlyRotatedCard = ref<HTMLElement | null>(null)
 
 const filteredFactories = computed(() => {
   let matchesSize, matchesOwner, matchesSearchTerm
-  return existing_factories.filter((factory) => {
+  return existing_factories.value.filter((factory) => {
     console.log(currSize.value, currOwner.value)
     if (currSize.value === '') {
       matchesSize = true
-    } else {
-      matchesSize = currSize.value ? factory.size === currSize.value : true
-    }
-    if (currOwner.value === '') {
-      matchesOwner = true
-    } else {
-      matchesOwner = currOwner.value ? factory.author === currOwner.value : true
-    }
+    } 
+    // else {
+    //   matchesSize = currSize.value ? factory.size === currSize.value : true
+    // }
+    // if (currOwner.value === '') {
+    //   matchesOwner = true
+    // } else {
+    //   matchesOwner = currOwner.value ? factory.author === currOwner.value : true
+    // }
     matchesSearchTerm = factory.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-    return matchesSearchTerm && matchesSize && matchesOwner
+    // return matchesSearchTerm && matchesSize && matchesOwner
+    return matchesSearchTerm
   })
 })
 
@@ -145,6 +155,9 @@ const rotateCard = (clickTarget: EventTarget | null) => {
 </template>
 
 <style scoped>
+.container{
+  align-items: baseline; 
+}
 .container .s-item {
   display: flex;
   flex: 1 1 25%;

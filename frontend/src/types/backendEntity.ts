@@ -29,3 +29,13 @@ export interface IEntityDelete {
     factoryid: number;
     id: number;
 }
+
+export interface IFactory {
+    id: number; 
+    name: string; 
+    width: number; 
+    depth: number;
+    height: number; 
+    password: string; 
+    // author: string; 
+}

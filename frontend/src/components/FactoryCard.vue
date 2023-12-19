@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { defineProps, ref } from 'vue'
-import type { Factory } from '@/views/FactoryEnterView.vue'
+import type { IFactory } from '@/types/backendEntity';
+// import type { Factory } from '@/views/FactoryEnterView.vue'
 
 const props = defineProps({
   factory: {
-    type: Object as () => Factory,
+    type: Object as () => IFactory,
     required: true
   },
   rotateCard: {
@@ -28,8 +29,9 @@ const password = ref('')
       <div class="factorycard-content">
         <div style="width: max-content">
           <p>{{ factory.name }}</p>
-          <p>{{ factory.size }}</p>
-          <p>{{ factory.author }}</p>
+          <p>{{ factory.width}}x{{ factory.depth }}x{{ factory.height }}</p>
+          <!-- <p>{{ factory.author }}</p> -->
+          <p>Name Author</p>
         </div>
         <button class="dustbin-btn" @click="(e) => e.stopPropagation()">
           <img class="dustbin" src="../assets/icons8-mülleimer-48.png" alt="Papierkorb" />
@@ -60,7 +62,7 @@ const password = ref('')
   position: relative;
   border-radius: 30px;
   height: 260px;
-  width: 230px;
+  width: 250px;
   transition: transform 0.5s;
   border: 1px solid transparent;
 }
