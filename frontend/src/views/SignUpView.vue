@@ -29,13 +29,24 @@ const signupUser = async () => {
   };
 
   try {
-    const response = await fetch('/signup', {
+    const response = await fetch('/api/users/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(userData),
+
+      
     });
+    if (response.status === 400) {
+      const errorData = await response.json();
+      console.error('Validation error:', errorData);
+    }
+    if (!response.ok) {
+      // Handle non-successful responses
+      console.error('Error during signup. Status:', response.status);
+      return;
+    }
 
     if (response.ok) {
       const responseData = await response.json();
@@ -48,8 +59,11 @@ const signupUser = async () => {
 
       // You can display an error message to the user or perform other error handling
     }
-  } catch (error) {
     
+  } catch (error ) {
+    console.error('Error during signup:', error);
+    
+   
 
     // Handle other errors, such as network issues
   }

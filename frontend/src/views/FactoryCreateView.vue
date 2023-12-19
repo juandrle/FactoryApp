@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import {computed, inject, Ref, ref, watch} from 'vue'
 import ButtonVue from '@/components/temp/Button.vue';
+import Button from '@/components/temp/Button.vue';
 import type {IVector3} from "@/types/global";
 import router from "@/router";
 import {factoryCreateRequest} from "@/utils/backendComms/postRequests";
 import type {IFactoryCreate} from "@/types/backendEntity";
-import Button from '@/components/temp/Button.vue';
+
 
 const buttonData = ref([{text: 'Fabrik erstellen und bestellen', link: '/factory'}])
 
@@ -129,7 +130,8 @@ form {
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.5rem;
-  margin: 1rem 2.5rem 1rem 2.5rem;
+  margin-left: 130px;
+  margin-top: 40px;
 }
 
 .button-create {
@@ -137,7 +139,7 @@ form {
   flex-direction: column;
   padding: 50px 20px 10px 20px;
   top: 75%;
-  outline:none;
+  
 }
 .headline {
   font: normal normal bold 70px/84px Overpass;

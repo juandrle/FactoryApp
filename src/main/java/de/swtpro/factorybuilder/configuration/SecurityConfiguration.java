@@ -6,10 +6,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -43,6 +44,7 @@ public class SecurityConfiguration {
         return new InMemoryUserDetailsManager(user1);
     }
 
+    @Order(1)
     @Bean
     public SecurityFilterChain filterChainApp(HttpSecurity http) throws Exception {
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
@@ -61,5 +63,28 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
+    @Order(2)
+    @Bean
+    SecurityFilterChain filterChainAPI(HttpSecurity http) throws Exception{
+        MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
+        http
+            .securityMatchers(s -> s.requestMatchers(mvc.pattern(HttpMethod.POST, "/api/**")))
+
+            
+            .authorizeHttpRequests(authz -> authz
+
+            .anyRequest().permitAll())
+            .csrf(csrf -> csrf.disable())
+            .httpBasic(withDefaults())
+
+            .sessionManagement((session) ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+
+        
+        return http.build();
+    }
+
 }
 

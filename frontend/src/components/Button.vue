@@ -25,6 +25,7 @@ defineProps({
     padding: 10px 10px 10px 25px;
 	margin: auto;
 	width: 290px; 
+	border:none;
 }
 .v-button:hover {
 	background-color:#4b2ba6;
