@@ -256,10 +256,7 @@ const handleClick = () => {
         console.log('placing entity: ' + success)
         if (success) {
           placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
-        } else if (manipulationMode.value === 'move' && success) {
-          replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
-          manipulationMode.value = ''
-        }
+        } 
       })
       break
     case 'move':
