@@ -4,12 +4,14 @@ export interface IBackendEntity {
     z: number;
     path: string; 
     orientation: string;
+    factoryid: string;
+    id:number;
 }
 
 export interface IBackendEntityPreview {
-    path: string;
+    modelFile: string;
     icon: string;
-    entityID: string;
+    id: string;
 }
 export interface IFactoryCreate {
     name: string;
@@ -21,4 +23,9 @@ export interface IFactoryCreate {
 export interface IFactoryDelete {
     id: number,
     element: any
+}
+
+export interface IEntityDelete {
+    factoryid: number;
+    id: number;
 }

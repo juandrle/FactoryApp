@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface GridRepository extends JpaRepository<Field, Long> {
-    Optional<Field> findByPos(Position pos);
+public interface FieldRepository extends JpaRepository<Field, Long> {
+
+    Optional<Field>findByPosAndFactoryID(Position position, long factoryID);
+
 
 }

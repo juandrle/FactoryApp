@@ -1,61 +1,66 @@
 <script setup lang="ts">
-import {ref, onMounted, watch, provide, inject} from 'vue'
+import {ref, onMounted, watch, provide, inject, onUnmounted} from 'vue'
 import type {Ref} from 'vue'
 import type {IVector3} from '@/types/global'
-import type {IBackendEntityPreview} from '@/types/backendEntity'
+import type {IBackendEntityPreview, IBackendEntity} from '@/types/backendEntity'
 import * as THREE from 'three'
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js'
-import {FlyControls} from 'three/addons/controls/FlyControls.js'
-
-import {getIntersectionsMouse} from '../utils/threeJS/3d'
+import {ControlsManager} from '@/classes/ControlsManager'
+import {getIntersectionsMouse} from '@/utils/threeJS/3d'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
-import Button from "@/components/temp/Button.vue";
-import CircularMenu from "@/components/ui/CircularMenu.vue";
-import {placeRequest} from "@/utils/backendComms/postRequests";
-import {getAllEntitys, loadFactory} from "@/utils/backendComms/getRequests";
+import Button from '@/components/temp/Button.vue'
+import CircularMenu from '@/components/ui/CircularMenu.vue'
+import {placeRequest} from '@/utils/backendComms/postRequests'
+import {getAllEntitys, getAllEntitysInFactory} from '@/utils/backendComms/getRequests'
+import {backendUrl} from '@/utils/config/config'
+import {ControlMode} from '@/enum/ControlMode'
+
 import {
-  createGrids,
-  createGroundWithTextures,
-  createRoofWithTextures,
-  createWallsWithTexture,
-  highlightObjectWithColor, moveHighlight,
+  highlightObjectWithColor,
+  moveHighlight,
   placeEntity,
   replaceEntity,
   selectionObject,
-  updateHighlightModel
-} from "@/utils/threeJS/helpFunctions";
+  updateHighlightModel,
+  createRoom
+} from '@/utils/threeJS/helpFunctions'
 
-/*******************************/
-/*********** COFIG *************/
-/*******************************/
+/**
+ * Config
+ **/
 
 const ACTIVE_LAYER: number = 0
-/********************/
-/*** REF VARIABLES **/
-/********************/
+
+/**
+ * Variables -> ref
+ **/
+
 const target = ref()
-const moveMode: Ref<String> = ref<'orbit' | 'fly'>('orbit')
-const moveOrSelectionMode: Ref<String> = ref<'set' | ''>('')
-const manipulationMode: Ref<String> = ref<'move' | 'rotate' | ''>('')
+const manipulationMode: Ref<String> = ref<'move' | 'rotate' | '' | 'set'>('')
 const allEntitys: Ref<IBackendEntityPreview[]> = ref([])
 const activeEntity: Ref<IBackendEntityPreview> = ref({
   path: '/fallback/.gltf/cube.gltf',
   icon: '',
   entityID: 'loadingCube'
 })
-const currentObjectSelected: Ref<THREE.Group> = ref()
-const lastObjectSelected: Ref<THREE.Group> = ref()
+// quick fix to any
+const currentObjectSelected: any = ref()
+const lastObjectSelected: any = ref()
 const currObjSelectedOriginPos: Ref<IVector3> = ref({x: 0, y: 0, z: 0})
 const showCircMenu: Ref<Boolean> = ref(false)
 
-/********************/
-/*** VARIABLES ******/
-/********************/
+/**
+ * Variables
+ **/
+
 const {factorySize} = inject<{
-  factorySize: Ref<IVector3>,
+  factorySize: Ref<IVector3>
   updateFactorySize: (newSize: IVector3) => void
 }>('factorySize')
+const {factoryID} = inject<{
+  factoryID: Ref<number>
+  updateFactoryID: (newID: number) => void
+}>('factoryID')
 let dynamicDiv: HTMLElement | null
 let sizes: {
   width: number
@@ -65,100 +70,93 @@ let sizes: {
 let scene: THREE.Scene
 let renderer: THREE.WebGLRenderer
 let camera: THREE.PerspectiveCamera
-let cameraControls: THREE.OrbitControls
 let loader: THREE.GLTFLoader
 let highlight: THREE.Group
+let cm: ControlsManager;
+let previousTime: number = 0
+let currentMode: ControlMode | null;
 
 
-function init() {
-  // provides & injections
-  provide('showCircleMenu', showCircMenu)
-  console.log(factorySize)
-  sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-    ratio: window.innerWidth / window.innerHeight
-  }
+/**
+ * Setup
+ **/
+
+const setupScene = () => {
   scene = new THREE.Scene()
-
   scene.background = new THREE.Color('#12111A')
+}
+
+const setupRenderer = () => {
   renderer = new THREE.WebGLRenderer()
-
   renderer.setSize(sizes.width, sizes.height)
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+}
 
-  scene.add(ambientLight)
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
-  directionalLight.position.set(1, 1, 1).normalize()
-
-  scene.add(directionalLight)
+const setupCamera = () => {
   camera = new THREE.PerspectiveCamera(50, sizes.ratio)
   camera.position.set(40, -15, 15)
   camera.up.set(0, 0, 1)
   camera.lookAt(0, 0, 0)
+}
 
-  cameraControls = new OrbitControls(camera, renderer.domElement)
+const setupLights = () => {
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+  scene.add(ambientLight)
 
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
+  directionalLight.position.set(1, 1, 1).normalize()
+  scene.add(directionalLight)
+}
+
+const setupControls = () => {
+  cm = new ControlsManager(camera, renderer.domElement)
+  currentMode = cm.currentMode;
+}
+
+const setupLoader = () => {
   loader = new GLTFLoader()
+}
 
-  // Add axis helper
-  // const axesHelper: any = new THREE.AxesHelper(20)
-  // scene.add(axesHelper)
-
+const initalLoadHighlightModel = (modelUrl: string) => {
   loader.load(
-      '/fallback/.gltf/cube.gltf',
-      function (gltf: any) {
+      modelUrl,
+      (gltf: any) => {
         highlight = gltf.scene
         highlight.position.set(0, 0, 0)
         scene.add(highlight)
         highlight.name = 'highlight'
       },
       undefined,
-      function (error: any) {
+      (error: Error) => {
         console.error(error)
       }
   )
-  createRoom(factorySize.value.x,factorySize.value.y,factorySize.value.z)
 }
 
-const createRoom = (x: number, y: number, z: number) => {
-  // Add Grid
-  createGrids(x, y, z, scene)
-  // creating roomtextures
-  createGroundWithTextures('factoryGround.jpeg', scene, x, y)
-  createRoofWithTextures('factoryRoof.jpeg', scene, x, y, z)
-  createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
-}
+/*
+ * Buttons
+ */
 
-
-// Loop
-const animate = () => {
-
-  requestAnimationFrame(animate)
-  if (moveMode.value === 'fly') {
-
-    cameraControls.update(0.05)
-  }
-  // Render new frame
-
-  renderer.render(scene, camera)
-}
-
-// Entry Point
-
-// Button onLoadFactory
 const onLoadFactoryButton = () => {
-  loadFactory(scene, loader, 'factory_id_sample')
-
+  getAllEntitysInFactory(factoryID.value).then((backendEntitys: IBackendEntity[]) => {
+    backendEntitys.forEach((backendEntity) => {
+      placeEntity(
+          loader,
+          scene,
+          {x: backendEntity.x, y: backendEntity.y, z: backendEntity.z},
+          backendUrl + backendEntity.path
+      )
+    })
+  })
 }
-// Button onToggleMoveMode
-const toggleMenuVisibility = () => {
-  showCircMenu.value = !showCircMenu.value;
 
-};
+const onToggleMenuVisibility = () => {
+  showCircMenu.value = !showCircMenu.value
+}
+
 const onChangeEntityClicked = (situation: string) => {
   switch (situation) {
     case 'delete':
+      console.log(currentObjectSelected.value)
       scene.remove(currentObjectSelected.value)
       console.log('deleting Entity')
       break
@@ -168,6 +166,8 @@ const onChangeEntityClicked = (situation: string) => {
       break
     case 'move':
       manipulationMode.value = 'move'
+      currObjSelectedOriginPos.value = currentObjectSelected.value.position.clone()
+      console.log(currObjSelectedOriginPos.value)
       console.log('moving Entity')
       break
     case 'script':
@@ -178,14 +178,13 @@ const onChangeEntityClicked = (situation: string) => {
       break
   }
 }
-const onToggleMoveModeButton = () => {
-  moveMode.value = moveMode.value === 'orbit' ? 'fly' : 'orbit'
 
-}
+
 /**
- * LISTENERS
+ * Handlers
  **/
-window.addEventListener('resize', () => {
+
+const handleResize = () => {
   // Variables
   sizes = {
     width: window.innerWidth,
@@ -197,72 +196,93 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix()
   // Resize Renderer
   renderer.setSize(sizes.width, sizes.height)
-})
-addEventListener('keydown', (event) => {
+}
+
+const handleKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'v' || event.key === 'V') {
-    moveOrSelectionMode.value = ''
     manipulationMode.value = ''
     showCircMenu.value = false
     if (currentObjectSelected.value) highlightObjectWithColor(currentObjectSelected, false)
     scene.remove(highlight)
   }
+  if (event.key === 'Escape') {
+    if (manipulationMode.value === 'move') {
+      replaceEntity(currObjSelectedOriginPos.value, currentObjectSelected, currentObjectSelected)
+      manipulationMode.value = ''
+    }
+  }
   if (manipulationMode.value === 'rotate') {
     const currObjSelRot = currentObjectSelected.value.rotation
     if (event.key === 'ArrowLeft') {
-      currObjSelRot.set(0, 0, currObjSelRot.z + (Math.PI / 2))
+      currObjSelRot.set(Math.PI / 2, currObjSelRot.y + Math.PI / 2, 0)
     }
     if (event.key === 'ArrowRight') {
-      currObjSelRot.set(0, 0, currObjSelRot.z - (Math.PI / 2))
+      currObjSelRot.set(Math.PI / 2, currObjSelRot.y - Math.PI / 2, 0)
     }
   }
-})
-addEventListener('mousemove', (event: MouseEvent) => {
+  if (event.key === 'Q' || event.key === 'q') cm.toggleMode()
+}
+
+const handleMouseMove = (event: MouseEvent) => {
   // Get all intersections with mouse and world
   const intersections = getIntersectionsMouse(event, camera, scene)
 
   // Update the highlighter
-  if (highlight && moveOrSelectionMode.value === 'set')
-      // Object model wird asynchron geladen
-  {
+  if (highlight && manipulationMode.value === 'set') {
+    // Object model wird asynchron geladen
     moveHighlight(highlight, ACTIVE_LAYER, intersections)
   } else if (currentObjectSelected.value && manipulationMode.value === 'move') {
     moveHighlight(currentObjectSelected.value, ACTIVE_LAYER, intersections)
   }
+}
 
-})
-addEventListener('click', () => {
+const handleClick = () => {
   // Place cube
   if (showCircMenu.value) {
     showCircMenu.value = false
-    if (manipulationMode.value === '')
-      highlightObjectWithColor(currentObjectSelected, false)
+    if (manipulationMode.value === '') highlightObjectWithColor(currentObjectSelected, false)
     return
   }
-  if (moveOrSelectionMode.value === 'set' &&
+  switch (manipulationMode.value) {
+    case 'set':
       placeRequest({
         x: highlight.position.x,
         y: highlight.position.y,
         z: highlight.position.z,
         orientation: 'N',
-        entityID: 'cube'
+        entityID: 'cube',
+        factoryID: 1
+      }, '/place').then((success: boolean) => {
+        console.log('placing entity: ' + success)
+        if (success) {
+          placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
+        } 
       })
-  ) {
-    placeEntity(loader, scene, highlight.position, activeEntity.value.path)
-  } else if (manipulationMode.value === 'move' &&
+      break
+    case 'move':
       placeRequest({
-        x: currentObjectSelected.value.position.x,
-        y: currentObjectSelected.value.position.y,
-        z: currentObjectSelected.value.position.z,
+        x: highlight.position.x,
+        y: highlight.position.y,
+        z: highlight.position.z,
         orientation: 'N',
-        entityID: 'cube'
-      })) {
-    replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
-    manipulationMode.value = ''
+        entityID: 'cube',
+        factoryID: 1
+      }, '/move').then((success: boolean) => {
+        console.log('placing entity: ' + success)
+        if (success) {
+          replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
+          manipulationMode.value = ''
+        }
+      })
+      break
   }
-})
-addEventListener('contextmenu', (event: MouseEvent) => {
+
+
+}
+
+const handleContextMenu = (event: MouseEvent) => {
   event.preventDefault()
-  if (moveOrSelectionMode.value !== '' || manipulationMode.value !== '') return
+  if (manipulationMode.value !== '') return
   const intersections = getIntersectionsMouse(event, camera, scene)
   if (selectionObject(currentObjectSelected, lastObjectSelected, intersections)) {
     if (dynamicDiv) {
@@ -274,44 +294,42 @@ addEventListener('contextmenu', (event: MouseEvent) => {
   }
   if (currentObjectSelected.value)
     currObjSelectedOriginPos.value = currentObjectSelected.value.position
-})
+}
+
 /**
- * WATCHERS
+ * Watcher
  * **/
+
 watch(activeEntity, () => {
-  moveOrSelectionMode.value = 'set'
-  scene.add(highlight)
-  updateHighlightModel(highlight, activeEntity.value.path, scene, loader).then(
-      (newHighlight: THREE.Group) => {
-        highlight = newHighlight
-      }
-  )
-})
-// Watch the moveMode to change camera option
-watch(moveMode, () => {
-  var prevCamera = camera
-  camera = new THREE.PerspectiveCamera(50, sizes.ratio)
-  camera.position.copy(prevCamera.position)
-  camera.rotation.copy(prevCamera.rotation)
-  camera.up.copy(prevCamera.up)
+  manipulationMode.value = 'set'
 
-  const controls =
-      moveMode.value === 'fly'
-          ? new FlyControls(camera, renderer.domElement)
-          : new OrbitControls(camera, renderer.domElement)
-
-  if (moveMode.value === 'fly') {
-    controls.movementSpeed = 10
-    controls.dragToLook = true
-    controls.rollSpeed = 0.3
+  if (highlight !== undefined) {
+    updateHighlightModel(highlight, backendUrl + activeEntity.value.modelFile, scene, loader).then(
+        (newHighlight: THREE.Group) => {
+          highlight = newHighlight
+        }
+    )
+  } else {
+    initalLoadHighlightModel('mock/.gltf/cube.gltf') // geht
+    // initalLoadHighlightModel(backendUrl + activeEntity.value.modelFile) // geht nicht
+    // initalLoadHighlightModel('mock/.gltf/brennerofen.gltf') // geht auch nicht ???? liegt also am model und nicht am link oder der resource selbst
   }
-
-  cameraControls = controls
 })
-init()
+
+/**
+ * Gamecycle
+ **/
+
 onMounted(() => {
+  // add eventListeners
+  window.addEventListener('resize', handleResize)
+  window.addEventListener('keydown', handleKeyDown)
+  window.addEventListener('mousemove', handleMouseMove)
+  window.addEventListener('click', handleClick)
+  window.addEventListener('contextmenu', handleContextMenu)
   target.value.appendChild(renderer.domElement)
   dynamicDiv = document.getElementById('dynamicDiv')
+
   // Renderer gets appended to target
   getAllEntitys().then((json) => {
     // Alle entittys sind nun zugänglich für uns
@@ -320,27 +338,74 @@ onMounted(() => {
     activeEntity.value = allEntitys.value[0]
   })
   // initial function calls
-  animate()
+  animate(0)
 })
+
+onUnmounted(() => {
+  // remove eventListeners
+  window.removeEventListener('resize', handleResize)
+  window.removeEventListener('keydown', handleKeyDown)
+  window.removeEventListener('mousemove', handleMouseMove)
+  window.removeEventListener('click', handleClick)
+  window.removeEventListener('contextmenu', handleContextMenu)
+})
+
+function init() {
+  // provides & injections
+  provide('showCircleMenu', showCircMenu)
+  sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    ratio: window.innerWidth / window.innerHeight
+  }
+  setupScene()
+  setupRenderer()
+  setupCamera()
+  setupLights()
+  setupControls()
+  setupLoader()
+  createRoom(factorySize.value.x, factorySize.value.y, factorySize.value.z, scene)
+}
+
+const animate = (timestamp: any) => {
+  const currentTime = timestamp || 0
+  const deltaTime = (currentTime - previousTime) / 1000
+
+  previousTime = currentTime
+
+  requestAnimationFrame(animate)
+
+  cm.update(deltaTime)
+  renderer.render(scene, camera)
+}
+
+/**
+ * Start Game
+ **/
+
+init()
 </script>
 
 <template>
-  <div className="target" ref="target">
+  <div class="target" ref="target">
     <div id="dynamicDiv" style="background-color: #2c3e50; position: absolute">
-      <CircularMenu :toggleMenuVisibility="toggleMenuVisibility"
-                    @changeEntity="onChangeEntityClicked"
+      <CircularMenu
+          :toggleMenuVisibility="onToggleMenuVisibility"
+          @changeEntity="onChangeEntityClicked"
       ></CircularMenu>
     </div>
-    <div className="button-bar">
-      <button @click="onLoadFactoryButton">Test Load Factory</button>
-      <button @click="onToggleMoveModeButton">Toggle Camera Mode</button>
+    <div class="button-bar">
+      <button @click="onLoadFactoryButton" link="">Test Load Factory</button>
     </div>
-    <div className="debug-bar">
-      <div>Current Camera Mode: {{ moveMode }}</div>
-      <div>Active Entity: {{ activeEntity.entityID }}</div>
+    <div class="debug-bar">
+      <div>Active Entity: {{ activeEntity.id }}</div>
+      <div>Current Mode: {{ currentMode }}</div>
     </div>
-    <EntityBar :entities="allEntitys" :active-entity="activeEntity"
-               @update-active-entity="id => activeEntity = allEntitys[id]"/>
+    <EntityBar
+        :entities="allEntitys"
+        :active-entity="activeEntity"
+        @update-active-entity="(id) => (activeEntity = allEntitys[id])"
+    />
   </div>
 </template>
 

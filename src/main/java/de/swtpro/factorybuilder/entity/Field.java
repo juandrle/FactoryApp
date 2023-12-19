@@ -1,23 +1,25 @@
 package de.swtpro.factorybuilder.entity;
 
 import de.swtpro.factorybuilder.utility.Position;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 
+import static jakarta.persistence.CascadeType.ALL;
+
 @Entity
 public class Field implements Serializable {
     @Id
+    @GeneratedValue
     private long id;
     private long factoryID;
-
-    private long placedModelID;
 
     @Column(unique = true)
     private Position pos;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "machine_id", referencedColumnName = "id")
+    @Nullable
+    @ManyToOne(cascade = ALL)
     private PlacedModel placedModel;
 
     public Field() {
@@ -32,10 +34,17 @@ public class Field implements Serializable {
 
     public Position getPosition() { return pos;}
 
-    public long getPlacedModelID() { return placedModelID; }
-
     public void setPosition(Position pos){ this.pos = pos; }
 
-    public void setPlacedModelID(Long id) { this.placedModelID = id; }
+    public long getId() {
+        return id;
+    }
 
+    public PlacedModel getPlacedModel() {
+        return placedModel;
+    }
+
+    public void setPlacedModel(PlacedModel placedModel) {
+        this.placedModel = placedModel;
+    }
 }
