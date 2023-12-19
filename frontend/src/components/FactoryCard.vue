@@ -2,7 +2,6 @@
 import { defineProps, ref } from 'vue'
 import type { Factory } from '@/views/FactoryEnterView.vue'
 
-
 const props = defineProps({
   factory: {
     type: Object as () => Factory,
@@ -19,22 +18,34 @@ const password = ref('')
 </script>
 
 <template>
-  <div class="factorycard" @click="e => rotateCard(e.currentTarget)">
+  <div class="factorycard" @click="(e) => rotateCard(e.currentTarget)">
     <div class="card-front">
       <img
+        class="factory-image"
         src="https://damassets.autodesk.net/content/dam/autodesk/www/industry/manufacturing/integrated-factory-modeling/what-is-integrated-factory-modeling-thumb-1172x660.jpg"
         alt="Factoryimage"
       />
       <div class="factorycard-content">
-        <p>{{ factory.name }}</p>
-        <p>{{ factory.size }}</p>
-        <p>{{ factory.author }}</p>
+        <div style="width: max-content">
+          <p>{{ factory.name }}</p>
+          <p>{{ factory.size }}</p>
+          <p>{{ factory.author }}</p>
+        </div>
+        <button class="dustbin-btn" onclick="#">
+          <img class="dustbin" src="../assets/icons8-mülleimer-48.png" alt="Papierkorb" />
+        </button>
       </div>
     </div>
     <div class="card-back" style="display: none">
       <form class="password-form">
         <div class="input-wrapper">
-          <input v-model="password" type="password" placeholder="Passwort eingeben" class="password-input"  @click="e => e.stopPropagation()"/>
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Passwort eingeben"
+            class="password-input"
+            @click="(e) => e.stopPropagation()"
+          />
           <button type="submit" class="arrow-button">
             <img src="/icons8-pfeil-rechts-48.png" alt="Pfeil" />
           </button>
@@ -47,11 +58,9 @@ const password = ref('')
 <style scoped>
 .factorycard {
   position: relative;
-  overflow: hidden;
   border-radius: 30px;
-  height: 230px;
-  width: 200px;
-  perspective: 1000px;
+  height: 260px;
+  width: 230px;
   transition: transform 0.5s;
   border: 1px solid transparent;
 }
@@ -70,23 +79,27 @@ const password = ref('')
   align-items: center;
   height: 100%;
   background-color: #342844;
-}
-/* .card-back input {
-  max-width: 100%;
-  padding: 12px 20px;
-} */
-.input-wrapper{
-  display: flex;
-}
-.password-input{
-  display: block;
-  box-sizing: border-box;
-  padding: 12px 20px;
-  background-color: transparent;
-  border: 2px solid #683ce4;
+  padding: 0px 10px 0px 10px;
   border-radius: 30px;
-  color: white; 
+}
+.input-wrapper {
+  display: flex;
+  border: 1.5px solid #683ce4;
+  border-radius: 30px;
+  padding: 10px 5px 10px 15px;
+  align-items: center;
+  gap: 5px;
+}
+.password-input {
+  /* display: block;
+  box-sizing: border-box; */
+  background-color: transparent;
+  color: white;
   width: 100%;
+  border: none;
+}
+.password-input:focus {
+  outline: none;
 }
 .password-form {
   display: flex;
@@ -94,18 +107,22 @@ const password = ref('')
   justify-content: flex-end;
   align-items: center;
 }
-.card-front img {
-  position: absolute;
+.factory-image {
+  /* position: absolute; */
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  border-radius: 30px;
 }
 .factorycard-content {
+  display: flex;
   position: absolute;
+  justify-content: space-between;
   bottom: 0;
-  padding: 10px;
+  padding: 12.5px;
   border-radius: 0 0 30px 30px;
+  box-sizing: border-box;
   width: 100%;
   background-color: #342844;
 }
@@ -118,9 +135,20 @@ const password = ref('')
 .factorycard-content > :first-child {
   text-transform: uppercase;
 }
+.dustbin-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  height: min-content;
+  align-self: end;
+}
+.dustbin {
+  height: 30px;
+  width: auto;
+  object-fit: cover;
+}
 .arrow-button {
-  border: none; 
+  border: none;
   background: transparent;
-  position: relative;
 }
 </style>

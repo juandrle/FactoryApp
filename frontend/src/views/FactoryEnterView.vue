@@ -115,7 +115,7 @@ const rotateCard = (clickTarget: EventTarget | null) => {
       </div>
     </div>
     <div class="m-item">
-      <h1 class="game-name">Fabrik betreten</h1>
+      <h1 class="headline">Fabrik betreten</h1>
       <div class="contentDiv">
         <div class="filter-div">
           <input placeholder="Suche..." v-model="searchTerm" />
@@ -157,10 +157,11 @@ const rotateCard = (clickTarget: EventTarget | null) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
-.game-name {
-  position: absolute;
-  top: 5%;
+.headline {
+  font: normal normal bold 70px/84px Overpass;
+  letter-spacing: 0px;
   font-weight: 400;
 }
 .content-s-item {
@@ -185,13 +186,13 @@ const rotateCard = (clickTarget: EventTarget | null) => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: min-content;
-  position: relative;
-  top: 20%;
+  width: 100%;
+  /* position: relative;
+  top: 20%; */
 }
 input {
   display: block;
-  width: 350px;
+  width: 390px;
   background-color: transparent;
   padding: 12px 20px;
   box-sizing: border-box;
@@ -206,10 +207,11 @@ input:focus {
   display: flex;
   gap: 1rem;
   padding-bottom: 3rem;
+  justify-content: space-between;
 }
 .custom-select {
   position: relative;
-  width: 150px;
+  width: 200px;
 }
 select {
   width: 100%;

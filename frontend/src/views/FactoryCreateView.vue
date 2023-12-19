@@ -63,7 +63,7 @@ function createFactory() {
       </div>
     </div>
     <div class="m-item">
-      <h1 class="game-name">Fabrik erstellen</h1>
+      <h1 class="headline">Fabrik erstellen</h1>
       <div class="factory-settings">
         <form @submit.prevent="createFactory">
           <div class="form">
@@ -92,6 +92,7 @@ function createFactory() {
 <style scoped>
 .container .m-item {
   align-items: center;
+  flex-direction: column;
 }
 form {
   display: flex;
@@ -129,7 +130,11 @@ form {
   padding: 50px 20px 10px 20px;
   top: 75%;
 }
-
+.headline {
+  font: normal normal bold 70px/84px Overpass;
+  letter-spacing: 0px;
+  font-weight: 400;
+}
 .logo-titel {
   font: normal normal bold 0.938rem/1.25rem Overpass;
   letter-spacing: 0px;
@@ -158,7 +163,7 @@ form {
 .factory-settings {
   position: relative;
   min-width: 100%;
-  top: 4rem;
+  /* top: 4rem; */
   /* padding: 11.5rem 6.25rem; */
 }
 
