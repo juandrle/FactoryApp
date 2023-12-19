@@ -31,7 +31,7 @@ const password = ref('')
           <p>{{ factory.size }}</p>
           <p>{{ factory.author }}</p>
         </div>
-        <button class="dustbin-btn" onclick="#">
+        <button class="dustbin-btn" @click="(e) => e.stopPropagation()">
           <img class="dustbin" src="../assets/icons8-mülleimer-48.png" alt="Papierkorb" />
         </button>
       </div>
