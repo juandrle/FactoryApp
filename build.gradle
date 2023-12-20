@@ -35,7 +35,7 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-security:3.1.5'
-    implementation 'org.springframework.security:spring-security-core:5.0.0.RELEASE'
+    implementation 'org.springframework.security:spring-security-core:6.0.2'
 
 }
 // Use JUnit Platform for running tests

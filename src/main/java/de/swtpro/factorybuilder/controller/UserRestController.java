@@ -27,7 +27,7 @@ import de.swtpro.factorybuilder.service.user.UserServiceImpl;
 import jakarta.validation.Valid;
 
 @RestController
-
+@RequestMapping()
 public class UserRestController {
     Logger logger = LoggerFactory.getLogger(UserRestController.class); 
     @Autowired
