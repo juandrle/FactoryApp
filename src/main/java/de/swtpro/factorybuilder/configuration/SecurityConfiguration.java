@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -21,10 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import de.swtpro.factorybuilder.controller.UserRestController;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    
+    Logger logger = LoggerFactory.getLogger(SecurityConfiguration.class); 
     @Autowired
     HandlerMappingIntrospector introspector;
 
@@ -44,19 +48,19 @@ public class SecurityConfiguration {
         return new InMemoryUserDetailsManager(user1);
     }
 
-    @Order(1)
+    @Order(2)
     @Bean
     public SecurityFilterChain filterChainApp(HttpSecurity http) throws Exception {
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
 
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(mvc.pattern("/h2-console/**")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/assets/**")).permitAll()
+                .requestMatchers(mvc.pattern("/h2-console/*")).permitAll()
+                .requestMatchers(mvc.pattern(HttpMethod.GET, "/assets/*")).permitAll()
                 .requestMatchers(mvc.pattern("/signup")).permitAll()
                 .requestMatchers(mvc.pattern("/create")).hasRole("USER")
                 .anyRequest().authenticated())
                 .formLogin(withDefaults())
-                .csrf(csrf -> csrf.ignoringRequestMatchers(mvc.pattern("/h2-console/**")))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(mvc.pattern("/h2-console/*")))
                 .headers(headers -> headers.frameOptions().sameOrigin())
                 .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login"));
 
@@ -64,27 +68,26 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    @Order(2)
+    @Order(1)
     @Bean
-    SecurityFilterChain filterChainAPI(HttpSecurity http) throws Exception{
-        MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
-        http
-            .securityMatchers(s -> s.requestMatchers(mvc.pattern(HttpMethod.POST, "/api/**")))
-
+        SecurityFilterChain filterChainAPI(HttpSecurity http) throws Exception {
+            logger.info("SECURITY LOGGER");
+            MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
             
-            .authorizeHttpRequests(authz -> authz
+            http
+                .securityMatchers(s -> s.requestMatchers(mvc.pattern(HttpMethod.POST, "/api/users/signup")))
+                .cors() // Enable CORS configuration
+                    .and()
+                .authorizeHttpRequests(authz -> authz
+                    .anyRequest().permitAll())
+                .csrf(csrf -> csrf.disable())
+                .httpBasic(withDefaults())
+                .sessionManagement((session) ->
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-            .anyRequest().permitAll())
-            .csrf(csrf -> csrf.disable())
-            .httpBasic(withDefaults())
+            return http.build();
+        }
 
-            .sessionManagement((session) ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-
-        
-        return http.build();
-    }
 
 }
 

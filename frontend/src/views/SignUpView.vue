@@ -1,25 +1,50 @@
 <script setup lang="ts">
 import { VueElement, ref } from 'vue';
+import type { UserForm } from '@/types/UserForm';
 // import Button from '../components/Button.vue'
 
 const buttonData = ref([
   { text: 'Sign Up', link: "/signup" }
 ])
-
-const selectedSize = ref()
-
-function createFactory() {
-  if (selectedSize.value) {
-    console.log(selectedSize.value)
-  } else {
-    console.error("Please select a size before creating the factory.")
-  }
-}
 const userForm = ref({
   username: '',
   password: '',
   passwordCheck: '',
 });
+
+
+// export async function signupUser(userForm: UserForm): Promise<void> {
+//   try {
+//     const url = '/api/users/signup';
+
+//     const response = await fetch(url, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(userForm),
+//     });
+
+//     if (!response.ok) {
+//       if (response.status === 400) {
+//         const validationError = await response.json();
+//         console.error('Validation error:', validationError);
+//       } else {
+//         console.error('Error during signup. Status:', response.status);
+//       }
+//       return;
+//     }
+
+//     const responseData: UserResponse = await response.json();
+//     console.log('User signup successful:', responseData);
+
+//     // Optionally, you can redirect the user to the home page or perform other actions
+//   } catch (error) {
+//     console.error('Failed to signup', error);
+//     // Handle other errors, such as network issues
+//   }
+// }
+
 
 const signupUser = async () => {
   const userData = {
@@ -37,7 +62,11 @@ const signupUser = async () => {
       body: JSON.stringify(userData),
 
       
+      
     });
+    console.log("das is von backend", response)
+    // const responseData = await response.json();
+    //   console.log('User signup successful:', responseData);
     if (response.status === 400) {
       const errorData = await response.json();
       console.error('Validation error:', errorData);
@@ -80,9 +109,10 @@ const signupUser = async () => {
           <div class="form-container">
             <h2>Sign Up</h2>
             <div class="factory-name">
-              <input placeholder="Namen eingeben" />
-              <input placeholder="Passwort eingeben" />
-              <input placeholder="Passwort bestätigen" />
+              <input v-model="userForm.username" name="username" placeholder="Namen eingeben" />
+              <input v-model="userForm.password" name="password" placeholder="Passwort eingeben" />
+              <input v-model="userForm.passwordCheck" name="passwordCheck" placeholder="Passwort bestätigen" />
+
             </div>
             <div class="b-container">
               <button type="submit">Sign Up</button>

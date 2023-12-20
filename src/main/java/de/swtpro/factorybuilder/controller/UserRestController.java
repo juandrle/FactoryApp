@@ -27,7 +27,7 @@ import de.swtpro.factorybuilder.service.user.UserServiceImpl;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping()
+
 public class UserRestController {
     Logger logger = LoggerFactory.getLogger(UserRestController.class); 
     @Autowired
@@ -37,9 +37,12 @@ public class UserRestController {
     @PostMapping("/api/users/signup")
     @ResponseBody
     public ResponseEntity<String> signup(@Valid @RequestBody UserDTO userDTO, BindingResult userFormularError) {
+        logger.info("VINCUEN IS HIER");
     if (userFormularError.hasErrors()) {
         // Return error response
-        return ResponseEntity.badRequest().body("Invalid user data");
+        return ResponseEntity.badRequest().body("{\"error\": \"Invalid user data\"}");
+        
+
     } else {
         User currentUser = new User();
         currentUser.setUsername(userDTO.userName());
