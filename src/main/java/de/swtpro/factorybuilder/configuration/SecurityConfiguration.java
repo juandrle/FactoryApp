@@ -44,19 +44,19 @@ public class SecurityConfiguration {
         return new InMemoryUserDetailsManager(user1);
     }
 
-    @Order(1)
+    @Order(2)
     @Bean
     public SecurityFilterChain filterChainApp(HttpSecurity http) throws Exception {
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
 
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(mvc.pattern("/h2-console/**")).permitAll()
+                .requestMatchers(toH2Console()).permitAll()
                 .requestMatchers(mvc.pattern(HttpMethod.GET, "/assets/**")).permitAll()
-                .requestMatchers(mvc.pattern("/signup")).permitAll()
+                .requestMatchers(mvc.pattern("/signup")).anonymous()
                 .requestMatchers(mvc.pattern("/create")).hasRole("USER")
                 .anyRequest().authenticated())
                 .formLogin(withDefaults())
-                .csrf(csrf -> csrf.ignoringRequestMatchers(mvc.pattern("/h2-console/**")))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(toH2Console()))
                 .headers(headers -> headers.frameOptions().sameOrigin())
                 .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login"));
 
@@ -64,7 +64,7 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-    @Order(2)
+    @Order(1)
     @Bean
     SecurityFilterChain filterChainAPI(HttpSecurity http) throws Exception{
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
