@@ -36,7 +36,7 @@ const ACTIVE_LAYER: number = 0
  **/
 
 const target = ref()
-const manipulationMode: Ref<String> = ref<'move' | 'rotate' | '' | 'set'>('')
+const manipulationMode: Ref<String> = ref<'move' | 'rotate' | '' | 'set' | 'clone'>('')
 const allEntitys: Ref<IBackendEntityPreview[]> = ref([])
 const activeEntity: Ref<IBackendEntityPreview> = ref({
   path: '/fallback/.gltf/cube.gltf',
@@ -54,7 +54,7 @@ const showCircMenu: Ref<Boolean> = ref(false)
  **/
 
 const {factorySize} = inject<{
-  factorySize: Ref<IVector3>
+  factorySize: Ref<IVector3>,
   updateFactorySize: (newSize: IVector3) => void
 }>('factorySize')
 const {factoryID} = inject<{
@@ -174,6 +174,13 @@ const onChangeEntityClicked = (situation: string) => {
       console.log('scripting Entity')
       break
     case 'clone':
+      const newObj = currentObjectSelected.value.clone()
+      scene.add(newObj)
+      highlightObjectWithColor(currentObjectSelected, false)
+      console.log(currentObjectSelected.value)
+      currentObjectSelected.value = newObj
+      console.log(currentObjectSelected.value)
+      manipulationMode.value = 'clone'
       console.log('cloning Entity')
       break
   }
@@ -240,6 +247,9 @@ const handleClick = () => {
   // Place cube
   if (showCircMenu.value) {
     showCircMenu.value = false
+    if (manipulationMode.value === 'clone') {
+      selectionObject(currentObjectSelected,lastObjectSelected,intersections)
+    }
     if (manipulationMode.value === '') highlightObjectWithColor(currentObjectSelected, false)
     return
   }
@@ -256,7 +266,7 @@ const handleClick = () => {
         console.log('placing entity: ' + success)
         if (success) {
           placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
-        } 
+        }
       })
       break
     case 'move':
@@ -268,6 +278,22 @@ const handleClick = () => {
         entityID: 'cube',
         factoryID: 1
       }, '/move').then((success: boolean) => {
+        console.log('placing entity: ' + success)
+        if (success) {
+          replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
+          manipulationMode.value = ''
+        }
+      })
+      break
+    case 'clone':
+      placeRequest({
+        x: currentObjectSelected.value.position.x,
+        y: currentObjectSelected.value.position.y,
+        z: currentObjectSelected.value.position.z,
+        orientation: 'N',
+        entityID: 'cube',
+        factoryID: 1
+      }, '/clone').then((success: boolean) => {
         console.log('placing entity: ' + success)
         if (success) {
           replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
