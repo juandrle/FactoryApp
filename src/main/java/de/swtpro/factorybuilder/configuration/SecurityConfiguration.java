@@ -54,13 +54,13 @@ public class SecurityConfiguration {
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
 
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(mvc.pattern("/h2-console/*")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/assets/*")).permitAll()
-                .requestMatchers(mvc.pattern("/signup")).permitAll()
+                .requestMatchers(toH2Console()).permitAll()
+                .requestMatchers(mvc.pattern(HttpMethod.GET, "/assets/**")).permitAll()
+                .requestMatchers(mvc.pattern("/signup")).anonymous()
                 .requestMatchers(mvc.pattern("/create")).hasRole("USER")
                 .anyRequest().authenticated())
                 .formLogin(withDefaults())
-                .csrf(csrf -> csrf.ignoringRequestMatchers(mvc.pattern("/h2-console/*")))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(toH2Console()))
                 .headers(headers -> headers.frameOptions().sameOrigin())
                 .logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login"));
 
