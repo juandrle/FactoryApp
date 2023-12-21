@@ -68,7 +68,7 @@ const signupUser = async () => {
     // const responseData = await response.json();
     //   console.log('User signup successful:', responseData);
     if (response.status === 400) {
-      const errorData = await response.json();
+      const errorData = await response;
       console.error('Validation error:', errorData);
     }
     if (!response.ok) {
@@ -78,12 +78,12 @@ const signupUser = async () => {
     }
 
     if (response.ok) {
-      const responseData = await response.json();
+      const responseData = await response;
       console.log('User signup successful:', responseData);
 
       // Optionally, you can redirect the user to the home page or perform other actions
     } else {
-      const errorData = await response.json();
+      const errorData = await response;
       console.error('User signup failed:', errorData);
 
       // You can display an error message to the user or perform other error handling

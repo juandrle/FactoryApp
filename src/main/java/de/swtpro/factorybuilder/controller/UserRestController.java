@@ -45,7 +45,7 @@ public class UserRestController {
 
     } else {
         User currentUser = new User();
-        currentUser.setUsername(userDTO.userName());
+        currentUser.setUsername(userDTO.username());
         currentUser.setPassword(userDTO.password());
 
         boolean nameTaken = userServiceImpl.checkUsername(currentUser.getUsername());

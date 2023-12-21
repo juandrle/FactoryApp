@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     public void signUp (UserDTO userDTO){
         User vs = new User();
-        vs.setUsername(userDTO.userName());
+        vs.setUsername(userDTO.username());
         String encodedPassword = passwordEncoder.encode(userDTO.password());
         vs.setPassword(encodedPassword);
         userRepo.save(vs);
