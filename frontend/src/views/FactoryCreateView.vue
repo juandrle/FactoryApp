@@ -6,8 +6,6 @@ import router from "@/router";
 import {factoryCreateRequest} from "@/utils/backendComms/postRequests";
 import type {IFactoryCreate} from "@/types/backendEntity";
 
-const buttonData = ref([{text: 'Fabrik erstellen und bestellen', link: '/factory'}])
-
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
   {label: '60x100x12', value: {x: 60, y: 100, z: 12} as IVector3},

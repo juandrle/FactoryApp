@@ -44,9 +44,9 @@ const activeEntity: Ref<IBackendEntityPreview> = ref({
   entityID: 'loadingCube'
 })
 // quick fix to any
-const currentObjectSelected: any = ref()
-const lastObjectSelected: any = ref()
-const currObjSelectedOriginPos: Ref<IVector3> = ref({x: 0, y: 0, z: 0})
+let currentObjectSelected: any
+let lastObjectSelected: any
+let currObjSelectedOriginPos: IVector3 = {x: 0, y: 0, z: 0}
 const showCircMenu: Ref<Boolean> = ref(false)
 
 /**
@@ -156,8 +156,7 @@ const onToggleMenuVisibility = () => {
 const onChangeEntityClicked = (situation: string) => {
   switch (situation) {
     case 'delete':
-      console.log(currentObjectSelected.value)
-      scene.remove(currentObjectSelected.value)
+      scene.remove(currentObjectSelected)
       console.log('deleting Entity')
       break
     case 'rotate':
@@ -166,20 +165,19 @@ const onChangeEntityClicked = (situation: string) => {
       break
     case 'move':
       manipulationMode.value = 'move'
-      currObjSelectedOriginPos.value = currentObjectSelected.value.position.clone()
-      console.log(currObjSelectedOriginPos.value)
+      currObjSelectedOriginPos = currentObjectSelected.position.clone()
       console.log('moving Entity')
       break
     case 'script':
       console.log('scripting Entity')
       break
     case 'clone':
-      const newObj = currentObjectSelected.value.clone()
+      const newObj = currentObjectSelected.clone()
       scene.add(newObj)
       highlightObjectWithColor(currentObjectSelected, false)
-      console.log(currentObjectSelected.value)
-      currentObjectSelected.value = newObj
-      console.log(currentObjectSelected.value)
+      lastObjectSelected = currentObjectSelected
+      currentObjectSelected = newObj
+      highlightObjectWithColor(currentObjectSelected, true)
       manipulationMode.value = 'clone'
       console.log('cloning Entity')
       break
@@ -209,17 +207,17 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'v' || event.key === 'V') {
     manipulationMode.value = ''
     showCircMenu.value = false
-    if (currentObjectSelected.value) highlightObjectWithColor(currentObjectSelected, false)
+    if (currentObjectSelected) highlightObjectWithColor(currentObjectSelected, false)
     scene.remove(highlight)
   }
   if (event.key === 'Escape') {
     if (manipulationMode.value === 'move') {
-      replaceEntity(currObjSelectedOriginPos.value, currentObjectSelected, currentObjectSelected)
+      replaceEntity(currObjSelectedOriginPos, currentObjectSelected, currentObjectSelected)
       manipulationMode.value = ''
     }
   }
   if (manipulationMode.value === 'rotate') {
-    const currObjSelRot = currentObjectSelected.value.rotation
+    const currObjSelRot = currentObjectSelected.rotation
     if (event.key === 'ArrowLeft') {
       currObjSelRot.set(Math.PI / 2, currObjSelRot.y + Math.PI / 2, 0)
     }
@@ -238,8 +236,10 @@ const handleMouseMove = (event: MouseEvent) => {
   if (highlight && manipulationMode.value === 'set') {
     // Object model wird asynchron geladen
     moveHighlight(highlight, ACTIVE_LAYER, intersections)
-  } else if (currentObjectSelected.value && manipulationMode.value === 'move') {
-    moveHighlight(currentObjectSelected.value, ACTIVE_LAYER, intersections)
+  } else if (currentObjectSelected && manipulationMode.value === 'move') {
+    moveHighlight(currentObjectSelected, ACTIVE_LAYER, intersections)
+  } else if (currentObjectSelected && manipulationMode.value === 'clone') {
+    moveHighlight(currentObjectSelected, ACTIVE_LAYER, intersections)
   }
 }
 
@@ -247,9 +247,6 @@ const handleClick = () => {
   // Place cube
   if (showCircMenu.value) {
     showCircMenu.value = false
-    if (manipulationMode.value === 'clone') {
-      selectionObject(currentObjectSelected,lastObjectSelected,intersections)
-    }
     if (manipulationMode.value === '') highlightObjectWithColor(currentObjectSelected, false)
     return
   }
@@ -280,23 +277,23 @@ const handleClick = () => {
       }, '/move').then((success: boolean) => {
         console.log('placing entity: ' + success)
         if (success) {
-          replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
+          replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
           manipulationMode.value = ''
         }
       })
       break
     case 'clone':
       placeRequest({
-        x: currentObjectSelected.value.position.x,
-        y: currentObjectSelected.value.position.y,
-        z: currentObjectSelected.value.position.z,
+        x: currentObjectSelected.position.x,
+        y: currentObjectSelected.position.y,
+        z: currentObjectSelected.position.z,
         orientation: 'N',
         entityID: 'cube',
         factoryID: 1
       }, '/clone').then((success: boolean) => {
         console.log('placing entity: ' + success)
         if (success) {
-          replaceEntity(currentObjectSelected.value.position, currentObjectSelected, lastObjectSelected)
+          replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
           manipulationMode.value = ''
         }
       })
@@ -310,7 +307,10 @@ const handleContextMenu = (event: MouseEvent) => {
   event.preventDefault()
   if (manipulationMode.value !== '') return
   const intersections = getIntersectionsMouse(event, camera, scene)
-  if (selectionObject(currentObjectSelected, lastObjectSelected, intersections)) {
+  const {worked, currObj, lastObj} = selectionObject(currentObjectSelected, lastObjectSelected, intersections)
+  if (worked) {
+    currentObjectSelected = currObj;
+    lastObjectSelected = lastObj;
     if (dynamicDiv) {
       dynamicDiv.style.left = event.clientX - 50 + 'px'
       dynamicDiv.style.top = event.clientY + 20 + 'px'
@@ -318,8 +318,8 @@ const handleContextMenu = (event: MouseEvent) => {
     }
     showCircMenu.value = true
   }
-  if (currentObjectSelected.value)
-    currObjSelectedOriginPos.value = currentObjectSelected.value.position
+  if (currentObjectSelected)
+    currObjSelectedOriginPos = currentObjectSelected.position
 }
 
 /**
