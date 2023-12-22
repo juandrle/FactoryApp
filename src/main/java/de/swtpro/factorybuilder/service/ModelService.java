@@ -15,10 +15,16 @@ public class ModelService {
     ModelService(ModelRepository modelRepository) {
         this.modelRepository = modelRepository;
     }
-    public List<Model> getAll(){
+
+    public List<Model> getAll() {
         return modelRepository.findAll();
     }
-    public Optional<Model> getByID(long id){
+
+    public List<Model> saveAllModels(List<Model> m) {
+        return modelRepository.saveAll(m);
+    }
+
+    public Optional<Model> getByID(long id) {
         return modelRepository.findById(id);
     }
 }
