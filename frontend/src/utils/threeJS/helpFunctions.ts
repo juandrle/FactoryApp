@@ -1,6 +1,6 @@
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {IVector3} from "@/types/global";
-import * as THREE from 'three';
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader"
+import {IVector3} from "@/types/global"
+import * as THREE from 'three'
 
 let existingGrid: THREE.Mesh[] = []
 export const getGrid = (gridID: number, scene: THREE.Scene) => {
@@ -53,7 +53,7 @@ export const createPlaneWithTextures = (
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
 
-    const material = new THREE.MeshStandardMaterial({ map: texture });
+    const material = new THREE.MeshStandardMaterial({map: texture});
     const planeGeometry = new THREE.PlaneGeometry(width, depth);
     const planeMesh = new THREE.Mesh(planeGeometry, material);
 
@@ -74,7 +74,7 @@ export const createWallsWithTexture = (
 ) => {
     const textureLoader: THREE.TextureLoader = new THREE.TextureLoader()
     const texture = textureLoader.load(texturePath)
-    const material: THREE.StandardMaterial = new THREE.MeshStandardMaterial({map: texture})
+    const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({map: texture})
 
     texture.minFilter = THREE.LinearFilter
     texture.magFilter = THREE.LinearFilter
@@ -126,7 +126,7 @@ export const moveHighlight = (highlight: THREE.Group, activeLayer: number, inter
 export const updateHighlightModel: any = async (
     prevHighlight: THREE.Group,
     url: string,
-    scene: THREE.scene,
+    scene: THREE.Scene,
     loader: GLTFLoader
 ) => {
     return await loader.loadAsync(url).then((model: any) => {
@@ -167,8 +167,8 @@ export const placeEntity = (loader: GLTFLoader, scene: THREE.Scene, pos: IVector
     )
 }
 export const replaceEntity = (pos: IVector3, currentObjectSelected: THREE.Group, lastObjectSelected: THREE.Group) => {
-    currentObjectSelected.value.position.set(pos.x, pos.y, pos.z)
-    lastObjectSelected.value = currentObjectSelected.value
+    currentObjectSelected.position.set(pos.x, pos.y, pos.z)
+    lastObjectSelected = currentObjectSelected
     highlightObjectWithColor(currentObjectSelected, false)
 }
 export const selectionObject = (currentObjectSelected: THREE.Group, lastObjectSelected: THREE.Group, intersections: any) => {
@@ -180,18 +180,23 @@ export const selectionObject = (currentObjectSelected: THREE.Group, lastObjectSe
         const closestIntersection = filteredIntersections.reduce((min: any, obj: any) => {
             return obj.distance < min.distance ? obj : min;
         }, {distance: Infinity})
-        currentObjectSelected.value = closestIntersection.object.parent
+        currentObjectSelected = closestIntersection.object.parent
         highlightObjectWithColor(currentObjectSelected, true)
 
-        if (lastObjectSelected.value && lastObjectSelected.value != currentObjectSelected.value)
+        if (lastObjectSelected && lastObjectSelected != currentObjectSelected)
             highlightObjectWithColor(lastObjectSelected, false)
-        lastObjectSelected.value = currentObjectSelected.value
-        return true
+        lastObjectSelected = currentObjectSelected
+        return {
+            worked: true as boolean,
+            currObj: currentObjectSelected as THREE.Group,
+            lastObj: lastObjectSelected as THREE.Group
+        }
     }
 }
 export const highlightObjectWithColor = (object: THREE.Group, color: boolean) => {
+    console.log("color element:", color, "   ",object)
     if (!color)
-        object.value.children.forEach((element: THREE.Mesh) => {
+        object.children.forEach((element: any) => {
             switch (element.type) {
                 case 'Mesh':
                     element.material.emissive.set(0x000000)
@@ -204,7 +209,7 @@ export const highlightObjectWithColor = (object: THREE.Group, color: boolean) =>
             }
         })
     else
-        object.value.children.forEach((element: any) => {
+        object.children.forEach((element: any) => {
             switch (element.type) {
                 case 'Mesh':
                     element.material.emissive.setRGB(0, 0.1, 0)
@@ -218,11 +223,11 @@ export const highlightObjectWithColor = (object: THREE.Group, color: boolean) =>
         })
 }
 
-export const createRoom = (x: number, y: number, z: number, scene: THREE.scene) => {
+export const createRoom = (x: number, y: number, z: number, scene: THREE.Scene) => {
     // Add Grid
     createGrids(x, y, z, scene)
     // creating roomtextures
     createPlaneWithTextures('factoryGround.jpeg', scene, x, y, z, false)
     createPlaneWithTextures('factoryRoof.jpeg', scene, x, y, z, true)
     createWallsWithTexture('factoryWall.jpg', scene, x, y, z)
-  }
+}
