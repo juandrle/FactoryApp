@@ -51,11 +51,13 @@ public class RessourceLoader implements CommandLineRunner {
                             break;
                         case "OTHER":
                             String filePathOther = "/models/mock/other/" + fullPath[fullPath.length - 1].toString();
-                            Model m = new Model();
-                            m.setModelFile(filePathOther);
-                            m.setIcon("/icons/airplane-outline.svg");
-                            m.setType(type);
-                            models.add(m);
+                            if (!filePathOther.endsWith("other")) {
+                                Model m = new Model();
+                                m.setModelFile(filePathOther);
+                                m.setIcon("/icons/accessibility-outline.svg");
+                                m.setType(type);
+                                models.add(m);
+                            }
                             break;
 
                     }

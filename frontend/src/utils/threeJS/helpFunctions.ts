@@ -133,8 +133,9 @@ export const updateHighlightModel: any = async (
 
         // Neuen highlighter vorbereiten
         let newHighlight: any = model.scene;
-        //TODO: TEMPORARY
-        newHighlight.rotation.set(Math.PI / 2, 0, 0)
+        // temporary rotation fix
+        // newHighlight.rotation.set(Math.PI / 2, 0, 0)
+        newHighlight.rotation.set(0, 0, 0)
         newHighlight.position.set(prevHighlight.position)
         newHighlight.name = prevHighlight.name
 
@@ -155,8 +156,9 @@ export const placeEntity = (loader: GLTFLoader, scene: THREE.Scene, pos: IVector
         function (gltf: any) {
             object = gltf.scene
             object.position.set(pos.x, pos.y, pos.z)
-            // TODO: TEMPORARY
-            object.rotation.set(Math.PI / 2, 0, 0)
+            // temporary rotation fix
+            // object.rotation.set(Math.PI / 2, 0, 0)
+            object.rotation.set(0, 0, 0)
             object.name = 'entity'
             scene.add(gltf.scene)
         },
