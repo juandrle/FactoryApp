@@ -45,7 +45,9 @@ public class RessourceLoader implements CommandLineRunner {
                                 Model m = new Model();
                                 m.setModelFile(filePathMachine);
                                 m.setIcon("/icons/accessibility-outline.svg");
+                                m.setName(filePathMachine.split("\\.")[0]);
                                 m.setType(type);
+
                                 models.add(m);
                             }
                             break;
@@ -55,6 +57,7 @@ public class RessourceLoader implements CommandLineRunner {
                                 Model m = new Model();
                                 m.setModelFile(filePathOther);
                                 m.setIcon("/icons/airplane-outline.svg");
+                                m.setName(filePathOther.split("\\.")[0]);
                                 m.setType(type);
                                 models.add(m);
                             }

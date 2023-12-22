@@ -30,8 +30,8 @@ public class PlacedModelService {
         // return checkForPlacement(m);
         return true;
     }
-    public List<PlacedModel> findAllByFactoryId(long factoryID) {
-        return placedModelRepository.findByFactoryID(factoryID);
+    public List<PlacedModel> findAllByFactoryId(Factory factory) {
+        return placedModelRepository.findByFactory(factory);
     }
     private void putModelOnField(PlacedModel placedModel, Position rootPosition) {
         // TODO: create model from input of frontend

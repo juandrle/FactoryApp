@@ -11,9 +11,10 @@ public class Model implements Serializable {
     @Id
     @GeneratedValue
     long id;
+
+    String name;
     String modelGltf;
     String icon;
-
     String type;
 
     public long getId() {
@@ -46,5 +47,13 @@ public class Model implements Serializable {
 
     public String getType() {
         return type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -19,8 +19,9 @@ public class PlacedModel implements Serializable{
 
     @Version
     private long version;
-
-    private long factoryID;
+    @ManyToOne
+    @JoinColumn(name = "factoryId", referencedColumnName = "id")
+    private Factory factory;
 
     @Embedded
     private Position rootPos;
@@ -43,17 +44,22 @@ public class PlacedModel implements Serializable{
     // how many items are needed / can be stored in a machine
     private int capacity;
 
-    private long modelId;
+    @ManyToOne
+    @JoinColumn(name = "modelId", referencedColumnName = "id")
+    private Model model;
 
-    public void PlacedModel() { }//TODO: plaziermethode machen
 
     public long getId() {
         return id;
     }
 
-    public long getFactoryID() { return factoryID; }
+    public long getFactoryID() {
+        return factory != null ? factory.getFactoryID() : null;
+    }
 
-    public void setFactoryID(long factoryID){ this.factoryID = factoryID;}
+    public void setFactory(Factory factory) {
+        this.factory = factory;
+    }
 
     public void setId(long id) {
         this.id = id;
@@ -114,11 +120,9 @@ public class PlacedModel implements Serializable{
     }
 
     public long getModelId() {
-        return modelId;
-    }
+        return model != null ? model.getId() : null;    }
 
-    public void setModelId(long modelId) {
-        this.modelId = modelId;
+    public void setModel(Model model) {
+        this.model = model;
     }
-
 }

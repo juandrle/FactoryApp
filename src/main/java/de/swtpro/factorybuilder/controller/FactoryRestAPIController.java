@@ -51,13 +51,13 @@ public class FactoryRestAPIController {
     }
 
     public ResponseEntity<List<PlacedModelDTO>> load(@RequestBody long idToLoad){
-        return ResponseEntity.ok(getEntitysFromFactory(idToLoad));
+        return ResponseEntity.ok(getEntitysFromFactory(factoryService.getFactoryById(idToLoad).orElseThrow()));
     }
 
 
-    public List<PlacedModelDTO> getEntitysFromFactory(long factoryId) {
+    public List<PlacedModelDTO> getEntitysFromFactory(Factory factory) {
         // Nimm alle aus modelRepository mit factoryId == factoryId
-        List<PlacedModel> placedModels = placedModelService.findAllByFactoryId(factoryId);
+        List<PlacedModel> placedModels = placedModelService.findAllByFactoryId(factory);
         List<PlacedModelDTO> dtos = new ArrayList<>();
 
         for (PlacedModel placedModel : placedModels) {

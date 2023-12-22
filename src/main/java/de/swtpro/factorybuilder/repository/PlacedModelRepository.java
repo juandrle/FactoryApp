@@ -1,5 +1,6 @@
 package de.swtpro.factorybuilder.repository;
 
+import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.PlacedModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,6 +14,6 @@ public interface PlacedModelRepository extends JpaRepository<PlacedModel, Long> 
 
     @Override
     Optional<PlacedModel> findById(Long aLong);
-    
-    List<PlacedModel> findByFactoryID(long factoryID);
+
+    List<PlacedModel> findByFactory(Factory factory);
 }
