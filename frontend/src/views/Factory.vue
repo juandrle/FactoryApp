@@ -37,12 +37,8 @@ const ACTIVE_LAYER: number = 0
 
 const target = ref()
 const manipulationMode: Ref<String> = ref<'move' | 'rotate' | '' | 'set' | 'clone'>('')
-const allEntitys: Ref<IBackendEntityPreview[]> = ref([])
-const activeEntity: Ref<IBackendEntityPreview> = ref({
-  path: '/fallback/.gltf/cube.gltf',
-  icon: '',
-  entityID: 'loadingCube'
-})
+const allEntitys: Ref<IBackendEntityPreview[] | undefined> = ref()
+const activeEntity: Ref<IBackendEntityPreview | undefined> = ref()
 // quick fix to any
 let currentObjectSelected: any
 let lastObjectSelected: any
@@ -53,14 +49,8 @@ const showCircMenu: Ref<Boolean> = ref(false)
  * Variables
  **/
 
-const {factorySize} = inject<{
-  factorySize: Ref<IVector3>,
-  updateFactorySize: (newSize: IVector3) => void
-}>('factorySize')
-const {factoryID} = inject<{
-  factoryID: Ref<number>
-  updateFactoryID: (newID: number) => void
-}>('factoryID')
+let factorySize: Ref<IVector3>
+let factoryID: Ref<number>
 let dynamicDiv: HTMLElement | null
 let sizes: {
   width: number
@@ -70,7 +60,7 @@ let sizes: {
 let scene: THREE.Scene
 let renderer: THREE.WebGLRenderer
 let camera: THREE.PerspectiveCamera
-let loader: THREE.GLTFLoader
+let loader: any
 let highlight: THREE.Group
 let cm: ControlsManager;
 let previousTime: number = 0
@@ -84,6 +74,18 @@ let currentMode: ControlMode | null;
 const setupScene = () => {
   scene = new THREE.Scene()
   scene.background = new THREE.Color('#12111A')
+}
+const setupInjections = () => {
+  const resultID = inject<{
+    factoryID: Ref<number>
+    updateFactoryID: (newID: number) => void
+  }>('factoryID')
+  if (resultID && typeof resultID === 'object') factoryID = resultID.factoryID
+  const resultSize = inject<{
+    factorySize: Ref<IVector3>,
+    updateFactorySize: (newSize: IVector3) => void
+  }>('factorySize')
+  if (resultSize && typeof resultSize === 'object') factorySize = resultSize.factorySize
 }
 
 const setupRenderer = () => {
@@ -137,6 +139,7 @@ const initalLoadHighlightModel = (modelUrl: string) => {
  */
 
 const onLoadFactoryButton = () => {
+  if (factoryID === undefined) return
   getAllEntitysInFactory(factoryID.value).then((backendEntitys: IBackendEntity[]) => {
     backendEntitys.forEach((backendEntity) => {
       placeEntity(
@@ -243,13 +246,15 @@ const handleMouseMove = (event: MouseEvent) => {
   }
 }
 
-const handleClick = () => {
+const handleClick = (event: MouseEvent) => {
   // Place cube
   if (showCircMenu.value) {
     showCircMenu.value = false
     if (manipulationMode.value === '') highlightObjectWithColor(currentObjectSelected, false)
     return
   }
+
+  if (typeof event.target === 'object') return
   switch (manipulationMode.value) {
     case 'set':
       placeRequest({
@@ -262,7 +267,8 @@ const handleClick = () => {
       }, '/place').then((success: boolean) => {
         console.log('placing entity: ' + success)
         if (success) {
-          placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
+          if (activeEntity.value)
+            placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
         }
       })
       break
@@ -307,16 +313,19 @@ const handleContextMenu = (event: MouseEvent) => {
   event.preventDefault()
   if (manipulationMode.value !== '') return
   const intersections = getIntersectionsMouse(event, camera, scene)
-  const {worked, currObj, lastObj} = selectionObject(currentObjectSelected, lastObjectSelected, intersections)
-  if (worked) {
-    currentObjectSelected = currObj;
-    lastObjectSelected = lastObj;
-    if (dynamicDiv) {
-      dynamicDiv.style.left = event.clientX - 50 + 'px'
-      dynamicDiv.style.top = event.clientY + 20 + 'px'
-      dynamicDiv.style.display = 'block'
+  const result = selectionObject(currentObjectSelected, lastObjectSelected, intersections)
+  if (result && typeof result === 'object') {
+    const {worked, currObj, lastObj} = result;
+    if (worked) {
+      currentObjectSelected = currObj;
+      lastObjectSelected = lastObj;
+      if (dynamicDiv) {
+        dynamicDiv.style.left = event.clientX - 50 + 'px'
+        dynamicDiv.style.top = event.clientY + 20 + 'px'
+        dynamicDiv.style.display = 'block'
+      }
+      showCircMenu.value = true
     }
-    showCircMenu.value = true
   }
   if (currentObjectSelected)
     currObjSelectedOriginPos = currentObjectSelected.position
@@ -329,17 +338,14 @@ const handleContextMenu = (event: MouseEvent) => {
 watch(activeEntity, () => {
   manipulationMode.value = 'set'
 
-  if (highlight !== undefined) {
+  if (activeEntity.value) {
     updateHighlightModel(highlight, backendUrl + activeEntity.value.modelFile, scene, loader).then(
         (newHighlight: THREE.Group) => {
           highlight = newHighlight
         }
     )
-  } else {
-    initalLoadHighlightModel('mock/.gltf/cube.gltf') // geht
-    // initalLoadHighlightModel(backendUrl + activeEntity.value.modelFile) // geht nicht
-    // initalLoadHighlightModel('mock/.gltf/brennerofen.gltf') // geht auch nicht ???? liegt also am model und nicht am link oder der resource selbst
-  }
+  } else initalLoadHighlightModel('mock/.gltf/cube.gltf')
+
 })
 
 /**
@@ -385,6 +391,7 @@ function init() {
     ratio: window.innerWidth / window.innerHeight
   }
   setupScene()
+  setupInjections()
   setupRenderer()
   setupCamera()
   setupLights()
@@ -424,8 +431,6 @@ init()
       <button @click="onLoadFactoryButton" link="">Test Load Factory</button>
     </div>
     <div class="debug-bar">
-      <div>Active Entity: {{ activeEntity.id }}</div>
-      <div>Current Mode: {{ currentMode }}</div>
     </div>
     <EntityBar
         :entities="allEntitys"

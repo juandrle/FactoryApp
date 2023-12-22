@@ -9,12 +9,13 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
 import type { IBackendEntityPreview } from '@/types/backendEntity'
-import {backendUrl} from '@/utils/config/config.js'
+import {backendUrl} from '@/utils/config/config'
 
 const props = defineProps<{
   entities: IBackendEntityPreview[],
   activeEntity: IBackendEntityPreview
 }>()
+
 </script>
 
 <style>

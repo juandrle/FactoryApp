@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {computed, inject, Ref, ref, watch} from 'vue'
+import {computed, inject, onMounted, ref} from 'vue'
+import type {Ref} from 'vue'
 import Button from '../components/temp/Button.vue'
-import type {IVector3} from "@/types/global";
+import type {IVector3} from "@/types/global"
 import router from "@/router";
-import {factoryCreateRequest} from "@/utils/backendComms/postRequests";
-import type {IFactoryCreate} from "@/types/backendEntity";
+import {factoryCreateRequest} from "@/utils/backendComms/postRequests"
+import type {IFactoryCreate} from "@/types/backendEntity"
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
@@ -15,23 +16,28 @@ const sizes = ref([
 const factoryName = ref('')
 const factoryPassword = ref('')
 const selectedSize = ref()
-const {updateFactorySize} = inject<{
-  factorySize: Ref<IVector3>,
-  updateFactorySize: (newSize: IVector3) => void
-}>('factorySize')
-const {updateFactoryID} = inject<{
-  factoryID: Ref<number>,
-  updateFactoryID: (newID: number) => void
-}>('factoryID')
-const combinedSize = computed((size) => {
+let updateFactorySize: (newSize: IVector3) => void
+let updateFactoryID: (newID: number) => void
+computed((size) => {
   return {
     x: size.width as number,
     y: size.length as number,
     z: size.height as number
   }
-})
-
-function createFactory() {
+});
+const setupInjections = () => {
+  const resultID = inject<{
+    factoryID: Ref<number>
+    updateFactoryID: (newID: number) => void
+  }>('factoryID')
+  if (resultID && typeof resultID === 'object') updateFactoryID = resultID.updateFactoryID
+  const resultSize = inject<{
+    factorySize: Ref<IVector3>,
+    updateFactorySize: (newSize: IVector3) => void
+  }>('factorySize')
+  if (resultSize && typeof resultSize === 'object') updateFactorySize = resultSize.updateFactorySize
+}
+const createFactory = () => {
   if (selectedSize.value) {
     updateFactorySize({
       x: selectedSize.value.x,
@@ -54,6 +60,9 @@ function createFactory() {
     console.error("Please select a size before creating the factory.")
   }
 }
+onMounted(() => {
+  setupInjections()
+})
 
 </script>
 
@@ -98,6 +107,7 @@ function createFactory() {
   padding: 1.875rem 1.125rem;
   border-radius: 25px;
 }
+
 .v-form-button {
   border-color: transparent;
 }

@@ -1,8 +1,5 @@
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { IBackendEntity, IBackendEntityPreview } from '@/types/backendEntity'
-import * as THREE from 'three'
-import { placeEntity } from '@/utils/threeJS/helpFunctions'
-import { backendUrl } from '@/utils/config/config.js'
+import type { IBackendEntity, IBackendEntityPreview } from '@/types/backendEntity'
+import { backendUrl } from '@/utils/config/config'
 
 export const getAllEntitys: () => Promise<IBackendEntityPreview[]> = async () => {
   return fetch(backendUrl + '/api/entity/getAll').then((res) => res.json())

@@ -1,18 +1,19 @@
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader"
-import {IVector3} from "@/types/global"
+import type {IVector3} from "@/types/global"
 import * as THREE from 'three'
+import type {Intersection, Object3DEventMap} from "three";
+import {Object3D} from "three";
 
 let existingGrid: THREE.Mesh[] = []
 export const getGrid = (gridID: number, scene: THREE.Scene) => {
     return scene.children.find((object: any) => object.name === `layer ${gridID}`)
 }
 export const getGridZ = (gridID: number, scene: THREE.Scene) => {
-    return getGrid(gridID, scene).position.z
+    //return getGrid(gridID, scene).position.z
 }
 export const createGrids = (x: number, y: number, z: number, scene: THREE.Scene) => {
     let zStart: number = 0
     if (existingGrid.length > 0) {
-        existingGrid.forEach((ele: THREE.Mesh) => {
+        existingGrid.forEach((ele: any) => {
             scene.remove(ele)
             existingGrid.splice(ele)
         })
@@ -104,17 +105,17 @@ export const createWallsWithTexture = (
     scene.add(depthWallMesh1)
     scene.add(depthWallMesh2)
 }
-export const getIntersectionWithGrid = (gridID: number, intersections: THREE.Vector3[]) => {
+export const getIntersectionWithGrid = (gridID: number, intersections: Intersection<Object3D<Object3DEventMap>>[]) => {
     return (
         intersections.find((intersection: any) => intersection.object.name === `layer ${gridID}`) ||
         false
     )
 }
-export const moveHighlight = (highlight: THREE.Group, activeLayer: number, intersections: THREE.Vector3[]) => {
-    // "Trim" intersctions to only geht intersection with the grid
+export const moveHighlight = (highlight: any, activeLayer: number, intersections: Intersection<Object3D<Object3DEventMap>>[]) => {
+    // "Trim" intersections to only geht intersection with the grid
     const intersection = getIntersectionWithGrid(activeLayer, intersections)
 
-    // Now we got the intersection with the activ grid, and can set the highlight
+    // Now we got the intersection with the active grid, and can set the highlight
     if (intersection) {
         // Get the exact position of the Intersection and Make it snapping with the grid (floor, addScalar)
         const pos: THREE.Vector3 = new THREE.Vector3().copy(intersection.point).floor()
@@ -124,10 +125,10 @@ export const moveHighlight = (highlight: THREE.Group, activeLayer: number, inter
     }
 }
 export const updateHighlightModel: any = async (
-    prevHighlight: THREE.Group,
+    prevHighlight: any,
     url: string,
     scene: THREE.Scene,
-    loader: GLTFLoader
+    loader: any
 ) => {
     return await loader.loadAsync(url).then((model: any) => {
 
@@ -136,12 +137,16 @@ export const updateHighlightModel: any = async (
         // temporary rotation fix
         // newHighlight.rotation.set(Math.PI / 2, 0, 0)
         newHighlight.rotation.set(0, 0, 0)
-        newHighlight.position.set(prevHighlight.position)
-        newHighlight.name = prevHighlight.name
+        if (prevHighlight) {
+            newHighlight.position.set(prevHighlight.position)
+            newHighlight.name = prevHighlight.name
+        } else {
+            newHighlight.position.set(0,0,0)
+            newHighlight.name = "entity"
+        }
 
         // Delete old highlight
-        scene.children = scene.children.filter((object: any) => object.name !== prevHighlight.name)
-        prevHighlight = null;
+        scene.remove(prevHighlight);
 
         // add new to scene
         scene.add(newHighlight)
@@ -149,7 +154,7 @@ export const updateHighlightModel: any = async (
         return newHighlight
     })
 }
-export const placeEntity = (loader: GLTFLoader, scene: THREE.Scene, pos: IVector3, path: string) => {
+export const placeEntity = (loader: any, scene: THREE.Scene, pos: IVector3, path: string) => {
     var object: any
     loader.load(
         path,
@@ -175,7 +180,7 @@ export const replaceEntity = (pos: IVector3, currentObjectSelected: THREE.Group,
 }
 export const selectionObject = (currentObjectSelected: THREE.Group, lastObjectSelected: THREE.Group, intersections: any) => {
     if (intersections.length > 0) {
-        let filteredIntersections = intersections.filter((item: THREE.Mesh) => (!item.object.name.includes('layer') &&
+        let filteredIntersections = intersections.filter((item: any) => (!item.object.name.includes('layer') &&
             !item.object.name.includes('building') && !item.object.type.includes('Axes') && !item.object.type.includes('Scene')))
 
         if (filteredIntersections.length < 1) return false
