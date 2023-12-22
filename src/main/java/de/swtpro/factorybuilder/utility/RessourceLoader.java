@@ -39,7 +39,7 @@ public class RessourceLoader implements CommandLineRunner {
                 paths.forEach(e -> {
                     String[] fullPath = e.toString().split("/");
                     switch (type) {
-                        case "machine":
+                        case "MACHINE":
                             String filePathMachine = "/models/mock/machines/" + fullPath[fullPath.length - 1].toString();
                             if (!filePathMachine.endsWith("machines")) {
                                 Model m = new Model();
@@ -49,7 +49,7 @@ public class RessourceLoader implements CommandLineRunner {
                                 models.add(m);
                             }
                             break;
-                        case "other":
+                        case "OTHER":
                             String filePathOther = "/models/mock/other/" + fullPath[fullPath.length - 1].toString();
                             Model m = new Model();
                             m.setModelFile(filePathOther);
@@ -60,10 +60,11 @@ public class RessourceLoader implements CommandLineRunner {
 
                     }
                 });
+                modelService.saveAllModels(models);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            modelService.saveAllModels(models);
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
