@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {ref, onMounted, watch, provide, inject, onUnmounted} from 'vue'
 import type {Ref} from 'vue'
+import {inject, onMounted, onUnmounted, provide, ref, watch} from 'vue'
 import type {IVector3} from '@/types/global'
-import type {IBackendEntityPreview, IBackendEntity} from '@/types/backendEntity'
+import type {IBackendEntity, IBackendEntityPreview} from '@/types/backendEntity'
 import * as THREE from 'three'
 import {ControlsManager} from '@/classes/ControlsManager'
 import {getIntersectionsMouse} from '@/utils/threeJS/3d'
@@ -10,19 +10,19 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
-import {placeRequest} from '@/utils/backendComms/postRequests'
+import {factoryImageUpdate, placeRequest} from '@/utils/backendComms/postRequests'
 import {getAllEntitys, getAllEntitysInFactory} from '@/utils/backendComms/getRequests'
 import {backendUrl} from '@/utils/config/config'
 import {ControlMode} from '@/enum/ControlMode'
 
 import {
+  createRoom,
   highlightObjectWithColor,
   moveHighlight,
   placeEntity,
   replaceEntity,
   selectionObject,
-  updateHighlightModel,
-  createRoom
+  updateHighlightModel
 } from '@/utils/threeJS/helpFunctions'
 
 /**
@@ -131,7 +131,10 @@ const initalLoadHighlightModel = (modelUrl: string) => {
       }
   )
 }
-
+const captureScreenshot = () => {
+  const canvas = renderer.domElement
+  return canvas.toDataURL("image/png")
+}
 /*
  * Buttons
  */
@@ -369,6 +372,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   // remove eventListeners
+  factoryImageUpdate(factoryID.value, captureScreenshot()).then((success: boolean) => {
+    if (success) console.log("successfully saved image")
+    else console.log("didn't save image")
+  })
+
   window.removeEventListener('resize', handleResize)
   window.removeEventListener('keydown', handleKeyDown)
   window.removeEventListener('mousemove', handleMouseMove)

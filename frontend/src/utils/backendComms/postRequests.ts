@@ -73,3 +73,25 @@ export const factoryDeleteRequest = async (factory: IFactoryDelete) => {
         return false
     }
 }
+
+export const factoryImageUpdate = async (factoryID: number, screenshot: string) : Promise<boolean> => {
+
+    try {
+        const url = backendUrl + '/api/factory/updateImage'
+        const requestBody = JSON.stringify({
+            factoryID: factoryID,
+            screenshot: screenshot
+        })
+        console.log(requestBody)
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: requestBody,
+        })
+        if (!response.ok) throw new Error(response.statusText)
+        return await response.json()
+    } catch (err) {
+        console.error(err)
+        return false
+    }
+}

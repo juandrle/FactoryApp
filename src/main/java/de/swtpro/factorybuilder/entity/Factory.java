@@ -3,7 +3,9 @@ package de.swtpro.factorybuilder.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.w3c.dom.html.HTMLImageElement;
 
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
 @Entity
@@ -22,8 +24,8 @@ public class  Factory implements Serializable {
     private int width;
     private int height;
     private int depth;
-
-    private String picturePath;
+    @Lob
+    private byte[] screenshot;
 
     public String getPassword() {
         return password;
@@ -41,12 +43,12 @@ public class  Factory implements Serializable {
         this.name = name;
     }
 
-    public String getPicturePath() {
-        return picturePath;
+    public void setScreenshot(byte[] screenshot) {
+        this.screenshot = screenshot;
     }
 
-    public void setPicturePath(String picturePath) {
-        this.picturePath = picturePath;
+    public byte[] getScreenshot() {
+        return screenshot;
     }
 
     public long getFactoryID() {
