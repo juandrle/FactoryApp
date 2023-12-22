@@ -24,6 +24,7 @@ import {
   updateHighlightModel,
   createRoom
 } from '@/utils/threeJS/helpFunctions'
+import {MOUSE} from "three";
 
 /**
  * Config
@@ -246,15 +247,14 @@ const handleMouseMove = (event: MouseEvent) => {
   }
 }
 
-const handleClick = (event: MouseEvent) => {
+const handleClick = (event: any) => {
   // Place cube
   if (showCircMenu.value) {
     showCircMenu.value = false
     if (manipulationMode.value === '') highlightObjectWithColor(currentObjectSelected, false)
     return
   }
-
-  if (typeof event.target === 'object') return
+  if (event.target.id == 'ignore') return;
   switch (manipulationMode.value) {
     case 'set':
       placeRequest({
@@ -432,7 +432,7 @@ init()
     </div>
     <div class="debug-bar">
     </div>
-    <EntityBar
+    <EntityBar id="ignore"
         :entities="allEntitys"
         :active-entity="activeEntity"
         @update-active-entity="(id) => (activeEntity = allEntitys[id])"
