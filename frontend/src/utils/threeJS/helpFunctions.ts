@@ -1,6 +1,6 @@
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {IVector3} from "@/types/global";
-import * as THREE from 'three';
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader"
+import {IVector3} from "@/types/global"
+import * as THREE from 'three'
 
 let existingGrid: THREE.Mesh[] = []
 export const getGrid = (gridID: number, scene: THREE.Scene) => {
@@ -74,7 +74,7 @@ export const createWallsWithTexture = (
 ) => {
     const textureLoader: THREE.TextureLoader = new THREE.TextureLoader()
     const texture = textureLoader.load(texturePath)
-    const material: THREE.StandardMaterial = new THREE.MeshStandardMaterial({map: texture})
+    const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({map: texture})
 
     texture.minFilter = THREE.LinearFilter
     texture.magFilter = THREE.LinearFilter
@@ -126,7 +126,7 @@ export const moveHighlight = (highlight: THREE.Group, activeLayer: number, inter
 export const updateHighlightModel: any = async (
     prevHighlight: THREE.Group,
     url: string,
-    scene: THREE.scene,
+    scene: THREE.Scene,
     loader: GLTFLoader
 ) => {
     return await loader.loadAsync(url).then((model: any) => {
@@ -223,7 +223,7 @@ export const highlightObjectWithColor = (object: THREE.Group, color: boolean) =>
         })
 }
 
-export const createRoom = (x: number, y: number, z: number, scene: THREE.scene) => {
+export const createRoom = (x: number, y: number, z: number, scene: THREE.Scene) => {
     // Add Grid
     createGrids(x, y, z, scene)
     // creating roomtextures
