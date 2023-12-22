@@ -54,7 +54,7 @@ public class RessourceLoader implements CommandLineRunner {
                             if (!filePathOther.endsWith("other")) {
                                 Model m = new Model();
                                 m.setModelFile(filePathOther);
-                                m.setIcon("/icons/accessibility-outline.svg");
+                                m.setIcon("/icons/airplane-outline.svg");
                                 m.setType(type);
                                 models.add(m);
                             }
