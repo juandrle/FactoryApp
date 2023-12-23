@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { isUserAuthenticated } from '@/utils/auth';
 import HomeView from '../views/HomeView.vue'
 import Factory from "@/views/Factory.vue";
 import FactoryCreateView from "@/views/FactoryCreateView.vue";
@@ -32,15 +33,28 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
+      beforeEnter:(to, from, next) => {
+        if(isUserAuthenticated()){
+          next('/');
+        }else {
+          next();
+        }
+      }
     },
     {
       path: '/signup',
       name: 'signup',
       component: () => import('@/views/SignUpView.vue'),
       beforeEnter: (to, from, next) => {
-        // Preload the component
-        import('@/views/SignUpView.vue').then(() => next());
+        next();
+        // if(isUserAuthenticated()){
+          
+          // next('/');
+        // }else {
+        //   import('@/views/SignUpView.vue').then(() => next());
+        // }
+        
       },
     }
   ]

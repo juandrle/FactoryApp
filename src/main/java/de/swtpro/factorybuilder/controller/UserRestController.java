@@ -4,11 +4,16 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import java.util.Locale;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,47 +37,65 @@ public class UserRestController {
     Logger logger = LoggerFactory.getLogger(UserRestController.class); 
     @Autowired
     private UserServiceImpl userServiceImpl;
-
+    
     
     @PostMapping("/api/users/signup")
     @ResponseBody
     public ResponseEntity<String> signup(@Valid @RequestBody UserDTO userDTO, BindingResult userFormularError) {
-        logger.info("VINCUEN IS HIER");
     if (userFormularError.hasErrors()) {
         // Return error response
         return ResponseEntity.badRequest().body("{\"error\": \"Invalid user data\"}");
-        
 
     } else {
-        User currentUser = new User();
-        currentUser.setUsername(userDTO.username());
-        currentUser.setPassword(userDTO.password());
 
-        boolean nameTaken = userServiceImpl.checkUsername(currentUser.getUsername());
+        boolean nameTaken = userServiceImpl.checkUsername(userDTO.username());
 
         // check if the username is already taken
         if (nameTaken) {
-            return ResponseEntity.badRequest().body("Username is taken.");
+            return ResponseEntity.ok("username taken");
         }
 
         // check if the passwords match
         if (!userDTO.password().equals(userDTO.passwordCheck())) {
-            return ResponseEntity.badRequest().body("The passwords are not the same.");
+            return ResponseEntity.ok("passwords don't match");
         }
 
         // create user
         userServiceImpl.signUp(userDTO);
 
         // Return success response or any relevant data
-        logger.info("User created successfully. Username: " + currentUser.getUsername());
+        logger.info("User created successfully. Username: " + userDTO.username());
 
-        return ResponseEntity.ok("User created successfully");
+        return ResponseEntity.ok("successful");
     }
 }
 
+@PostMapping("/api/users/login")
+    @ResponseBody
+    public ResponseEntity<String> login(@Valid @RequestBody UserDTO userDTO, BindingResult userFormularError) {
+        if (userFormularError.hasErrors()) {
+        // Return error response
+        return ResponseEntity.badRequest().body("{\"error\": \"Invalid user data\"}");
+
+    } else {
+        logger.info("wir sind aufm richtigen weg");
+        Optional<User> userExists = userServiceImpl.getUserByName(userDTO.username());
+
+        if(userExists.isPresent()){
+            User currentUser = userExists.get();
+
+            if(userServiceImpl.checkPassword(userDTO.password(), currentUser.getPassword())){
+                return ResponseEntity.ok("login successful");
+            }else{
+                return ResponseEntity.ok("wrong password");
+            }
+
+        }else{
+            return ResponseEntity.ok("user not found");
+        }
+    }
+
+        
+    }
+
 }
-
-
-
-
-

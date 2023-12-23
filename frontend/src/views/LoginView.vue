@@ -1,18 +1,51 @@
 <script setup lang="ts">
-import { VueElement, ref } from 'vue';
+import type { ILoginForm } from '@/types/backendEntity';
+import {loginUser} from "@/utils/backendComms/postRequests"
+import { VueElement, ref, type Ref, inject} from 'vue';
+import router from "@/router"
 // import Button from '../components/Button.vue'
 
-const buttonData = ref([
-  { text: 'Login', link: "/login" }
-])
+const {updateSessUser} = inject<{
+  sessUser: Ref<string>,
+  updateSessUser: (newUser: string) => void
+}>('sessUser')
+const loginForm: Ref<ILoginForm> = ref({
+  username: '',
+  password: '',
+})
 
-const selectedSize = ref()
+const passwordFalse: Ref<Boolean> = ref(false)
+const userNotExisting: Ref<Boolean> = ref(false)
 
-function createFactory() {
-  if (selectedSize.value) {
-    console.log(selectedSize.value)
-  } else {
-    console.error("Please select a size before creating the factory.")
+const login = async () => {
+  let password: HTMLInputElement | null = document.getElementById('password') as HTMLInputElement
+  let username: HTMLInputElement | null = document.getElementById('username') as HTMLInputElement
+
+  switch(await loginUser(loginForm.value)){
+    case "wrong password":
+      if(password){
+        password.classList.add('input-invalid')
+        passwordFalse.value = true  
+      }
+      break
+    case "user not found":
+      if(username){
+        username.classList.add('input-invalid')
+        userNotExisting.value = true
+      }
+      break
+    case "login successfull":
+      if(username && password){
+        username.classList.remove('input-invalid')
+        password.classList.remove('input-invalid')
+        userNotExisting.value = false
+        passwordFalse.value = false
+      }
+      updateSessUser(username.textContent)
+      await router.push('/')
+      break
+    default:
+      break
   }
 }
 
@@ -22,15 +55,19 @@ function createFactory() {
   <div>
     <div class="container-left">
       <div class="container2">
-        <form @submit.prevent="createFactory">
+        <form @submit.prevent="login">
           <div class="form-container">
             <h2>Login</h2>
             <div class="factory-name">
-              <input placeholder="Namen eingeben" />
-              <input placeholder="Passwort eingeben" />
+              <input v-model="loginForm.username" id="username" name="username"
+               placeholder="Type in name" required/>
+               <p v-if="userNotExisting">User doesn't exist</p>
+              <input type="password" v-model="loginForm.password" id="password" name="password"
+                     placeholder="Type in password" required/>
+                <p v-if="passwordFalse">Wrong Password</p>
             </div>
             <div class="b-container">
-              <button>Login</button>
+              <button type="submit">Login</button>
             </div>
             <div class="b-container2">
               <p>Haven't signed up yet?</p>

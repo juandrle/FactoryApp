@@ -1,102 +1,56 @@
 <script setup lang="ts">
-import { VueElement, ref } from 'vue';
-import type { UserForm } from '@/types/UserForm';
-// import Button from '../components/Button.vue'
+import {VueElement, ref, type Ref, inject} from 'vue'
+import router from "@/router"
+import type {IUserForm} from "@/types/backendEntity"
+import {signupUser} from "@/utils/backendComms/postRequests"
+import type { IVector3 } from "@/types/global";
 
-const buttonData = ref([
-  { text: 'Sign Up', link: "/signup" }
-])
-const userForm = ref({
+const {updateSessUser} = inject<{
+  sessUser: Ref<string>,
+  updateSessUser: (newUser: string) => void
+}>('sessUser')
+const userForm: Ref<IUserForm> = ref({
   username: '',
   password: '',
-  passwordCheck: '',
-});
+  passwordCheck: ''
+})
+const passwordNotEqual: Ref<Boolean> = ref(false)
+const usernameTaken: Ref<Boolean> = ref(false)
 
+const signUp = async () => {
+  let password: HTMLInputElement | null = document.getElementById('password') as HTMLInputElement
+  let passwordCheck: HTMLInputElement | null = document.getElementById('checkPassword') as HTMLInputElement
+  let username: HTMLInputElement | null = document.getElementById('username') as HTMLInputElement
+  switch (await signupUser(userForm.value)) {
+    case "username taken":
+      if (username) {
+        username.classList.add('input-invalid')
+        usernameTaken.value = true
 
-// export async function signupUser(userForm: UserForm): Promise<void> {
-//   try {
-//     const url = '/api/users/signup';
-
-//     const response = await fetch(url, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(userForm),
-//     });
-
-//     if (!response.ok) {
-//       if (response.status === 400) {
-//         const validationError = await response.json();
-//         console.error('Validation error:', validationError);
-//       } else {
-//         console.error('Error during signup. Status:', response.status);
-//       }
-//       return;
-//     }
-
-//     const responseData: UserResponse = await response.json();
-//     console.log('User signup successful:', responseData);
-
-//     // Optionally, you can redirect the user to the home page or perform other actions
-//   } catch (error) {
-//     console.error('Failed to signup', error);
-//     // Handle other errors, such as network issues
-//   }
-// }
-
-
-const signupUser = async () => {
-  const userData = {
-    username: userForm.value.username,
-    password: userForm.value.password,
-    passwordCheck: userForm.value.passwordCheck, // Add other necessary fields
-  };
-
-  try {
-    const response = await fetch('/api/users/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-
-      
-      
-    });
-    console.log("das is von backend", response)
-    // const responseData = await response.json();
-    //   console.log('User signup successful:', responseData);
-    if (response.status === 400) {
-      const errorData = await response;
-      console.error('Validation error:', errorData);
-    }
-    if (!response.ok) {
-      // Handle non-successful responses
-      console.error('Error during signup. Status:', response.status);
-      return;
-    }
-
-    if (response.ok) {
-      const responseData = await response;
-      console.log('User signup successful:', responseData);
-
-      // Optionally, you can redirect the user to the home page or perform other actions
-    } else {
-      const errorData = await response;
-      console.error('User signup failed:', errorData);
-
-      // You can display an error message to the user or perform other error handling
-    }
-    
-  } catch (error ) {
-    console.error('Error during signup:', error);
-    
-   
-
-    // Handle other errors, such as network issues
+      }
+      break
+    case "passwords don't match":
+      if (password && passwordCheck) {
+        password.classList.add('input-invalid')
+        passwordCheck.classList.add('input-invalid')
+        passwordNotEqual.value = true
+      }
+      break
+    case "successful":
+      if (password && passwordCheck && username) {
+        username.classList.remove('input-invalid')
+        password.classList.remove('input-invalid')
+        passwordCheck.classList.remove('input-invalid')
+        usernameTaken.value = false
+        passwordNotEqual.value = false
+      }
+      updateSessUser(username.textContent)
+      await router.push('/')
+      break
+    default:
+      break
   }
-};
+}
 
 
 </script>
@@ -105,13 +59,17 @@ const signupUser = async () => {
   <div>
     <div class="container-left">
       <div class="container2">
-        <form @submit.prevent="signupUser">
+        <form @submit.prevent="signUp">
           <div class="form-container">
             <h2>Sign Up</h2>
             <div class="factory-name">
-              <input v-model="userForm.username" name="username" placeholder="Namen eingeben" />
-              <input v-model="userForm.password" name="password" placeholder="Passwort eingeben" />
-              <input v-model="userForm.passwordCheck" name="passwordCheck" placeholder="Passwort bestätigen" />
+              <input v-model="userForm.username" id="username" name="username" placeholder="Type in name" required/>
+              <p v-if="usernameTaken">Username already taken</p>
+              <input type="password" v-model="userForm.password" id="password" name="password"
+                     placeholder="Type in password" required/>
+              <input type="password" v-model="userForm.passwordCheck" id="checkPassword" name="passwordCheck"
+                     placeholder="Repeat password" required/>
+              <p v-if="passwordNotEqual">Passwords don't match</p>
 
             </div>
             <div class="b-container">
@@ -161,18 +119,18 @@ const signupUser = async () => {
   flex-direction: column;
   align-items: center;
   position: relative;
-  
+
 }
 
-.title{
-  margin-top: 200px; 
+.title {
+  margin-top: 200px;
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0px;
   font-weight: 400;
   margin-bottom: 0px;
 }
 
-.subtitle{
+.subtitle {
   font: normal normal 28px/40px Overpass;
   margin-bottom: 100px;
 }
@@ -205,13 +163,13 @@ const signupUser = async () => {
   align-items: center;
   justify-content: center;
   margin-top: 1.3rem;
-  
+
 }
 
 .b-container2 {
   display: flex;
   align-items: center;
-  justify-content:space-between;
+  justify-content: space-between;
   margin-top: 1.5rem;
   font-size: 14px;
   margin-right: 10px;
@@ -219,15 +177,15 @@ const signupUser = async () => {
 }
 
 .b-container2 a {
-   margin-left: 10px;
-   margin-left: 10px;
+  margin-left: 10px;
+  margin-left: 10px;
   color: #10E5B2;
   font-size: 16px; /* Adjust the font size as needed */
-   /* Add bold styling */
+  /* Add bold styling */
   text-decoration: none;
 }
 
-.b-container2 a:hover{
+.b-container2 a:hover {
   color: #683CE4;
   cursor: pointer;
 }
@@ -260,6 +218,11 @@ input {
   border: 2px solid #683ce4;
   border-radius: 30px;
   color: white;
+}
+
+.input-invalid {
+  border: 2px solid red;
+  background-color: #483d5d;
 }
 
 input:focus {

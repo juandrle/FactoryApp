@@ -3134,3 +3134,11 @@ Database is already closed (to disable automatic closing at VM shutdown, add ";D
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
 	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
 	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+2023-12-23 13:39:26 jdbc[34]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "DELETE [*]* FROM APP_USER"; erwartet "identifier"
+Syntax error in SQL statement "DELETE [*]* FROM APP_USER"; expected "identifier"; SQL statement:
+DELETE * FROM APP_USER [42001-214]
+2023-12-23 13:39:40 jdbc[34]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "DELETE [*]user FROM APP_USER"; erwartet "identifier"
+Syntax error in SQL statement "DELETE [*]user FROM APP_USER"; expected "identifier"; SQL statement:
+DELETE user FROM APP_USER [42001-214]

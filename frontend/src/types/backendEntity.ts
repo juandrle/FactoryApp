@@ -1,3 +1,5 @@
+import type { StringMappingType } from "typescript";
+
 export interface IBackendEntity {
     x: number;
     y: number;
@@ -38,4 +40,15 @@ export interface IFactory {
     height: number; 
     password: string; 
     // author: string; 
+}
+
+export interface IUserForm{
+    username: string;
+    password: string;
+    passwordCheck: string;
+}
+
+export interface ILoginForm{
+    username: string;
+    password: string;
 }

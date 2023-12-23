@@ -1,15 +1,51 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref,inject, type Ref } from 'vue';
+import { isUserAuthenticated } from '@/utils/auth';
+import router from "@/router"
+
 import Button from '../components/Button.vue'
   const buttonData = ref([
     {text: 'Fabrik erstellen', link: "/create"},
     {text: 'Fabrik beitreten', link:"/enter"}, 
     {text: 'Einstellungen', link:"/login"}
     ])
+
+
+const {updateSessUser} = inject<{
+  sessUser: Ref<string>,
+  updateSessUser: (newUser: string) => void
+}>('sessUser')
+
+const isUserAuthenticated = () => {
+  if(updateSessUser.sessUser.value != ''){
+    return true
+  }else{
+    return false
+  }
+};
+
+const logout = async() => {
+  let empty = ''
+updateSessUser(empty)
+
+setTimeout(() => {
+    location.reload();
+  }, 100);
+}
+
+const redirectToLogin = async() => {
+  
+  await router.push('/login');
+}
+
 </script>
 
 <template>
   <div class="container">
+    <form v-if="isUserAuthenticated()" @submit.prevent="logout">
+      <button type="submit">Logout</button>
+    </form>
+    <button v-else @click="redirectToLogin">Login</button>
     <div class="s-item">
       <div class="button-container">
         <Button v-for="item in buttonData" :text="item.text" :link="item.link"></Button>
