@@ -132,6 +132,10 @@ const initalLoadHighlightModel = (modelUrl: string) => {
   )
 }
 const captureScreenshot = () => {
+  renderer.clear();
+  renderer.render(scene, camera);
+  setupCamera()
+  console.log(camera);
   const canvas = renderer.domElement
   return canvas.toDataURL("image/png")
 }

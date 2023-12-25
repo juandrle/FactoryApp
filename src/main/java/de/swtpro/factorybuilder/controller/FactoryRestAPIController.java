@@ -8,6 +8,7 @@ import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.PlacedModel;
 import de.swtpro.factorybuilder.service.*;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,13 @@ public class FactoryRestAPIController {
         factoryService.deleteFactoryById(idToDelete);
         return ResponseEntity.ok(true);
     }
-
+    @CrossOrigin
+    @GetMapping("/getAll")
+    public List<Factory> getAll() {
+        return factoryService.getAllFactories();
+    }
     @PostMapping("/updateImage")
+    @Transactional
     public ResponseEntity<Boolean> updateImage(@RequestBody UpdateImageFactoryDTO updateImageFactoryDTO) {
         try {
             Factory factory = factoryService.getFactoryById(updateImageFactoryDTO.factoryID()).orElseThrow();
@@ -68,9 +74,9 @@ public class FactoryRestAPIController {
             return ResponseEntity.ok(false);
         }
     }
-
-    @PostMapping("/getImage")
-    public ResponseEntity<String> getImage(@RequestBody long factoryID) {
+    @CrossOrigin
+    @GetMapping("/getImage/{factoryID}")
+    public ResponseEntity<String> getImage(@PathVariable long factoryID) {
         try {
             Factory factory = factoryService.getFactoryById(factoryID).orElseThrow();
             String dataUrl = imgConverterService.byteArrayToDataUrl(factory.getScreenshot(), "image/png");
