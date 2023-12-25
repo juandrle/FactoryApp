@@ -37,44 +37,59 @@ const setupInjections = () => {
   }>('factorySize')
   if (resultSize && typeof resultSize === 'object') updateFactorySize = resultSize.updateFactorySize
 }
-const createFactory = () => {
-  if (selectedSize.value) {
+const isLoading: Ref<boolean> = ref(false)
+function createFactory() {
+  if (selectedSize.value && factoryName.value) {
+    isLoading.value = true;
     updateFactorySize({
       x: selectedSize.value.x,
       y: selectedSize.value.y,
-      z: selectedSize.value.z
-    })
+      z: selectedSize.value.z,
+    });
+
     const factory: IFactoryCreate = {
       name: factoryName.value,
       password: factoryPassword.value,
       width: selectedSize.value.x,
       depth: selectedSize.value.y,
-      height: selectedSize.value.z
-    }
-    factoryCreateRequest(factory).then((newID: number) => {
-      updateFactoryID(newID)
-      console.log(newID)
-      router.push('/factory')
-    })
+      height: selectedSize.value.z,
+    };
+
+    factoryCreateRequest(factory)
+        .then((newID: number) => {
+          updateFactoryID(newID);
+          router.push('/factory');
+        })
+        .catch((error) => {
+          console.error("Failed to create factory", error);
+        })
+        .finally(() => {
+          isLoading.value = false;
+        });
   } else {
-    console.error("Please select a size before creating the factory.")
+    console.error("Please fill all fields before creating the factory.");
   }
 }
+
 onMounted(() => {
   setupInjections()
 })
-
 </script>
 
 <template>
   <div class="container">
+
     <div class="s-item">
       <div class="content-s-item">
         <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
         <p class="logo-titel">Machine Deluxe 3000</p>
       </div>
     </div>
-    <div class="m-item">
+    <div class="loading" v-if="isLoading">
+      initializing {{factoryName}}, please wait...
+      <div class="loader"></div> <!-- Buffer animation element -->
+    </div>
+    <div class="m-item" v-else>
       <h1 class="game-name">Fabrik erstellen</h1>
       <div class="factory-settings">
         <form @submit.prevent="createFactory">
@@ -95,7 +110,6 @@ onMounted(() => {
           </div>
         </form>
       </div>
-
     </div>
     <div class="s-item"></div>
   </div>
@@ -107,7 +121,6 @@ onMounted(() => {
   padding: 1.875rem 1.125rem;
   border-radius: 25px;
 }
-
 .v-form-button {
   border-color: transparent;
 }
@@ -116,7 +129,7 @@ onMounted(() => {
   display: flex;
   min-width: 100vw;
   min-height: 100vh;
-  /*background-image: url('../assets/single_rectangles.svg'); 
+  /*background-image: url('../assets/single_rectangles.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: right bottom; */
@@ -215,5 +228,35 @@ onMounted(() => {
 input:focus {
   outline: none;
 }
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 1.5rem;
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+}
+
+.loader {
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid #683ce4;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-top: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 
 </style>
