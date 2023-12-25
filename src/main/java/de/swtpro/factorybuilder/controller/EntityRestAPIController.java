@@ -10,6 +10,7 @@ import de.swtpro.factorybuilder.service.FactoryService;
 
 import de.swtpro.factorybuilder.service.ModelService;
 import de.swtpro.factorybuilder.service.PlacedModelService;
+import de.swtpro.factorybuilder.utility.ModelType;
 import de.swtpro.factorybuilder.utility.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +93,7 @@ public class EntityRestAPIController {
     @CrossOrigin
     @GetMapping("/getAll")
     public List<Model> getAll() {
-        return modelService.getAll();
+        return modelService.getAllByTypes(ModelType.MACHINE, ModelType.OTHER);
     }
 
 }

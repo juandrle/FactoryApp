@@ -2,6 +2,7 @@ package de.swtpro.factorybuilder.repository;
 
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.PlacedModel;
+import de.swtpro.factorybuilder.utility.ModelType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,5 +14,7 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
 
     @Override
     Optional<Model> findById(Long aLong);
+
+    List<Model> findAllByType(ModelType type);
 
 }

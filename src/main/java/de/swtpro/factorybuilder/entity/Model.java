@@ -1,5 +1,6 @@
 package de.swtpro.factorybuilder.entity;
 
+import de.swtpro.factorybuilder.utility.ModelType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -15,7 +16,7 @@ public class Model implements Serializable {
     String name;
     String modelGltf;
     String icon;
-    String type;
+    ModelType type;
 
     public long getId() {
         return id;
@@ -41,11 +42,11 @@ public class Model implements Serializable {
         this.icon = icon;
     }
 
-    public void setType(String type) {
+    public void setType(ModelType type) {
         this.type = type;
     }
 
-    public String getType() {
+    public ModelType getType() {
         return type;
     }
 
