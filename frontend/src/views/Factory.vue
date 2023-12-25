@@ -11,7 +11,7 @@ import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
 import {placeRequest} from '@/utils/backendComms/postRequests'
-import {getAllEntitys, getAllEntitysInFactory} from '@/utils/backendComms/getRequests'
+import {getAllEntities, getAllEntitiesInFactory} from '@/utils/backendComms/getRequests'
 import {backendUrl} from '@/utils/config/config'
 import {ControlMode} from '@/enum/ControlMode'
 
@@ -141,7 +141,7 @@ const initalLoadHighlightModel = (modelUrl: string) => {
 
 const onLoadFactoryButton = () => {
   if (factoryID === undefined) return
-  getAllEntitysInFactory(factoryID.value).then((backendEntitys: IBackendEntity[]) => {
+  getAllEntitiesInFactory(factoryID.value).then((backendEntitys: IBackendEntity[]) => {
     backendEntitys.forEach((backendEntity) => {
       placeEntity(
           loader,
@@ -363,7 +363,7 @@ onMounted(() => {
   dynamicDiv = document.getElementById('dynamicDiv')
 
   // Renderer gets appended to target
-  getAllEntitys().then((json) => {
+  getAllEntities().then((json) => {
     // Alle entittys sind nun zugänglich für uns
     allEntitys.value = json
     // Active entity ändern

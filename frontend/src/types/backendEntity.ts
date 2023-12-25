@@ -10,6 +10,7 @@ export interface IBackendEntity {
 
 export interface IBackendEntityPreview {
     modelFile: string;
+    name: string;
     icon: string;
     id: string;
 }

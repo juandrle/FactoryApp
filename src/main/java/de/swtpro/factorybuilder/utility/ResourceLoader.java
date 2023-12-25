@@ -37,19 +37,19 @@ public class ResourceLoader implements CommandLineRunner {
             for (ModelType type : types) {
                 switch (type) {
                     case MACHINE:
-                        models.addAll(pathToModelList(directoryPath, "/machines/", ModelType.MACHINE));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/machines/", ModelType.MACHINE, "machine.png"));
                         break;
                     case OTHER:
-                        models.addAll(pathToModelList(directoryPath, "/other/", ModelType.OTHER));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/other/", ModelType.OTHER, "other.png"));
                         break;
                     case ITEM_PRODUCT:
-                        models.addAll(pathToModelList(directoryPath, "/items/products/", ModelType.ITEM_PRODUCT));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/products/", ModelType.ITEM_PRODUCT, "other.png"));
                         break;
                     case ITEM_RESOURCE:
-                        models.addAll(pathToModelList(directoryPath, "/items/resources/", ModelType.ITEM_RESOURCE));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/resources/", ModelType.ITEM_RESOURCE, "other.png"));
                         break;
                     case ITEM_PROCESSED:
-                        models.addAll(pathToModelList(directoryPath, "/items/processed/", ModelType.ITEM_PROCESSED));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/processed/", ModelType.ITEM_PROCESSED, "other.png"));
                         break;
                 }
             }
@@ -61,7 +61,7 @@ public class ResourceLoader implements CommandLineRunner {
 
     }
 
-    private List<Model> pathToModelList(String directoryPath, String type, ModelType modelType) throws IOException {
+    private List<Model> pathToModelListAndIconFileName(String directoryPath, String type, ModelType modelType, String fileName) throws IOException {
         List<Model> models = new ArrayList<>();
         Path path = Paths.get(new ClassPathResource(directoryPath + type).getURI());
         try (Stream<Path> paths = Files.walk(path)) {
@@ -72,7 +72,7 @@ public class ResourceLoader implements CommandLineRunner {
                 if (!filePath.endsWith(suffixPaths[suffixPaths.length - 1])) {
                     Model m = new Model();
                     m.setModelFile(filePath);
-                    m.setIcon("/icons/accessibility-outline.svg");
+                    m.setIcon("/icons/models/" + fileName);
                     m.setName(getNameByPath(filePath));
                     m.setType(modelType);
                     models.add(m);
