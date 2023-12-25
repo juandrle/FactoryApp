@@ -228,6 +228,7 @@ onMounted(() => {
 input:focus {
   outline: none;
 }
+
 .loading {
   display: flex;
   flex-direction: column;
