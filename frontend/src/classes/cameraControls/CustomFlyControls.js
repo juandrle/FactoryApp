@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import { clamp } from 'three/src/math/MathUtils'
 import { PointerLockControls } from './CustomPointerLock'
 
 
