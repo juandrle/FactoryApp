@@ -22,7 +22,7 @@ import {
   replaceEntity,
   selectionObject,
   updateHighlightModel,
-  createRoom
+  createRoom, deepCloneObject
 } from '@/utils/threeJS/helpFunctions'
 import {MOUSE} from "three";
 
@@ -176,11 +176,10 @@ const onChangeEntityClicked = (situation: string) => {
       console.log('scripting Entity')
       break
     case 'clone':
-      const newObj = currentObjectSelected.clone()
-      scene.add(newObj)
       highlightObjectWithColor(currentObjectSelected, false)
       lastObjectSelected = currentObjectSelected
-      currentObjectSelected = newObj
+      currentObjectSelected = deepCloneObject(currentObjectSelected)
+      scene.add(currentObjectSelected)
       highlightObjectWithColor(currentObjectSelected, true)
       manipulationMode.value = 'clone'
       console.log('cloning Entity')
@@ -433,9 +432,9 @@ init()
     <div class="debug-bar">
     </div>
     <EntityBar id="ignore"
-        :entities="allEntitys"
-        :active-entity="activeEntity"
-        @update-active-entity="(id) => (activeEntity = allEntitys[id])"
+               :entities="allEntitys"
+               :active-entity="activeEntity"
+               @update-active-entity="(id) => (activeEntity = allEntitys[id])"
     />
   </div>
 </template>

@@ -141,7 +141,7 @@ export const updateHighlightModel: any = async (
             newHighlight.position.set(prevHighlight.position)
             newHighlight.name = prevHighlight.name
         } else {
-            newHighlight.position.set(0,0,0)
+            newHighlight.position.set(0, 0, 0)
             newHighlight.name = "entity"
         }
 
@@ -182,7 +182,6 @@ export const selectionObject = (currentObjectSelected: THREE.Group, lastObjectSe
     if (intersections.length > 0) {
         let filteredIntersections = intersections.filter((item: any) => (!item.object.name.includes('layer') &&
             !item.object.name.includes('building') && !item.object.type.includes('Axes') && !item.object.type.includes('Scene')))
-
         if (filteredIntersections.length < 1) return false
         const closestIntersection = filteredIntersections.reduce((min: any, obj: any) => {
             return obj.distance < min.distance ? obj : min;
@@ -201,7 +200,6 @@ export const selectionObject = (currentObjectSelected: THREE.Group, lastObjectSe
     }
 }
 export const highlightObjectWithColor = (object: THREE.Group, color: boolean) => {
-    console.log("color element:", color, "   ",object)
     if (!color)
         object.children.forEach((element: any) => {
             switch (element.type) {
@@ -228,6 +226,23 @@ export const highlightObjectWithColor = (object: THREE.Group, color: boolean) =>
                     break
             }
         })
+}
+export const deepCloneObject = (object: any) => {
+    const clone = object.clone();
+    clone.children = [];
+
+    object.children.forEach((child: any) => {
+        const childClone = deepCloneObject(child);
+        clone.add(childClone);
+    });
+
+    if (clone.material) {
+        clone.material = clone.material.clone();
+    }
+    if (clone.geometry) {
+        clone.geometry = clone.geometry.clone();
+    }
+    return clone;
 }
 
 export const createRoom = (x: number, y: number, z: number, scene: THREE.Scene) => {
