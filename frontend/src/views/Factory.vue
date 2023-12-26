@@ -66,7 +66,7 @@ let highlight: THREE.Group
 let cm: ControlsManager;
 let previousTime: number = 0
 let currentMode: ControlMode | null;
-
+let pivot: THREE.Object3D
 
 /**
  * Setup
@@ -161,10 +161,21 @@ const onChangeEntityClicked = (situation: string) => {
   switch (situation) {
     case 'delete':
       scene.remove(currentObjectSelected)
+      if (currentObjectSelected.parent.type !== "Scene")
+        scene.remove(currentObjectSelected.parent)
       console.log('deleting Entity')
       break
     case 'rotate':
       manipulationMode.value = 'rotate'
+      let box = new THREE.Box3().setFromObject(currentObjectSelected)
+      let center = new THREE.Vector3()
+      box.getCenter(center)
+      currentObjectSelected.position.sub(center)
+      pivot = new THREE.Object3D()
+      pivot.position.copy(center)
+      pivot.position.setZ(1)
+      scene.add(pivot)
+      pivot.add(currentObjectSelected)
       console.log('rotating Entity')
       break
     case 'move':
@@ -221,11 +232,12 @@ const handleKeyDown = (event: KeyboardEvent) => {
   }
   if (manipulationMode.value === 'rotate') {
     const currObjSelRot = currentObjectSelected.rotation
+
     if (event.key === 'ArrowLeft') {
-      currObjSelRot.set(Math.PI / 2, currObjSelRot.y + Math.PI / 2, 0)
+      pivot.rotation.z -= Math.PI / 2;
     }
     if (event.key === 'ArrowRight') {
-      currObjSelRot.set(Math.PI / 2, currObjSelRot.y - Math.PI / 2, 0)
+      pivot.rotation.z += Math.PI / 2;
     }
   }
   if (event.key === 'Q' || event.key === 'q') cm.toggleMode()
@@ -314,10 +326,10 @@ const handleContextMenu = (event: MouseEvent) => {
   const intersections = getIntersectionsMouse(event, camera, scene)
   const result = selectionObject(currentObjectSelected, lastObjectSelected, intersections)
   if (result && typeof result === 'object') {
-    const {worked, currObj, lastObj} = result;
+    const {worked, currObj, lastObj} = result
     if (worked) {
-      currentObjectSelected = currObj;
-      lastObjectSelected = lastObj;
+      currentObjectSelected = currObj
+      lastObjectSelected = lastObj
       if (dynamicDiv) {
         dynamicDiv.style.left = event.clientX - 50 + 'px'
         dynamicDiv.style.top = event.clientY + 20 + 'px'
