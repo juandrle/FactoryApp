@@ -167,15 +167,21 @@ const onChangeEntityClicked = (situation: string) => {
       break
     case 'rotate':
       manipulationMode.value = 'rotate'
-      let box = new THREE.Box3().setFromObject(currentObjectSelected)
-      let center = new THREE.Vector3()
-      box.getCenter(center)
-      currentObjectSelected.position.sub(new THREE.Vector3(center.x, center.y, 0))
-      pivot = new THREE.Object3D()
-      pivot.position.set(center.x, center.y, currentObjectSelected.position.z)
-      scene.add(pivot)
-      pivot.add(currentObjectSelected)
       console.log('rotating Entity')
+      if (!pivot || currentObjectSelected !== pivot.children[0]) {
+        if (currentObjectSelected.parent.type === 'Object3D') {
+          pivot = currentObjectSelected.parent
+          return
+        }
+        let box = new THREE.Box3().setFromObject(currentObjectSelected)
+        let center = new THREE.Vector3()
+        box.getCenter(center)
+        currentObjectSelected.position.sub(new THREE.Vector3(center.x, center.y, 0))
+        pivot = new THREE.Object3D()
+        pivot.position.set(center.x, center.y, currentObjectSelected.position.z)
+        scene.add(pivot)
+        pivot.add(currentObjectSelected)
+      }
       break
     case 'move':
       manipulationMode.value = 'move'
@@ -230,8 +236,6 @@ const handleKeyDown = (event: KeyboardEvent) => {
     }
   }
   if (manipulationMode.value === 'rotate') {
-    const currObjSelRot = currentObjectSelected.rotation
-
     if (event.key === 'ArrowLeft') {
       pivot.rotation.z -= Math.PI / 2;
     }
