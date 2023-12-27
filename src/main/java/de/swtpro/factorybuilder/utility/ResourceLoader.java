@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -66,8 +67,8 @@ public class ResourceLoader implements CommandLineRunner {
         Path path = Paths.get(new ClassPathResource(directoryPath + type).getURI());
         try (Stream<Path> paths = Files.walk(path)) {
             paths.forEach(e -> {
-                String[] fullPath = e.toString().split("/");
-                String filePath = "/models/mock" + type + fullPath[fullPath.length - 1].toString();
+                Path relativePath = path.relativize(e);
+                String filePath = "/models/mock" + type + "/" + relativePath.toString().replace(File.separator, "/");
                 String[] suffixPaths = type.split("/");
                 if (!filePath.endsWith(suffixPaths[suffixPaths.length - 1])) {
                     Model m = new Model();
