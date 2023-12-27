@@ -16,7 +16,7 @@ const props = defineProps({
   }
 })
 onMounted(() =>{
-  getFactoryImage(props.factory?.factoryID).then((dataURL) => {
+  getFactoryImage(props.factory?.id).then((dataURL) => {
     currentPicture.value = dataURL.toString()
   })
 

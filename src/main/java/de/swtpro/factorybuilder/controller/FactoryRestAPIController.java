@@ -2,6 +2,7 @@ package de.swtpro.factorybuilder.controller;
 
 
 import de.swtpro.factorybuilder.DTO.FactoryDTO;
+import de.swtpro.factorybuilder.DTO.FactoryEnterDTO;
 import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
 import de.swtpro.factorybuilder.DTO.UpdateImageFactoryDTO;
 import de.swtpro.factorybuilder.entity.Factory;
@@ -60,8 +61,12 @@ public class FactoryRestAPIController {
     }
     @CrossOrigin
     @GetMapping("/getAll")
-    public List<Factory> getAll() {
-        return factoryService.getAllFactories();
+    public List<FactoryEnterDTO> getAll() {
+        List<FactoryEnterDTO> factories = new ArrayList<>(); 
+        for(Factory f : factoryService.getAllFactories()){
+            factories.add(new FactoryEnterDTO(f.getFactoryID(), f.getName(), f.getWidth(), f.getDepth(), f.getHeight())); 
+        }; 
+        return factories; 
     }
     @PostMapping("/updateImage")
     @Transactional

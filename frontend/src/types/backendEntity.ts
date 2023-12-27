@@ -31,7 +31,7 @@ export interface IEntityDelete {
 }
 
 export interface IFactory {
-    factoryID: number;
+    id: number;
     name: string;
     width: number;
     depth: number;
