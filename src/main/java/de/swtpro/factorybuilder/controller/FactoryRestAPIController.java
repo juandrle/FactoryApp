@@ -1,6 +1,5 @@
 package de.swtpro.factorybuilder.controller;
 
-
 import de.swtpro.factorybuilder.DTO.FactoryDTO;
 import de.swtpro.factorybuilder.DTO.FactoryEnterDTO;
 import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
@@ -31,15 +30,13 @@ public class FactoryRestAPIController {
     ImgConverterService imgConverterService;
 
     FactoryRestAPIController(FactoryService factoryService, PlacedModelService placedModelService,
-                             ModelService modelService, FieldService fieldService, ImgConverterService imgConverterService) {
+            ModelService modelService, FieldService fieldService, ImgConverterService imgConverterService) {
         this.factoryService = factoryService;
         this.placedModelService = placedModelService;
-        this. modelService = modelService;
+        this.modelService = modelService;
         this.fieldService = fieldService;
         this.imgConverterService = imgConverterService;
     }
-
-
 
     @PostMapping("/create")
     public ResponseEntity<Long> create(@RequestBody FactoryDTO factoryDTO) {
@@ -59,15 +56,19 @@ public class FactoryRestAPIController {
         factoryService.deleteFactoryById(idToDelete);
         return ResponseEntity.ok(true);
     }
+
     @CrossOrigin
     @GetMapping("/getAll")
     public List<FactoryEnterDTO> getAll() {
-        List<FactoryEnterDTO> factories = new ArrayList<>(); 
-        for(Factory f : factoryService.getAllFactories()){
-            factories.add(new FactoryEnterDTO(f.getFactoryID(), f.getName(), f.getWidth(), f.getDepth(), f.getHeight())); 
-        }; 
-        return factories; 
+        List<FactoryEnterDTO> factories = new ArrayList<>();
+        for (Factory f : factoryService.getAllFactories()) {
+            factories
+                    .add(new FactoryEnterDTO(f.getFactoryID(), f.getName(), f.getWidth(), f.getDepth(), f.getHeight()));
+        }
+        ;
+        return factories;
     }
+
     @PostMapping("/updateImage")
     @Transactional
     public ResponseEntity<Boolean> updateImage(@RequestBody UpdateImageFactoryDTO updateImageFactoryDTO) {
@@ -79,6 +80,7 @@ public class FactoryRestAPIController {
             return ResponseEntity.ok(false);
         }
     }
+
     @CrossOrigin
     @GetMapping("/getImage/{factoryID}")
     public ResponseEntity<String> getImage(@PathVariable long factoryID) {
@@ -92,10 +94,26 @@ public class FactoryRestAPIController {
         }
     }
 
+    @CrossOrigin
+    @PostMapping("/checkPassword")
+    public ResponseEntity<Boolean> checkPassword(@RequestParam long factoryId, @RequestParam String passwordFrontend) {
+        try {
+            // get password from DB 
+            Factory factory = factoryService.getFactoryById(factoryId).orElseThrow();
+            String passwordFromDB = factory.getPassword();
+    
+            boolean passwordsMatch = passwordFrontend.equals(passwordFromDB);
+    
+            return ResponseEntity.ok(passwordsMatch);
+
+        } catch (Exception e) {
+            return ResponseEntity.ok(false);
+        }
+    }
+
     public ResponseEntity<List<PlacedModelDTO>> load(@RequestBody long idToLoad) {
         return ResponseEntity.ok(getEntitysFromFactory(factoryService.getFactoryById(idToLoad).orElseThrow()));
     }
-
 
     public List<PlacedModelDTO> getEntitysFromFactory(Factory factory) {
         // Nimm alle aus modelRepository mit factoryId == factoryId

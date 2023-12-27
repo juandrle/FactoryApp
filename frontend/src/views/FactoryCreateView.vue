@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, inject, Ref, ref, watch} from 'vue'
+import {computed, inject, type Ref, ref, watch} from 'vue'
 import Button from '../components/temp/Button.vue'
 import type {IVector3} from "@/types/global";
 import router from "@/router";

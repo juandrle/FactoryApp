@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import {defineProps, onMounted, Ref, ref} from 'vue'
+import {defineProps, onMounted, type Ref, ref} from 'vue'
 import type { IFactory } from '@/types/backendEntity';
-import * as url from "url";
 import {getFactoryImage} from "@/utils/backendComms/getRequests";
-// import type { Factory } from '@/views/FactoryEnterView.vue'
 
 const props = defineProps({
   factory: {
@@ -22,8 +20,31 @@ onMounted(() =>{
 
 });
 const currentPicture = ref("https://damassets.autodesk.net/content/dam/autodesk/www/industry/manufacturing/integrated-factory-modeling/what-is-integrated-factory-modeling-thumb-1172x660.jpg")
+
 // Check password
-const password = ref('')
+const factoryEnterPassword = ref('')
+async function submitPassword(factoryId:number,factoryEnterPassword:string) {
+  try {
+    const response = await fetch('/checkPassword', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: factoryId, password: factoryEnterPassword }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data === true) {
+        console.log('Passwort ist korrekt');
+      } else {
+        console.log('Passwort ist falsch');
+      }
+    }
+  } catch (error) {
+    console.error('Error while checking password: ', error);
+  }
+}
 </script>
 
 <template>
@@ -47,10 +68,10 @@ const password = ref('')
       </div>
     </div>
     <div class="card-back" style="display: none">
-      <form class="password-form">
+      <form class="password-form" @submit.prevent="submitPassword(props.factory?.id, factoryEnterPassword)">
         <div class="input-wrapper">
           <input
-            v-model="password"
+            v-model="factoryEnterPassword"
             type="password"
             placeholder="Passwort eingeben"
             class="password-input"

@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import {computed, onMounted, Ref, ref} from 'vue'
+import { computed, onMounted, type Ref, ref } from 'vue'
 import FactoryCard from '@/components/FactoryCard.vue'
-import {backendUrl} from "@/utils/config/config";
-import type {IFactory} from "@/types/backendEntity";
-import {getAllFactories} from "@/utils/backendComms/getRequests";
+import type { IFactory } from '@/types/backendEntity'
+import { getAllFactories } from '@/utils/backendComms/getRequests'
 
 const sizes = ref([
   { label: 'All', value: '' },
@@ -26,62 +25,41 @@ const currOwner = ref('')
 //fetch all existing factories
 const existing_factories: Ref<IFactory[]> = ref([])
 
-onMounted( () => {
+onMounted(() => {
   getAllFactories().then((json) => {
     existing_factories.value = json
   })
-
-});
-
-// const existing_factories = [
-//   { id: 1, name: 'Erens Fabrik', size: '30x50x8', author: 'Eren Flamingo', link: '/factory' },
-//   { id: 2, name: 'Julias Fabrik', size: '20x40x60', author: 'Julia Flamingo', link: '/factory' },
-//   { id: 3, name: 'Davids Fabrik', size: '60x100x12', author: 'David Flamingo', link: '/factory' },
-//   {
-//     id: 4,
-//     name: 'Vincents Fabrik',
-//     size: '120x200x20',
-//     author: 'Vincent Flamingo',
-//     link: '/factory'
-//   },
-//   { id: 5, name: 'Viviens Fabrik', size: '20x40x60', author: 'Vivien Esel', link: '/factory' },
-//   { id: 6, name: 'Esels Fabrik', size: '20x40x60', author: 'Esel Esel', link: '/factory' },
-//   {
-//     id: 7,
-//     name: 'Vincents Fabrik',
-//     size: '60x100x12',
-//     author: 'Vincent Flamingo',
-//     link: '/factory'
-//   },
-//   { id: 8, name: 'Viviens Fabrik', size: '60x100x12', author: 'Vivien Esel', link: '/factory' },
-//   { id: 9, name: 'Esels Fabrik', size: '60x100x12', author: 'Esel Esel', link: '/factory' }
-// ] as Factory[]
+})
 
 // Nach Fabriknamen filtern
 const searchTerm = ref('')
-const currentlyRotatedCard = ref<HTMLElement | null>(null)
 
 const filteredFactories = computed(() => {
   let matchesSize, matchesOwner, matchesSearchTerm
   return existing_factories.value.filter((factory) => {
-    console.log(currSize.value, currOwner.value)
+    // console.log(currSize.value, currOwner.value)
+    // filter factory size
     if (currSize.value === '') {
       matchesSize = true
-    } 
+    } else {
+      const sizeString = `${factory.width}x${factory.depth}x${factory.height}`
+      matchesSize = currSize.value ? sizeString === currSize.value : true
+    }
+    // filter factory author
+    if (currOwner.value === '') {
+      matchesOwner = true
+    }
     // else {
-    //   matchesSize = currSize.value ? factory.size === currSize.value : true
-    // }
-    // if (currOwner.value === '') {
-    //   matchesOwner = true
-    // } else {
     //   matchesOwner = currOwner.value ? factory.author === currOwner.value : true
     // }
+    // filter factory name
     matchesSearchTerm = factory.name.toLowerCase().includes(searchTerm.value.toLowerCase())
     // return matchesSearchTerm && matchesSize && matchesOwner
-    return matchesSearchTerm
+    return matchesSearchTerm && matchesSize
   })
 })
 
+const currentlyRotatedCard = ref<HTMLElement | null>(null)
 const rotateCard = (clickTarget: EventTarget | null) => {
   if (!clickTarget) return
   const card = clickTarget as HTMLElement
@@ -109,6 +87,7 @@ const rotateCard = (clickTarget: EventTarget | null) => {
     }
   }
 }
+
 </script>
 
 <template>
@@ -141,7 +120,7 @@ const rotateCard = (clickTarget: EventTarget | null) => {
           <FactoryCard
             v-for="factory in filteredFactories"
             :rotateCard="rotateCard"
-            :key="factory.factoryID"
+            :key="factory.id"
             :factory="factory"
           ></FactoryCard>
         </div>
@@ -152,8 +131,8 @@ const rotateCard = (clickTarget: EventTarget | null) => {
 </template>
 
 <style scoped>
-.container{
-  align-items: baseline; 
+.container {
+  align-items: baseline;
 }
 .container .s-item {
   display: flex;
