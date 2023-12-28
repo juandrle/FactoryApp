@@ -70,7 +70,7 @@ public class ResourceLoader implements CommandLineRunner {
                 Path relativePath = path.relativize(e);
                 String filePath = "/models/mock" + type + "/" + relativePath.toString().replace(File.separator, "/");
                 String[] suffixPaths = type.split("/");
-                if (!filePath.endsWith(suffixPaths[suffixPaths.length - 1])) {
+                if (!filePath.endsWith(suffixPaths[suffixPaths.length - 1] + "//")) {
                     Model m = new Model();
                     m.setModelFile(filePath);
                     m.setIcon("/icons/models/" + fileName);
