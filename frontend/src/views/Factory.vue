@@ -4,7 +4,7 @@ import type { Ref } from 'vue'
 import type { IVector3 } from '@/types/global'
 import type { IBackendEntityPreview, IBackendEntity } from '@/types/backendEntity'
 import * as THREE from 'three'
-import { ControlsManager } from '@/classes/ControlsManager'
+import { CameraControlsManager } from '@/classes/CameraControlsManager'
 import { getIntersectionsMouse } from '@/utils/threeJS/3d'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
@@ -13,7 +13,7 @@ import CircularMenu from '@/components/ui/CircularMenu.vue'
 import { placeRequest } from '@/utils/backendComms/postRequests'
 import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backendComms/getRequests'
 import { backendUrl } from '@/utils/config/config'
-import { ControlMode } from '@/enum/ControlMode'
+import { CameraMode } from '@/enum/CameraMode'
 
 import {
   highlightObjectWithColor,
@@ -64,9 +64,9 @@ let renderer: THREE.WebGLRenderer
 let camera: THREE.PerspectiveCamera
 let loader: any
 let highlight: THREE.Group
-let cm: ControlsManager
+let ccm: CameraControlsManager
 let previousTime: number = 0
-let currentMode: ControlMode | null
+let currentMode: CameraMode | null
 let pivot: THREE.Object3D
 
 /**
@@ -113,8 +113,8 @@ const setupLights = () => {
 }
 
 const setupControls = () => {
-  cm = new ControlsManager(camera, renderer.domElement)
-  currentMode = cm.currentMode
+  ccm = new CameraControlsManager(camera, renderer.domElement, CameraMode.ORBIT)
+  currentMode = ccm.currentMode
 }
 
 const setupLoader = () => {
@@ -251,7 +251,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
       break
 
     case 'Q':
-      cm.toggleMode()
+      ccm.toggleMode()
       break
 
     default:
@@ -452,7 +452,7 @@ const animate = (timestamp: any) => {
 
   requestAnimationFrame(animate)
 
-  cm.update(deltaTime)
+  ccm.update(deltaTime)
   renderer.render(scene, camera)
 }
 

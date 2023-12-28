@@ -65,6 +65,13 @@ class CameraControlsManager {
       this.controlls.update(deltaTime)
     }
   }
+
+  toggleMode() {
+    if(this.currentMode == CameraMode.FREE)
+      this.switchTo(CameraMode.ORBIT)
+    else
+      this.switchTo(CameraMode.FREE)
+  }
 }
 
 export { CameraControlsManager }
