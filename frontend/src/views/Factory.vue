@@ -159,11 +159,22 @@ const onToggleMenuVisibility = () => {
   showCircMenu.value = !showCircMenu.value
 }
 
+
+/**
+ * Circle / Manipulation
+ */
+
 const onChangeEntityClicked = (situation: string) => {
+
+  // When one circle option was clicked
   switch (situation) {
     case 'delete':
+      // Deleting Object
       scene.remove(currentObjectSelected)
+
+      //
       if (currentObjectSelected.parent.type !== 'Scene') scene.remove(currentObjectSelected.parent)
+
       console.log('deleting Entity')
       break
     case 'rotate':
@@ -200,6 +211,70 @@ const onChangeEntityClicked = (situation: string) => {
       highlightObjectWithColor(currentObjectSelected, true)
       manipulationMode.value = 'clone'
       console.log('cloning Entity')
+      break
+  }
+}
+
+const clickActionBasedOnMode = () => {
+  switch (manipulationMode.value) {
+    case 'set':
+      placeRequest(
+        {
+          x: highlight.position.x,
+          y: highlight.position.y,
+          z: highlight.position.z,
+          orientation: 'N',
+          entityID: 'cube',
+          factoryID: 1
+        },
+        '/place'
+      ).then((success: boolean) => {
+        if (success) {
+          if (activeEntity.value)
+            placeEntity(
+              loader,
+              scene,
+              highlight.position,
+              backendUrl + activeEntity.value.modelFile
+            )
+        }
+      })
+      break
+    case 'move':
+      placeRequest(
+        {
+          x: highlight.position.x,
+          y: highlight.position.y,
+          z: highlight.position.z,
+          orientation: 'N',
+          entityID: 'cube',
+          factoryID: 1
+        },
+        '/move'
+      ).then((success: boolean) => {
+        if (success) {
+          replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
+          manipulationMode.value = ''
+        }
+      })
+      break
+    case 'clone':
+      placeRequest(
+        {
+          x: currentObjectSelected.position.x,
+          y: currentObjectSelected.position.y,
+          z: currentObjectSelected.position.z,
+          orientation: 'N',
+          entityID: 'cube',
+          factoryID: 1
+        },
+        '/clone'
+      ).then((success: boolean) => {
+        if (success) {
+          replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
+          manipulationMode.value = ''
+        }
+      })
       break
   }
 }
@@ -275,83 +350,18 @@ const handleMouseMove = (event: MouseEvent) => {
 }
 
 const handleClick = (event: any) => {
-  // Place cube
-
-  // Wenn der Circle an ist => aus
+  // close circle if is open
   if (showCircMenu.value) {
     showCircMenu.value = false
     if (manipulationMode.value === '') highlightObjectWithColor(currentObjectSelected, false)
     return
   }
 
-  // Sidebar
+  // Ignore sidebar
   if (event.target.id == 'ignore') return
 
   // Cirlce events
-  switch (manipulationMode.value) {
-    case 'set':
-      placeRequest(
-        {
-          x: highlight.position.x,
-          y: highlight.position.y,
-          z: highlight.position.z,
-          orientation: 'N',
-          entityID: 'cube',
-          factoryID: 1
-        },
-        '/place'
-      ).then((success: boolean) => {
-        console.log('placing entity: ' + success)
-        if (success) {
-          if (activeEntity.value)
-            placeEntity(
-              loader,
-              scene,
-              highlight.position,
-              backendUrl + activeEntity.value.modelFile
-            )
-        }
-      })
-      break
-    case 'move':
-      placeRequest(
-        {
-          x: highlight.position.x,
-          y: highlight.position.y,
-          z: highlight.position.z,
-          orientation: 'N',
-          entityID: 'cube',
-          factoryID: 1
-        },
-        '/move'
-      ).then((success: boolean) => {
-        console.log('placing entity: ' + success)
-        if (success) {
-          replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
-          manipulationMode.value = ''
-        }
-      })
-      break
-    case 'clone':
-      placeRequest(
-        {
-          x: currentObjectSelected.position.x,
-          y: currentObjectSelected.position.y,
-          z: currentObjectSelected.position.z,
-          orientation: 'N',
-          entityID: 'cube',
-          factoryID: 1
-        },
-        '/clone'
-      ).then((success: boolean) => {
-        console.log('placing entity: ' + success)
-        if (success) {
-          replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
-          manipulationMode.value = ''
-        }
-      })
-      break
-  }
+  clickActionBasedOnMode()
 }
 
 const handleContextMenu = (event: MouseEvent) => {
@@ -391,6 +401,8 @@ watch(activeEntity, () => {
     )
   } else initalLoadHighlightModel('mock/.gltf/cube.gltf')
 })
+
+watch(manipulationMode, () => console.log(manipulationMode.value))
 
 /**
  * Gamecycle
