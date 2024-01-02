@@ -14,6 +14,7 @@ import { entityDeleteRequest, placeRequest } from '@/utils/backendComms/postRequ
 import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backendComms/getRequests'
 import { backendUrl } from '@/utils/config/config'
 import { CameraMode } from '@/enum/CameraMode'
+import { ManipulationMode } from '@/enum/ManipulationMode'
 
 import {
   highlightObjectWithColor,
@@ -25,7 +26,6 @@ import {
   createRoom,
   deepCloneObject
 } from '@/utils/threeJS/helpFunctions'
-import { MOUSE } from 'three'
 
 /**
  * Config
@@ -38,7 +38,7 @@ const ACTIVE_LAYER: number = 0
  **/
 
 const target = ref()
-const manipulationMode: Ref<String> = ref<'move' | 'rotate' | '' | 'set' | 'clone'>('')
+const manipulationMode: Ref<ManipulationMode> = ref<ManipulationMode>(ManipulationMode.IDLE);
 const allEntitys: Ref<IBackendEntityPreview[] | undefined> = ref()
 const activeEntity: Ref<IBackendEntityPreview | undefined> = ref()
 // quick fix to any
@@ -164,7 +164,6 @@ const onToggleMenuVisibility = () => {
  */
 
 const onChangeEntityClicked = (situation: string) => {
-  
   // When one circle option was clicked
   switch (situation) {
     case 'delete':
@@ -182,7 +181,7 @@ const onChangeEntityClicked = (situation: string) => {
 
       break
     case 'rotate':
-      manipulationMode.value = 'rotate'
+      manipulationMode.value = ManipulationMode.ROTATE;
       console.log('rotating Entity')
       if (!pivot || currentObjectSelected !== pivot.children[0]) {
         if (currentObjectSelected.parent.type === 'Object3D') {
@@ -200,7 +199,7 @@ const onChangeEntityClicked = (situation: string) => {
       }
       break
     case 'move':
-      manipulationMode.value = 'move'
+      manipulationMode.value = ManipulationMode.MOVE;
       currObjSelectedOriginPos = currentObjectSelected.position.clone()
       console.log('moving Entity')
       break
@@ -213,7 +212,7 @@ const onChangeEntityClicked = (situation: string) => {
       currentObjectSelected = deepCloneObject(currentObjectSelected)
       scene.add(currentObjectSelected)
       highlightObjectWithColor(currentObjectSelected, true)
-      manipulationMode.value = 'clone'
+      manipulationMode.value = ManipulationMode.CLONE;
       console.log('cloning Entity')
       break
   }
@@ -221,7 +220,7 @@ const onChangeEntityClicked = (situation: string) => {
 
 const clickActionBasedOnMode = () => {
   switch (manipulationMode.value) {
-    case 'set':
+    case ManipulationMode.SET:
       placeRequest(
         {
           x: highlight.position.x,
@@ -244,7 +243,7 @@ const clickActionBasedOnMode = () => {
         }
       })
       break
-    case 'move':
+    case ManipulationMode.MOVE:
       placeRequest(
         {
           x: highlight.position.x,
@@ -262,7 +261,7 @@ const clickActionBasedOnMode = () => {
         }
       })
       break
-    case 'clone':
+    case ManipulationMode.CLONE:
       placeRequest(
         {
           x: currentObjectSelected.position.x,
