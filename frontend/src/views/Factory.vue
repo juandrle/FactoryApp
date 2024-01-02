@@ -17,15 +17,14 @@ import { CameraMode } from '@/enum/CameraMode'
 import { ManipulationMode } from '@/enum/ManipulationMode'
 
 import {
-  highlightObjectWithColor,
   moveHighlight,
-  placeEntity,
-  replaceEntity,
   selectionObject,
   updateHighlightModel,
   createRoom,
   deepCloneObject
 } from '@/utils/threeJS/helpFunctions'
+
+import { replaceEntity, highlightObjectWithColor, placeEntity } from '@/utils/threeJS/entityManipulation'
 
 /**
  * Config
@@ -38,7 +37,7 @@ const ACTIVE_LAYER: number = 0
  **/
 
 const target = ref()
-const manipulationMode: Ref<ManipulationMode> = ref<ManipulationMode>(ManipulationMode.IDLE);
+const manipulationMode: Ref<ManipulationMode> = ref<ManipulationMode>(ManipulationMode.IDLE)
 const allEntitys: Ref<IBackendEntityPreview[] | undefined> = ref()
 const activeEntity: Ref<IBackendEntityPreview | undefined> = ref()
 // quick fix to any
@@ -167,6 +166,7 @@ const onChangeEntityClicked = (situation: string) => {
   // When one circle option was clicked
   switch (situation) {
     case 'delete':
+      // Delete Request
       entityDeleteRequest({
         factoryid: 1,
         id: 1
@@ -175,14 +175,16 @@ const onChangeEntityClicked = (situation: string) => {
           scene.remove(currentObjectSelected)
           if (currentObjectSelected.parent.type !== 'Scene')
             scene.remove(currentObjectSelected.parent)
-          console.log('deleting Entity')
         }
       })
 
       break
+
     case 'rotate':
-      manipulationMode.value = ManipulationMode.ROTATE;
-      console.log('rotating Entity')
+      // Set mode
+      manipulationMode.value = ManipulationMode.ROTATE
+
+      // set pivot point for future rotation
       if (!pivot || currentObjectSelected !== pivot.children[0]) {
         if (currentObjectSelected.parent.type === 'Object3D') {
           pivot = currentObjectSelected.parent
@@ -198,21 +200,27 @@ const onChangeEntityClicked = (situation: string) => {
         pivot.add(currentObjectSelected)
       }
       break
+
     case 'move':
-      manipulationMode.value = ManipulationMode.MOVE;
+      // Set move mode
+      manipulationMode.value = ManipulationMode.MOVE
+
+      // Set object position
       currObjSelectedOriginPos = currentObjectSelected.position.clone()
-      console.log('moving Entity')
+
       break
+
     case 'script':
       console.log('scripting Entity')
       break
+
     case 'clone':
       highlightObjectWithColor(currentObjectSelected, false)
       lastObjectSelected = currentObjectSelected
       currentObjectSelected = deepCloneObject(currentObjectSelected)
       scene.add(currentObjectSelected)
       highlightObjectWithColor(currentObjectSelected, true)
-      manipulationMode.value = ManipulationMode.CLONE;
+      manipulationMode.value = ManipulationMode.CLONE
       console.log('cloning Entity')
       break
   }
@@ -257,7 +265,7 @@ const clickActionBasedOnMode = () => {
       ).then((success: boolean) => {
         if (success) {
           replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
-          manipulationMode.value = ''
+          manipulationMode.value = ManipulationMode.IDLE
         }
       })
       break
@@ -275,7 +283,7 @@ const clickActionBasedOnMode = () => {
       ).then((success: boolean) => {
         if (success) {
           replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
-          manipulationMode.value = ''
+          manipulationMode.value = ManipulationMode.IDLE
         }
       })
       break
@@ -303,28 +311,32 @@ const handleResize = () => {
 const handleKeyDown = (event: KeyboardEvent) => {
   switch (event.key.toUpperCase()) {
     case 'V':
-      manipulationMode.value = ''
+      manipulationMode.value = ManipulationMode.IDLE
       showCircMenu.value = false
       if (currentObjectSelected) highlightObjectWithColor(currentObjectSelected, false)
       scene.remove(highlight)
       break
 
     case 'ESCAPE':
-      if (manipulationMode.value === 'move') {
-        replaceEntity(currObjSelectedOriginPos, currentObjectSelected, currentObjectSelected)
-        manipulationMode.value = ''
+      switch (manipulationMode.value) {
+        case ManipulationMode.MOVE:
+          // Zurücksetzen
+          replaceEntity(currObjSelectedOriginPos, currentObjectSelected, currentObjectSelected)
+          manipulationMode.value = ManipulationMode.IDLE
       }
       break
 
     case 'ARROWLEFT':
-      if (manipulationMode.value === 'rotate') {
-        pivot.rotation.z -= Math.PI / 2
+      switch (manipulationMode.value) {
+        case ManipulationMode.ROTATE:
+          pivot.rotation.z -= Math.PI / 2
       }
       break
 
     case 'ARROWRIGHT':
-      if (manipulationMode.value === 'rotate') {
-        pivot.rotation.z += Math.PI / 2
+      switch (manipulationMode.value) {
+        case ManipulationMode.ROTATE:
+          pivot.rotation.z += Math.PI / 2
       }
       break
 
@@ -342,12 +354,12 @@ const handleMouseMove = (event: MouseEvent) => {
   const intersections = getIntersectionsMouse(event, camera, scene)
 
   // Update the highlighter
-  if (highlight && manipulationMode.value === 'set') {
+  if (highlight && manipulationMode.value === ManipulationMode.SET) {
     // Object model wird asynchron geladen
     moveHighlight(highlight, ACTIVE_LAYER, intersections)
-  } else if (currentObjectSelected && manipulationMode.value === 'move') {
+  } else if (currentObjectSelected && manipulationMode.value === ManipulationMode.MOVE) {
     moveHighlight(currentObjectSelected, ACTIVE_LAYER, intersections)
-  } else if (currentObjectSelected && manipulationMode.value === 'clone') {
+  } else if (currentObjectSelected && manipulationMode.value === ManipulationMode.CLONE) {
     moveHighlight(currentObjectSelected, ACTIVE_LAYER, intersections)
   }
 }
@@ -356,7 +368,8 @@ const handleClick = (event: any) => {
   // close circle if is open
   if (showCircMenu.value) {
     showCircMenu.value = false
-    if (manipulationMode.value === '') highlightObjectWithColor(currentObjectSelected, false)
+    if (manipulationMode.value === ManipulationMode.IDLE)
+      highlightObjectWithColor(currentObjectSelected, false)
     return
   }
 
@@ -370,7 +383,7 @@ const handleClick = (event: any) => {
 const handleContextMenu = (event: MouseEvent) => {
   // Context öffnet sich
   event.preventDefault()
-  if (manipulationMode.value !== '') return
+  if (manipulationMode.value !== ManipulationMode.IDLE) return
   const intersections = getIntersectionsMouse(event, camera, scene)
   const result = selectionObject(currentObjectSelected, lastObjectSelected, intersections)
   if (result && typeof result === 'object') {
@@ -394,7 +407,7 @@ const handleContextMenu = (event: MouseEvent) => {
  * **/
 
 watch(activeEntity, () => {
-  manipulationMode.value = 'set'
+  manipulationMode.value = ManipulationMode.SET
 
   if (activeEntity.value) {
     updateHighlightModel(highlight, backendUrl + activeEntity.value.modelFile, scene, loader).then(
