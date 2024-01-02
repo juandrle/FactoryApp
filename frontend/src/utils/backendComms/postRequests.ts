@@ -21,6 +21,10 @@ export const placeRequest = async (placeRequest: IPlaceRequest, suffix: string):
 }
 
 export const entityDeleteRequest = async (entity: IEntityDelete): Promise<boolean> => {
+
+    // temp
+    return true;
+
     try {
         const url = backendUrl + '/api/entity/delete'
         const requestBody = JSON.stringify(entity.id)

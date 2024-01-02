@@ -10,7 +10,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
-import { placeRequest } from '@/utils/backendComms/postRequests'
+import { entityDeleteRequest, placeRequest } from '@/utils/backendComms/postRequests'
 import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backendComms/getRequests'
 import { backendUrl } from '@/utils/config/config'
 import { CameraMode } from '@/enum/CameraMode'
@@ -159,23 +159,27 @@ const onToggleMenuVisibility = () => {
   showCircMenu.value = !showCircMenu.value
 }
 
-
 /**
  * Circle / Manipulation
  */
 
 const onChangeEntityClicked = (situation: string) => {
-
+  
   // When one circle option was clicked
   switch (situation) {
     case 'delete':
-      // Deleting Object
-      scene.remove(currentObjectSelected)
+      entityDeleteRequest({
+        factoryid: 1,
+        id: 1
+      }).then((success) => {
+        if (success) {
+          scene.remove(currentObjectSelected)
+          if (currentObjectSelected.parent.type !== 'Scene')
+            scene.remove(currentObjectSelected.parent)
+          console.log('deleting Entity')
+        }
+      })
 
-      //
-      if (currentObjectSelected.parent.type !== 'Scene') scene.remove(currentObjectSelected.parent)
-
-      console.log('deleting Entity')
       break
     case 'rotate':
       manipulationMode.value = 'rotate'
