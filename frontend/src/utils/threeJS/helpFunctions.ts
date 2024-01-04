@@ -3,6 +3,8 @@ import * as THREE from 'three'
 import type {Intersection, Object3DEventMap} from "three";
 import {Object3D} from "three";
 
+import { highlightObjectWithColor } from '@/utils/threeJS/entityManipulation'
+
 let existingGrid: THREE.Mesh[] = []
 export const getGrid = (gridID: number, scene: THREE.Scene) => {
     return scene.children.find((object: any) => object.name === `layer ${gridID}`)

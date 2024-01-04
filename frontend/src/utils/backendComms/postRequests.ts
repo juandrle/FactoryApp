@@ -1,42 +1,31 @@
-import type {IPlaceRequest} from "@/types/placeRequest";
-import type {IEntityDelete, IFactoryCreate, IFactoryDelete} from "@/types/backendEntity";
+import type {
+    IEntityDelete,
+    IFactoryCreate,
+    IFactoryDelete,
+    IManipulationRequest,
+    IPlaceRequest
+} from "@/types/backendTypes";
 import {backendUrl} from "@/utils/config/config"
 
 
-export const placeRequest = async (placeRequest: IPlaceRequest, suffix: string): Promise<boolean> => {
-    try {
-        const url = backendUrl + '/api/entity' + suffix
-        const requestBody = JSON.stringify(placeRequest)
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {'Content-type': 'application/json'},
-            body: requestBody,
-        });
-        const json = await response.json();
-        return json
-    } catch (error) {
-        console.error("Error placing entity:", error)
-        return false
-    }
+export const placeRequest = async (placeRequest: IPlaceRequest) => {
+    return await fetch(backendUrl + '/api/entity/place', {
+        method: "POST",
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify(placeRequest),
+    });
 }
 
-export const entityDeleteRequest = async (entity: IEntityDelete): Promise<boolean> => {
-
-    // temp
-    return true;
-
+export const manipulationRequest = async (manipulationRequest: IManipulationRequest, suffix: string): Promise<boolean> => {
     try {
-        const url = backendUrl + '/api/entity/delete'
-        const requestBody = JSON.stringify(entity.id)
-        const response = await fetch(url, {
+        const response = await fetch(backendUrl + '/api/entity/' + suffix, {
             method: "POST",
             headers: {'Content-type': 'application/json'},
-            body: requestBody,
+            body: JSON.stringify(manipulationRequest),
         });
-        const json = await response.json();
-        return json
+        return await response.json();
     } catch (error) {
-        console.error("Error deleting entity:", error)
+        console.error("Error placing entity:", error)
         return false
     }
 }

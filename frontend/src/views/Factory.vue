@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, provide, inject, onUnmounted } from 'vue'
 import type { Ref } from 'vue'
-import type { IVector3 } from '@/types/global'
-import type { IBackendEntityPreview, IBackendEntity } from '@/types/backendEntity'
+import type {IEntity, IVector3} from '@/types/global'
+import type { IBackendEntityPreview, IBackendEntity } from '@/types/backendTypes'
 import * as THREE from 'three'
 import { CameraControlsManager } from '@/classes/CameraControlsManager'
 import { getIntersectionsMouse } from '@/utils/threeJS/3d'
@@ -10,7 +10,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
-import { entityDeleteRequest, placeRequest } from '@/utils/backendComms/postRequests'
+import {manipulationRequest, placeRequest} from '@/utils/backendComms/postRequests'
+import { entityDeleteRequest } from '@/utils/backendComms/deleteRequest';
 import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backendComms/getRequests'
 import { backendUrl } from '@/utils/config/config'
 import { CameraMode } from '@/enum/CameraMode'
@@ -41,10 +42,11 @@ const manipulationMode: Ref<ManipulationMode> = ref<ManipulationMode>(Manipulati
 const allEntitys: Ref<IBackendEntityPreview[] | undefined> = ref()
 const activeEntity: Ref<IBackendEntityPreview | undefined> = ref()
 // quick fix to any
-let currentObjectSelected: any
+let currentObjectSelected: any;
 let lastObjectSelected: any
 let currObjSelectedOriginPos: IVector3 = { x: 0, y: 0, z: 0 }
 const showCircMenu: Ref<Boolean> = ref(false)
+
 
 /**
  * Variables
@@ -67,6 +69,7 @@ let ccm: CameraControlsManager
 let previousTime: number = 0
 let currentMode: CameraMode | null
 let pivot: THREE.Object3D
+let allPlacedEntities: { [uuid: string]: IEntity; } = {}
 
 /**
  * Setup
@@ -149,7 +152,10 @@ const onLoadFactoryButton = () => {
         scene,
         { x: backendEntity.x, y: backendEntity.y, z: backendEntity.z },
         backendUrl + backendEntity.path
-      )
+      ).then(uuid => {
+        allPlacedEntities[uuid] = {id: backendEntity.id}
+        console.log(allPlacedEntities)
+      })
     })
   })
 }
@@ -168,14 +174,15 @@ const onChangeEntityClicked = (situation: string) => {
     case 'delete':
       // Delete Request
       entityDeleteRequest({
-        factoryid: 1,
+        factoryId: 1,
         id: 1
       }).then((success) => {
-        if (success) {
+        console.log(success);
+/*        if (success) {
           scene.remove(currentObjectSelected)
           if (currentObjectSelected.parent.type !== 'Scene')
             scene.remove(currentObjectSelected.parent)
-        }
+        }*/
       })
 
       break
@@ -228,18 +235,29 @@ const onChangeEntityClicked = (situation: string) => {
 
 const clickActionBasedOnMode = () => {
   switch (manipulationMode.value) {
+
     case ManipulationMode.SET:
-      placeRequest(
-        {
-          x: highlight.position.x,
-          y: highlight.position.y,
-          z: highlight.position.z,
-          orientation: 'N',
-          entityID: 'cube',
-          factoryID: 1
-        },
-        '/place'
-      ).then((success: boolean) => {
+      placeRequest({
+        x: highlight.position.x,
+        y: highlight.position.y,
+        z: highlight.position.z,
+        modelId: 'modelID',
+        factoryID: factoryID.value
+      }).then(response => response.json())
+          .then(id => {
+            if(id === -1) return
+            if(activeEntity.value) {
+              placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
+                  .then(uuid => {
+                    allPlacedEntities[uuid] = {id: id}
+                    console.log(allPlacedEntities)
+                  })
+            }
+          })
+          .catch(error => console.error("Es gab einen Fehler:", error));
+
+          /*
+          .then((placedID: long) => {
         if (success) {
           if (activeEntity.value)
             placeEntity(
@@ -249,16 +267,16 @@ const clickActionBasedOnMode = () => {
               backendUrl + activeEntity.value.modelFile
             )
         }
-      })
+      })*/
       break
     case ManipulationMode.MOVE:
-      placeRequest(
+      manipulationRequest(
         {
           x: highlight.position.x,
           y: highlight.position.y,
           z: highlight.position.z,
           orientation: 'N',
-          entityID: 'cube',
+          id: 485739857394857,
           factoryID: 1
         },
         '/move'
@@ -270,13 +288,13 @@ const clickActionBasedOnMode = () => {
       })
       break
     case ManipulationMode.CLONE:
-      placeRequest(
+      manipulationRequest(
         {
           x: currentObjectSelected.position.x,
           y: currentObjectSelected.position.y,
           z: currentObjectSelected.position.z,
           orientation: 'N',
-          entityID: 'cube',
+          id: 485739857394857,
           factoryID: 1
         },
         '/clone'
@@ -390,6 +408,7 @@ const handleContextMenu = (event: MouseEvent) => {
     const { worked, currObj, lastObj } = result
     if (worked) {
       currentObjectSelected = currObj
+      console.log(currentObjectSelected)
       lastObjectSelected = lastObj
       if (dynamicDiv) {
         dynamicDiv.style.left = event.clientX - 50 + 'px'
