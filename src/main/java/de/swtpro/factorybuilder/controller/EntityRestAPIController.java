@@ -55,16 +55,15 @@ public class EntityRestAPIController {
     @CrossOrigin
     @PostMapping("/place")
     public ResponseEntity<Long> place(@RequestBody PlaceRequestDTO placeRequestDTO) {
-        // Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        // Long Parse for workaround to not error
-//        boolean placed = placedModelService.createPlacedModel(modelService.getByID(Long.parseLong(placeRequestDTO.entityID)).orElseThrow(), pos, placeRequestDTO.factoryID);
-//        LOGGER.info("placed entity: " + String.valueOf(placed));
-//        return placed;
 
-        LOGGER.info(placeRequestDTO.toString());
+        Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
+        Model model = modelService.getByName(placeRequestDTO.modelId).orElseThrow();
+        PlacedModel placedModel = placedModelService.createPlacedModel(model,pos,placeRequestDTO.factoryID);
+
+        LOGGER.info(placedModel.toString());
 
         // Entity wir in Datenbank erzeugt, und id wird gesendet
-        return ResponseEntity.ok(4534L);
+        return ResponseEntity.ok(placedModel.getId());
     }
 
     @CrossOrigin

@@ -237,37 +237,26 @@ const clickActionBasedOnMode = () => {
   switch (manipulationMode.value) {
 
     case ManipulationMode.SET:
-      placeRequest({
-        x: highlight.position.x,
-        y: highlight.position.y,
-        z: highlight.position.z,
-        modelId: 'modelID',
-        factoryID: factoryID.value
-      }).then(response => response.json())
-          .then(id => {
-            if(id === -1) return
-            if(activeEntity.value) {
-              placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
-                  .then(uuid => {
-                    allPlacedEntities[uuid] = {id: id}
-                    console.log(allPlacedEntities)
-                  })
-            }
-          })
-          .catch(error => console.error("Es gab einen Fehler:", error));
-
-          /*
-          .then((placedID: long) => {
-        if (success) {
-          if (activeEntity.value)
-            placeEntity(
-              loader,
-              scene,
-              highlight.position,
-              backendUrl + activeEntity.value.modelFile
-            )
-        }
-      })*/
+      if(activeEntity){
+        placeRequest({
+          x: highlight.position.x,
+          y: highlight.position.y,
+          z: highlight.position.z,
+          modelId: activeEntity.value?.name,
+          factoryID: factoryID.value
+        }).then(response => response.json())
+            .then(id => {
+              if(id === -1) return
+              if(activeEntity.value) {
+                placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
+                    .then(uuid => {
+                      allPlacedEntities[uuid] = {id: id}
+                      console.log(allPlacedEntities)
+                    })
+              }
+            })
+            .catch(error => console.error("Es gab einen Fehler:", error));
+      }
       break
     case ManipulationMode.MOVE:
       manipulationRequest(

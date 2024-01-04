@@ -1,6 +1,7 @@
 package de.swtpro.factorybuilder.service;
 
 import de.swtpro.factorybuilder.entity.*;
+import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.utility.Position;
 import org.springframework.stereotype.Service;
@@ -11,10 +12,13 @@ import java.util.Optional;
 @Service
 public class PlacedModelService {
     PlacedModelRepository placedModelRepository;
+
+    FactoryRepository factoryRepository;
     FieldService fieldService;
-    PlacedModelService(PlacedModelRepository placedModelRepository, FieldService fieldService){
+    PlacedModelService(PlacedModelRepository placedModelRepository, FieldService fieldService, FactoryRepository factoryRepository){
         this.placedModelRepository = placedModelRepository;
         this.fieldService = fieldService;
+        this.factoryRepository = factoryRepository;
     }
     public Optional<PlacedModel> getPlacedModelById(long id) {
         return placedModelRepository.findById(id);
@@ -23,12 +27,17 @@ public class PlacedModelService {
         field.setPlacedModel(placedModel);
         return placedModelRepository.save(placedModel);
     }
-    public boolean createPlacedModel(Model model, Position rootPosition, long factoryID) {
+    public PlacedModel createPlacedModel(Model model, Position rootPosition, long factoryID) {
         // TODO get in and outputs from frontend
-        // TODO fix id from model
-        // TODO: convert model to placed model and save
         // return checkForPlacement(m);
-        return true;
+
+
+        Factory factory = factoryRepository.findById(factoryID).orElseThrow();
+
+        PlacedModel placedModel = new PlacedModel(factory, rootPosition, model);
+        // TODO placed model befüllen
+
+        return placedModelRepository.save(placedModel);
     }
     public List<PlacedModel> findAllByFactoryId(Factory factory) {
         return placedModelRepository.findByFactory(factory);

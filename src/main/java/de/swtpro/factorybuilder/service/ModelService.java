@@ -34,4 +34,8 @@ public class ModelService {
     public Optional<Model> getByID(long id) {
         return modelRepository.findById(id);
     }
+
+    public Optional<Model> getByName(String name) {
+        return modelRepository.findByName(name);
+    }
 }

@@ -15,6 +15,7 @@ import static jakarta.persistence.CascadeType.ALL;
 public class PlacedModel implements Serializable{
     
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Version
@@ -47,6 +48,16 @@ public class PlacedModel implements Serializable{
     @ManyToOne
     @JoinColumn(name = "modelId", referencedColumnName = "id")
     private Model model;
+
+    public PlacedModel(Factory factory, Position rootPos, Model model){
+        this.factory = factory;
+        this.rootPos = rootPos;
+        this.model = model;
+    }
+
+    public PlacedModel() {
+
+    }
 
 
     public long getId() {
