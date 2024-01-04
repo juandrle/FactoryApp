@@ -40,22 +40,26 @@ export const replaceEntity = (
   highlightObjectWithColor(currentObjectSelected, false)
 }
 
-export const placeEntity = (loader: any, scene: THREE.Scene, pos: IVector3, path: string) => {
-  var object: any
-  loader.load(
-      path,
-      function (gltf: any) {
-          object = gltf.scene
-          object.position.set(pos.x, pos.y, pos.z)
-          // temporary rotation fix
-          // object.rotation.set(Math.PI / 2, 0, 0)
-          object.rotation.set(0, 0, 0)
-          object.name = 'entity'
-          scene.add(gltf.scene)
-      },
-      undefined,
-      function (error: any) {
-          console.error(error)
-      }
-  )
-}
+export const placeEntity = (loader: any, scene: THREE.Scene, pos: IVector3, path: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        var object: any;
+        loader.load(
+            path,
+            function (gltf: any) {
+                object = gltf.scene;
+                object.position.set(pos.x, pos.y, pos.z);
+                object.rotation.set(0, 0, 0);
+                object.name = 'entity';
+                scene.add(gltf.scene);
+
+                // Resolve the promise with the UUID
+                resolve(object.uuid);
+            },
+            undefined,
+            function (error: any) {
+                // Reject the promise with the error
+                reject(error);
+            }
+        );
+    });
+};

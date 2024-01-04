@@ -15,3 +15,7 @@ export type ICameraInfo = {
     lookAt: IVector3,
     up: IVector3
 }
+
+export type IEntity = {
+    id: number;
+}

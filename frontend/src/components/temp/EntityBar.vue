@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue'
-import type { IBackendEntityPreview } from '@/types/backendEntity'
+import type { IBackendEntityPreview } from '@/types/backendTypes'
 import {backendUrl} from '@/utils/config/config'
 
 const props = defineProps<{

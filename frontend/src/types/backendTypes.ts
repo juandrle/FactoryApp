@@ -26,7 +26,36 @@ export interface IFactoryDelete {
     element: any
 }
 
+/**
+ * Entity Place
+ */
+export interface IPlaceRequest {
+    x: number;
+    y: number;
+    z: number;
+    modelId: string;
+    factoryID: number;
+}
+
+/**
+ * Manipulation Request
+ */
+export interface IManipulationRequest {
+    x: number;
+    y: number;
+    z: number;
+    id: number;
+    orientation: string;
+    factoryID: number;
+}
+
+
+
+
+/**
+ * Entity Delete
+ */
 export interface IEntityDelete {
-    factoryid: number;
+    factoryId: number;
     id: number;
 }

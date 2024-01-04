@@ -5,7 +5,7 @@ import Button from '../components/temp/Button.vue'
 import type {IVector3} from "@/types/global"
 import router from "@/router";
 import {factoryCreateRequest} from "@/utils/backendComms/postRequests"
-import type {IFactoryCreate} from "@/types/backendEntity"
+import type {IFactoryCreate} from "@/types/backendTypes"
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},

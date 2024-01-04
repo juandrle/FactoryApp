@@ -9,6 +9,7 @@ import de.swtpro.factorybuilder.service.FactoryService;
 import de.swtpro.factorybuilder.service.FieldService;
 import de.swtpro.factorybuilder.service.ModelService;
 import de.swtpro.factorybuilder.service.PlacedModelService;
+import org.hibernate.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +51,11 @@ public class FactoryRestAPIController {
         return ResponseEntity.ok(true);
     }
 
-    public ResponseEntity<List<PlacedModelDTO>> load(@RequestBody long idToLoad){
+    @GetMapping("/getAll/{idToLoad}")
+    public ResponseEntity<List<PlacedModelDTO>> load(@PathVariable long idToLoad) {
         return ResponseEntity.ok(getEntitysFromFactory(factoryService.getFactoryById(idToLoad).orElseThrow()));
     }
+
 
 
     public List<PlacedModelDTO> getEntitysFromFactory(Factory factory) {
