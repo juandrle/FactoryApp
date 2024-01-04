@@ -53,6 +53,7 @@ public class PlacedModel implements Serializable{
         this.factory = factory;
         this.rootPos = rootPos;
         this.model = model;
+        this.orientation = "North";
     }
 
     public PlacedModel() {

@@ -53,6 +53,7 @@ public class FactoryRestAPIController {
 
     @GetMapping("/getAll/{idToLoad}")
     public ResponseEntity<List<PlacedModelDTO>> load(@PathVariable long idToLoad) {
+        LOGGER.info(Long.toString(idToLoad) + " test");
         return ResponseEntity.ok(getEntitysFromFactory(factoryService.getFactoryById(idToLoad).orElseThrow()));
     }
 

@@ -50,12 +50,20 @@ export interface IManipulationRequest {
 }
 
 
-
-
 /**
  * Entity Delete
  */
 export interface IEntityDelete {
     factoryId: number;
     id: number;
+}
+
+/**
+ * Entity Rotate
+ */
+
+export interface IEntityRotate {
+    factoryId: number;
+    id: number;
+    orientation: string;
 }

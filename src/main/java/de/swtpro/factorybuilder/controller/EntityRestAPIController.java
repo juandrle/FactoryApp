@@ -42,6 +42,9 @@ public class EntityRestAPIController {
     private record PlaceRequestDTO(int x, int y, int z, String modelId, long factoryID) {
     };
 
+    private record RotateRequestDTO(long id, long factoryID, String orientation) {
+    };
+
     private record ManipulationRequestDTO(int x, int y, int z, long id, String orientation, long factoryID) {
     };
 
@@ -75,13 +78,15 @@ public class EntityRestAPIController {
 
     @CrossOrigin
     @PostMapping("/rotate")
-    public boolean rotate(@RequestBody long idToRotate, PlaceRequestDTO placeRequestDTO) {
-        Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
+    public ResponseEntity<Boolean> rotate(@RequestBody RotateRequestDTO rotateRequestDTO) {
+        //Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
 
-        boolean rotated = placedModelService.rotateModel(idToRotate, pos, factoryService.getFactoryById(placeRequestDTO.factoryID).orElseThrow());
+        //boolean rotated = placedModelService.rotateModel(idToRotate, pos, factoryService.getFactoryById(placeRequestDTO.factoryID).orElseThrow());
 
-        LOGGER.info("rotate entity: " + String.valueOf(idToRotate) + String.valueOf(rotated));
-        return rotated;
+        //LOGGER.info("rotate entity: " + String.valueOf(idToRotate) + String.valueOf(rotated));
+
+        LOGGER.info(rotateRequestDTO.toString());
+        return ResponseEntity.ok(true);
     }
 
     @CrossOrigin

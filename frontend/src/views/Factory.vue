@@ -1,31 +1,32 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, provide, inject, onUnmounted } from 'vue'
-import type { Ref } from 'vue'
+import type {Ref} from 'vue'
+import {inject, onMounted, onUnmounted, provide, ref, watch} from 'vue'
 import type {IEntity, IVector3} from '@/types/global'
-import type { IBackendEntityPreview, IBackendEntity } from '@/types/backendTypes'
+import type {IBackendEntity, IBackendEntityPreview} from '@/types/backendTypes'
 import * as THREE from 'three'
-import { CameraControlsManager } from '@/classes/CameraControlsManager'
-import { getIntersectionsMouse } from '@/utils/threeJS/3d'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import {CameraControlsManager} from '@/classes/CameraControlsManager'
+import {getIntersectionsMouse} from '@/utils/threeJS/3d'
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
-import {manipulationRequest, placeRequest} from '@/utils/backendComms/postRequests'
-import { entityDeleteRequest } from '@/utils/backendComms/deleteRequest';
-import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backendComms/getRequests'
-import { backendUrl } from '@/utils/config/config'
-import { CameraMode } from '@/enum/CameraMode'
-import { ManipulationMode } from '@/enum/ManipulationMode'
+import {manipulationRequest, placeRequest, rotationRequest} from '@/utils/backendComms/postRequests'
+import {entityDeleteRequest} from '@/utils/backendComms/deleteRequest';
+import {getAllEntities, getAllEntitiesInFactory} from '@/utils/backendComms/getRequests'
+import {backendUrl} from '@/utils/config/config'
+import {CameraMode} from '@/enum/CameraMode'
+import {ManipulationMode} from '@/enum/ManipulationMode'
 
 import {
+  createRoom,
+  deepCloneObject,
   moveHighlight,
   selectionObject,
-  updateHighlightModel,
-  createRoom,
-  deepCloneObject
+  updateHighlightModel
 } from '@/utils/threeJS/helpFunctions'
 
-import { replaceEntity, highlightObjectWithColor, placeEntity } from '@/utils/threeJS/entityManipulation'
+import {highlightObjectWithColor, placeEntity, replaceEntity} from '@/utils/threeJS/entityManipulation'
+import {turnLeft, turnRight} from "@/utils/rotation/rotate";
 
 /**
  * Config
@@ -153,7 +154,7 @@ const onLoadFactoryButton = () => {
         { x: backendEntity.x, y: backendEntity.y, z: backendEntity.z },
         backendUrl + backendEntity.path
       ).then(uuid => {
-        allPlacedEntities[uuid] = {id: backendEntity.id}
+        allPlacedEntities[uuid] = {id: backendEntity.id, orientation: backendEntity.orientation}
         console.log(allPlacedEntities)
       })
     })
@@ -254,7 +255,7 @@ const clickActionBasedOnMode = () => {
               if(activeEntity.value) {
                 placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
                     .then(uuid => {
-                      allPlacedEntities[uuid] = {id: id}
+                      allPlacedEntities[uuid] = {id: id, orientation: "North"}
                       console.log(allPlacedEntities)
                     })
               }
@@ -322,6 +323,16 @@ const handleResize = () => {
 const handleKeyDown = (event: KeyboardEvent) => {
   switch (event.key.toUpperCase()) {
     case 'V':
+
+      if(manipulationMode.value === ManipulationMode.ROTATE) {
+        rotationRequest({
+          id: allPlacedEntities[currentObjectSelected.uuid].id,
+          orientation: allPlacedEntities[currentObjectSelected.uuid].orientation,
+          factoryId: factoryID.value
+        }).then(res => res.json()).then(success => console.log(success))
+      }
+
+
       manipulationMode.value = ManipulationMode.IDLE
       showCircMenu.value = false
       if (currentObjectSelected) highlightObjectWithColor(currentObjectSelected, false)
@@ -341,6 +352,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
           pivot.rotation.z -= Math.PI / 2
+          allPlacedEntities[currentObjectSelected.uuid].orientation = turnLeft(allPlacedEntities[currentObjectSelected.uuid].orientation)
       }
       break
 
@@ -348,6 +360,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
           pivot.rotation.z += Math.PI / 2
+          allPlacedEntities[currentObjectSelected.uuid].orientation = turnRight(allPlacedEntities[currentObjectSelected.uuid].orientation)
       }
       break
 
@@ -358,6 +371,8 @@ const handleKeyDown = (event: KeyboardEvent) => {
     default:
       break
   }
+
+  console.log(allPlacedEntities)
 }
 
 const handleMouseMove = (event: MouseEvent) => {

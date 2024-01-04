@@ -1,5 +1,5 @@
 import type {
-    IEntityDelete,
+    IEntityDelete, IEntityRotate,
     IFactoryCreate,
     IFactoryDelete,
     IManipulationRequest,
@@ -10,6 +10,14 @@ import {backendUrl} from "@/utils/config/config"
 
 export const placeRequest = async (placeRequest: IPlaceRequest) => {
     return await fetch(backendUrl + '/api/entity/place', {
+        method: "POST",
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify(placeRequest),
+    });
+}
+
+export const rotationRequest = async (placeRequest: IEntityRotate) => {
+    return await fetch(backendUrl + '/api/entity/rotate', {
         method: "POST",
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(placeRequest),
