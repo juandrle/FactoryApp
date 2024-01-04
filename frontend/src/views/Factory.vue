@@ -174,15 +174,19 @@ const onChangeEntityClicked = (situation: string) => {
     case 'delete':
       // Delete Request
       entityDeleteRequest({
-        factoryId: 1,
-        id: 1
+        factoryId: factoryID.value,
+        id: allPlacedEntities[currentObjectSelected.uuid].id
       }).then((success) => {
         console.log(success);
-/*        if (success) {
+        if (success) {
+          delete allPlacedEntities[currentObjectSelected.uuid];
+
+          // Remove from scene
           scene.remove(currentObjectSelected)
-          if (currentObjectSelected.parent.type !== 'Scene')
-            scene.remove(currentObjectSelected.parent)
-        }*/
+
+          //if (currentObjectSelected.parent.type !== 'Scene')
+            //scene.remove(currentObjectSelected.parent)
+        }
       })
 
       break
@@ -237,12 +241,12 @@ const clickActionBasedOnMode = () => {
   switch (manipulationMode.value) {
 
     case ManipulationMode.SET:
-      if(activeEntity){
+      if(activeEntity.value){
         placeRequest({
           x: highlight.position.x,
           y: highlight.position.y,
           z: highlight.position.z,
-          modelId: activeEntity.value?.name,
+          modelId: activeEntity.value.name,
           factoryID: factoryID.value
         }).then(response => response.json())
             .then(id => {
