@@ -330,7 +330,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
           orientation: allPlacedEntities[currentObjectSelected.uuid].orientation,
           factoryId: factoryID.value
         }).then(res => res.json()).then(success => console.log(success))
-      }
+      }//test
 
 
       manipulationMode.value = ManipulationMode.IDLE
