@@ -86,7 +86,7 @@ public class EntityRestAPIController {
         //LOGGER.info("rotate entity: " + String.valueOf(idToRotate) + String.valueOf(rotated));
 
         LOGGER.info(rotateRequestDTO.toString());
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(false);
     }
 
     @CrossOrigin

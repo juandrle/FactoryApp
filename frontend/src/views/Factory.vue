@@ -26,7 +26,7 @@ import {
 } from '@/utils/threeJS/helpFunctions'
 
 import {highlightObjectWithColor, placeEntity, replaceEntity} from '@/utils/threeJS/entityManipulation'
-import {turnLeft, turnRight} from "@/utils/rotation/rotate";
+import {rotateModel, rotateModelfromXtoY, turnLeft, turnRight} from "@/utils/rotation/rotate";
 
 /**
  * Config
@@ -71,6 +71,7 @@ let previousTime: number = 0
 let currentMode: CameraMode | null
 let pivot: THREE.Object3D
 let allPlacedEntities: { [uuid: string]: IEntity; } = {}
+let originalOrientation = "";
 
 /**
  * Setup
@@ -329,8 +330,14 @@ const handleKeyDown = (event: KeyboardEvent) => {
           id: allPlacedEntities[currentObjectSelected.uuid].id,
           orientation: allPlacedEntities[currentObjectSelected.uuid].orientation,
           factoryId: factoryID.value
-        }).then(res => res.json()).then(success => console.log(success))
-      }//test
+        }).then(res => res.json()).then(success => {
+
+          if(!success){
+            rotateModelfromXtoY(originalOrientation, allPlacedEntities[currentObjectSelected.uuid].orientation, pivot)
+          }
+          console.log(success)
+        })
+      }
 
 
       manipulationMode.value = ManipulationMode.IDLE
@@ -351,7 +358,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     case 'ARROWLEFT':
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
-          pivot.rotation.z -= Math.PI / 2
+          rotateModel("left", pivot);
           allPlacedEntities[currentObjectSelected.uuid].orientation = turnLeft(allPlacedEntities[currentObjectSelected.uuid].orientation)
       }
       break
@@ -359,7 +366,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     case 'ARROWRIGHT':
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
-          pivot.rotation.z += Math.PI / 2
+          rotateModel("right", pivot);
           allPlacedEntities[currentObjectSelected.uuid].orientation = turnRight(allPlacedEntities[currentObjectSelected.uuid].orientation)
       }
       break
@@ -416,7 +423,10 @@ const handleContextMenu = (event: MouseEvent) => {
     const { worked, currObj, lastObj } = result
     if (worked) {
       currentObjectSelected = currObj
+      originalOrientation = allPlacedEntities[currentObjectSelected.uuid].orientation;
       console.log(currentObjectSelected)
+      console.log(originalOrientation)
+
       lastObjectSelected = lastObj
       if (dynamicDiv) {
         dynamicDiv.style.left = event.clientX - 50 + 'px'
