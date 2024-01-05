@@ -141,19 +141,7 @@ const initalLoadHighlightModel = (modelUrl: string) => {
 
 const onLoadFactoryButton = () => {
   if (factoryID === undefined) return
-  getAllEntitiesInFactory(factoryID.value).then((backendEntitys: IBackendEntity[]) => {
-    backendEntitys.forEach((backendEntity) => {
-      placeEntity(
-        loader,
-        scene,
-        { x: backendEntity.x, y: backendEntity.y, z: backendEntity.z },
-        backendUrl + backendEntity.path
-      ).then(uuid => {
-        allPlacedEntities[uuid] = {id: backendEntity.id, orientation: backendEntity.orientation, modelId: backendEntity.modelId}
-        console.log(allPlacedEntities)
-      })
-    })
-  })
+
 }
 
 const onToggleMenuVisibility = () => {
@@ -444,7 +432,6 @@ watch(activeEntity, () => {
   } else initalLoadHighlightModel('mock/.gltf/cube.gltf')
 })
 
-watch(manipulationMode, () => console.log(manipulationMode.value))
 
 /**
  * Gamecycle
@@ -468,6 +455,23 @@ onMounted(() => {
     // Active entity ändern
     activeEntity.value = allEntitys.value[0]
   })
+
+  // Load all
+  getAllEntitiesInFactory(factoryID.value).then((backendEntitys: IBackendEntity[]) => {
+    console.log("load all factorys ", factoryID.value);
+    backendEntitys.forEach((backendEntity) => {
+      placeEntity(
+          loader,
+          scene,
+          { x: backendEntity.x, y: backendEntity.y, z: backendEntity.z },
+          backendUrl + backendEntity.path
+      ).then(uuid => {
+        allPlacedEntities[uuid] = {id: backendEntity.id, orientation: backendEntity.orientation, modelId: backendEntity.modelId}
+        console.log(allPlacedEntities)
+      })
+    })
+  })
+
   // initial function calls
   animate(0)
 })
