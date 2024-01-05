@@ -33,7 +33,7 @@ export const rotateModel = (dir: string, object: any)=> {
         object.rotation.z -= Math.PI / 2
     } else {
         object.rotation.z += Math.PI / 2
-    }
+    } //lul
 }
 
 export const rotateModelfromXtoY = (from: string, to: string, object: any) => {
