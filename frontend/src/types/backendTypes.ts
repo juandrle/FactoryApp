@@ -67,3 +67,14 @@ export interface IEntityRotate {
     id: number;
     orientation: string;
 }
+
+/**
+ * Move Request
+ */
+export interface IEntityMove {
+    factoryId: number;
+    id: number;
+    x: number;
+    y: number;
+    z: number;
+}

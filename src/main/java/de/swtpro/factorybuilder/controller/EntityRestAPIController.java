@@ -42,6 +42,9 @@ public class EntityRestAPIController {
     private record PlaceRequestDTO(int x, int y, int z, String modelId, long factoryID) {
     };
 
+    private record MoveRequestDTO(int x, int y, int z, long id, long factoryId) {
+    };
+
     private record RotateRequestDTO(long id, long factoryID, String orientation) {
     };
 
@@ -86,16 +89,17 @@ public class EntityRestAPIController {
         //LOGGER.info("rotate entity: " + String.valueOf(idToRotate) + String.valueOf(rotated));
 
         LOGGER.info(rotateRequestDTO.toString());
-        return ResponseEntity.ok(false);
+        return ResponseEntity.ok(true);
     }
 
     @CrossOrigin
     @PostMapping("/move")
-    public boolean move(@RequestBody long idToMove, PlaceRequestDTO placeRequestDTO) {
-        Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        boolean moved = placedModelService.moveModel(idToMove, pos);
-        LOGGER.info("move entity: " + String.valueOf(idToMove) + String.valueOf(moved));
-        return moved;
+    public ResponseEntity<Boolean> move(@RequestBody MoveRequestDTO moveRequestDTO) {
+        Position pos = new Position(moveRequestDTO.x, moveRequestDTO.y, moveRequestDTO.z);
+        boolean moved = placedModelService.moveModel(moveRequestDTO.id, pos);
+        LOGGER.info(moveRequestDTO.toString());
+        LOGGER.info("move entity: " + String.valueOf(moveRequestDTO.id) + String.valueOf(moved));
+        return ResponseEntity.ok(true);
     }
 
     @CrossOrigin

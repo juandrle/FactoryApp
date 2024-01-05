@@ -1,5 +1,5 @@
 import type {
-    IEntityDelete, IEntityRotate,
+    IEntityDelete, IEntityMove, IEntityRotate,
     IFactoryCreate,
     IFactoryDelete,
     IManipulationRequest,
@@ -16,11 +16,19 @@ export const placeRequest = async (placeRequest: IPlaceRequest) => {
     });
 }
 
-export const rotationRequest = async (placeRequest: IEntityRotate) => {
+export const rotationRequest = async (rotateRequest: IEntityRotate) => {
     return await fetch(backendUrl + '/api/entity/rotate', {
         method: "POST",
         headers: {'Content-type': 'application/json'},
-        body: JSON.stringify(placeRequest),
+        body: JSON.stringify(rotateRequest),
+    });
+}
+
+export const moveRequest = async (moveRequest: IEntityMove) => {
+    return await fetch(backendUrl + '/api/entity/move', {
+        method: "POST",
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify(moveRequest),
     });
 }
 

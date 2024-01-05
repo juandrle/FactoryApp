@@ -10,7 +10,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
-import {manipulationRequest, placeRequest, rotationRequest} from '@/utils/backendComms/postRequests'
+import {manipulationRequest, moveRequest, placeRequest, rotationRequest} from '@/utils/backendComms/postRequests'
 import {entityDeleteRequest} from '@/utils/backendComms/deleteRequest';
 import {getAllEntities, getAllEntitiesInFactory} from '@/utils/backendComms/getRequests'
 import {backendUrl} from '@/utils/config/config'
@@ -265,20 +265,22 @@ const clickActionBasedOnMode = () => {
       }
       break
     case ManipulationMode.MOVE:
-      manipulationRequest(
+      moveRequest(
         {
           x: highlight.position.x,
           y: highlight.position.y,
           z: highlight.position.z,
-          orientation: 'N',
-          id: 485739857394857,
-          factoryID: 1
-        },
-        '/move'
-      ).then((success: boolean) => {
+          id: allPlacedEntities[currentObjectSelected.uuid].id,
+          factoryId: factoryID.value
+        }
+      ).then(response => response.json())
+          .then((success: boolean) => {
         if (success) {
+          console.log("moved")
           replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
           manipulationMode.value = ManipulationMode.IDLE
+        } else {
+          console.log("not moved")
         }
       })
       break
