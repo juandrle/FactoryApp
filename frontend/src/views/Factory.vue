@@ -272,7 +272,7 @@ const clickActionBasedOnMode = () => {
           z: highlight.position.z,
           id: allPlacedEntities[currentObjectSelected.uuid].id,
           factoryId: factoryID.value
-        }
+         }
       ).then(response => response.json())
           .then((success: boolean) => {
         if (success) {
