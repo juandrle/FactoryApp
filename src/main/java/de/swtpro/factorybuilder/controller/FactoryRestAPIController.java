@@ -74,7 +74,8 @@ public class FactoryRestAPIController {
                     placedModel.getRootPos().getX(),
                     placedModel.getRootPos().getY(),
                     placedModel.getRootPos().getZ(),
-                    m.getModelFile() // Füge den Pfad hinzu, wie erforderlich
+                    m.getModelFile(), // Füge den Pfad hinzu, wie erforderlich
+                    m.getName()
             );
             dtos.add(dto);
         }

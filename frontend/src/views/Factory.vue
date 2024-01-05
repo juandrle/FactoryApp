@@ -10,20 +10,14 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
-import {manipulationRequest, moveRequest, placeRequest, rotationRequest} from '@/utils/backendComms/postRequests'
+import {moveRequest, placeRequest, rotationRequest} from '@/utils/backendComms/postRequests'
 import {entityDeleteRequest} from '@/utils/backendComms/deleteRequest';
 import {getAllEntities, getAllEntitiesInFactory} from '@/utils/backendComms/getRequests'
 import {backendUrl} from '@/utils/config/config'
 import {CameraMode} from '@/enum/CameraMode'
 import {ManipulationMode} from '@/enum/ManipulationMode'
 
-import {
-  createRoom,
-  deepCloneObject,
-  moveHighlight,
-  selectionObject,
-  updateHighlightModel
-} from '@/utils/threeJS/helpFunctions'
+import {createRoom, moveHighlight, selectionObject, updateHighlightModel} from '@/utils/threeJS/helpFunctions'
 
 import {highlightObjectWithColor, placeEntity, replaceEntity} from '@/utils/threeJS/entityManipulation'
 import {rotateModel, rotateModelfromXtoY, turnLeft, turnRight} from "@/utils/rotation/rotate";
@@ -141,7 +135,7 @@ const initalLoadHighlightModel = (modelUrl: string) => {
   )
 }
 
-/*
+/**
  * Buttons
  */
 
@@ -155,7 +149,7 @@ const onLoadFactoryButton = () => {
         { x: backendEntity.x, y: backendEntity.y, z: backendEntity.z },
         backendUrl + backendEntity.path
       ).then(uuid => {
-        allPlacedEntities[uuid] = {id: backendEntity.id, orientation: backendEntity.orientation}
+        allPlacedEntities[uuid] = {id: backendEntity.id, orientation: backendEntity.orientation, modelId: backendEntity.modelId}
         console.log(allPlacedEntities)
       })
     })
@@ -228,12 +222,22 @@ const onChangeEntityClicked = (situation: string) => {
       break
 
     case 'clone':
-      highlightObjectWithColor(currentObjectSelected, false)
-      lastObjectSelected = currentObjectSelected
-      currentObjectSelected = deepCloneObject(currentObjectSelected)
-      scene.add(currentObjectSelected)
-      highlightObjectWithColor(currentObjectSelected, true)
-      manipulationMode.value = ManipulationMode.CLONE
+      if(allEntitys.value) {
+        // Find highlight by name
+        activeEntity.value = allEntitys.value.find((obj) => obj.name === allPlacedEntities[currentObjectSelected.uuid].modelId)
+
+        // If it was the same, update manually
+        if(activeEntity.value)
+          updateHighlightModel(highlight, backendUrl + activeEntity.value.modelFile, scene, loader).then(
+              (newHighlight: THREE.Group) => {
+                highlight = newHighlight
+              }
+          )
+
+        // Normal set mode
+        manipulationMode.value = ManipulationMode.SET
+      }
+
       console.log('cloning Entity')
       break
   }
@@ -241,7 +245,6 @@ const onChangeEntityClicked = (situation: string) => {
 
 const clickActionBasedOnMode = () => {
   switch (manipulationMode.value) {
-
     case ManipulationMode.SET:
       if(activeEntity.value){
         placeRequest({
@@ -256,7 +259,8 @@ const clickActionBasedOnMode = () => {
               if(activeEntity.value) {
                 placeEntity(loader, scene, highlight.position, backendUrl + activeEntity.value.modelFile)
                     .then(uuid => {
-                      allPlacedEntities[uuid] = {id: id, orientation: "North"}
+                      if(activeEntity.value) // ...bruh
+                        allPlacedEntities[uuid] = {id: id, orientation: "North", modelId:activeEntity.value.name}
                       console.log(allPlacedEntities)
                     })
               }
@@ -284,24 +288,7 @@ const clickActionBasedOnMode = () => {
         }
       })
       break
-    case ManipulationMode.CLONE:
-      manipulationRequest(
-        {
-          x: currentObjectSelected.position.x,
-          y: currentObjectSelected.position.y,
-          z: currentObjectSelected.position.z,
-          orientation: 'N',
-          id: 485739857394857,
-          factoryID: 1
-        },
-        '/clone'
-      ).then((success: boolean) => {
-        if (success) {
-          replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
-          manipulationMode.value = ManipulationMode.IDLE
-        }
-      })
-      break
+
   }
 }
 
@@ -475,6 +462,7 @@ onMounted(() => {
 
   // Renderer gets appended to target
   getAllEntities().then((json) => {
+    console.log(json)
     // Alle entittys sind nun zugänglich für uns
     allEntitys.value = json
     // Active entity ändern

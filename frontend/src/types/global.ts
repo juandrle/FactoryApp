@@ -19,4 +19,5 @@ export type ICameraInfo = {
 export type IEntity = {
     id: number;
     orientation: string;
+    modelId: string;
 }

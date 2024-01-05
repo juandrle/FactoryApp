@@ -6,6 +6,7 @@ export interface IBackendEntity {
     orientation: string;
     factoryid: string;
     id:number;
+    modelId: string;
 }
 
 export interface IBackendEntityPreview {

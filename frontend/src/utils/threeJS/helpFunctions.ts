@@ -182,6 +182,7 @@ export const selectionObject = (currentObjectSelected: THREE.Group, lastObjectSe
 
 export const deepCloneObject = (object: any) => {
     const clone = object.clone();
+
     clone.children = [];
 
     object.children.forEach((child: any) => {
