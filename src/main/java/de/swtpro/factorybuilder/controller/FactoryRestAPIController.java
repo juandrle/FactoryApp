@@ -1,7 +1,8 @@
 package de.swtpro.factorybuilder.controller;
 
 
-import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
+import de.swtpro.factorybuilder.DTO.factory.FactoryDTO;
+import de.swtpro.factorybuilder.DTO.entity.PlacedModelDTO;
 import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.PlacedModel;
@@ -9,10 +10,8 @@ import de.swtpro.factorybuilder.service.FactoryService;
 import de.swtpro.factorybuilder.service.FieldService;
 import de.swtpro.factorybuilder.service.ModelService;
 import de.swtpro.factorybuilder.service.PlacedModelService;
-import org.hibernate.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,24 +22,25 @@ import java.util.List;
 @RequestMapping("/api/factory")
 public class FactoryRestAPIController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FactoryRestAPIController.class);
-    @Autowired
     FactoryService factoryService;
-    @Autowired
     PlacedModelService placedModelService;
-    @Autowired
     ModelService modelService;
-    @Autowired
     FieldService fieldService;
-    private record FactoryDTO(String name, String password, int width, int depth, int height){
-    };
+
+    FactoryRestAPIController(FactoryService factoryService, PlacedModelService placedModelService, ModelService modelService, FieldService fieldService) {
+        this.factoryService = factoryService;
+        this.placedModelService = placedModelService;
+        this.modelService = modelService;
+        this.fieldService = fieldService;
+    }
     @PostMapping("/create")
     public ResponseEntity<Long> create (@RequestBody FactoryDTO factoryDTO){
         Factory f = new Factory();
-        f.setName(factoryDTO.name);
-        f.setWidth(factoryDTO.width);
-        f.setDepth(factoryDTO.depth);
-        f.setHeight(factoryDTO.height);
-        f.setPassword(factoryDTO.password);
+        f.setName(factoryDTO.name());
+        f.setWidth(factoryDTO.width());
+        f.setDepth(factoryDTO.depth());
+        f.setHeight(factoryDTO.height());
+        f.setPassword(factoryDTO.password());
         f = factoryService.saveFactory(f);
         fieldService.initializeField(f);
         return ResponseEntity.ok(f.getFactoryID());
@@ -53,7 +53,7 @@ public class FactoryRestAPIController {
 
     @GetMapping("/getAll/{idToLoad}")
     public ResponseEntity<List<PlacedModelDTO>> load(@PathVariable long idToLoad) {
-        LOGGER.info(Long.toString(idToLoad) + " test");
+        LOGGER.info(idToLoad + " test");
         return ResponseEntity.ok(getEntitysFromFactory(factoryService.getFactoryById(idToLoad).orElseThrow()));
     }
 
@@ -67,6 +67,7 @@ public class FactoryRestAPIController {
         for (PlacedModel placedModel : placedModels) {
             // TODO: NULL CHECK
             Model m = modelService.getByID(placedModel.getModelId()).orElse(null);
+            assert m != null;
             PlacedModelDTO dto = new PlacedModelDTO(
                     placedModel.getFactoryID(),
                     placedModel.getId(),

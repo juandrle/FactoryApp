@@ -6,11 +6,11 @@ import { ExtractCameraInfo, SetCameraInfo } from '@/utils/threeJS/camera.js'
 
 class CameraControlsManager {
   public currentMode: CameraMode | null = null
-  public controlls: CustomFlyControls | OrbitControls | null = null
+  public controls: CustomFlyControls | OrbitControls | null = null
   public camera: any = null
   public orbitCameraInfos: ICameraInfo | null = null
   public freeCameraInfos: ICameraInfo | null = null
-  private domElement: any = null
+  private readonly domElement: any = null
 
   constructor(camera: any, domElement: any, mode: CameraMode) {
     this.domElement = domElement
@@ -29,8 +29,8 @@ class CameraControlsManager {
         break
     }
 
-    if (this.controlls) {
-      this.controlls.dispose()
+    if (this.controls) {
+      this.controls.dispose()
     }
 
     this.currentMode = newMode
@@ -47,14 +47,14 @@ class CameraControlsManager {
           })
         }
 
-        this.controlls = new CustomFlyControls(this.camera, this.domElement)
+        this.controls = new CustomFlyControls(this.camera, this.domElement)
         break
       }
 
       case CameraMode.ORBIT: {
         if (this.orbitCameraInfos) SetCameraInfo(this.camera, this.orbitCameraInfos)
 
-        this.controlls = new OrbitControls(this.camera, this.domElement)
+        this.controls = new OrbitControls(this.camera, this.domElement)
         break
       }
     }
@@ -62,7 +62,7 @@ class CameraControlsManager {
 
   update(deltaTime: number) {
     if (this.currentMode === CameraMode.FREE) {
-      this.controlls.update(deltaTime)
+      this.controls.update(deltaTime)
     }
   }
 

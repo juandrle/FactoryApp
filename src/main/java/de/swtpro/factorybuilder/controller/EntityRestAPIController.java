@@ -1,11 +1,12 @@
 package de.swtpro.factorybuilder.controller;
 
 
-import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
+import de.swtpro.factorybuilder.DTO.entity.MoveRequestDTO;
+import de.swtpro.factorybuilder.DTO.entity.PlaceRequestDTO;
+import de.swtpro.factorybuilder.DTO.entity.RotateRequestDTO;
+import de.swtpro.factorybuilder.DTO.factory.DeleteRequestDTO;
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.PlacedModel;
-import de.swtpro.factorybuilder.repository.ModelRepository;
-import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.service.FactoryService;
 
 import de.swtpro.factorybuilder.service.ModelService;
@@ -14,10 +15,7 @@ import de.swtpro.factorybuilder.utility.ModelType;
 import de.swtpro.factorybuilder.utility.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,43 +26,23 @@ import java.util.List;
 public class EntityRestAPIController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityRestAPIController.class);
-
-    // do we need the repos in here as well ?
-    @Autowired
     ModelService modelService;
-
-    @Autowired
     FactoryService factoryService;
-
-    @Autowired
     PlacedModelService placedModelService;
 
-    private record PlaceRequestDTO(int x, int y, int z, String modelId, long factoryID) {
-    };
-
-    private record MoveRequestDTO(int x, int y, int z, long id, long factoryId) {
-    };
-
-    private record RotateRequestDTO(long id, long factoryID, String orientation) {
-    };
-
-    private record ManipulationRequestDTO(int x, int y, int z, long id, String orientation, long factoryID) {
-    };
-
-
-    private record DeleteRequestDTO(long factoryId, long id){
-    };
-
-    private record ResponseDTO(long id, String modelGltf) {
-    };
+    EntityRestAPIController(ModelService modelService, FactoryService factoryService, PlacedModelService placedModelService) {
+        this.modelService = modelService;
+        this.factoryService = factoryService;
+        this.placedModelService = placedModelService;
+    }
 
     @CrossOrigin
     @PostMapping("/place")
     public ResponseEntity<Long> place(@RequestBody PlaceRequestDTO placeRequestDTO) {
 
-        Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
-        Model model = modelService.getByName(placeRequestDTO.modelId).orElseThrow();
-        PlacedModel placedModel = placedModelService.createPlacedModel(model,pos,placeRequestDTO.factoryID);
+        Position pos = new Position(placeRequestDTO.x(), placeRequestDTO.y(), placeRequestDTO.z());
+        Model model = modelService.getByName(placeRequestDTO.modelId()).orElseThrow();
+        PlacedModel placedModel = placedModelService.createPlacedModel(model,pos,placeRequestDTO.factoryID());
 
         LOGGER.info(placedModel.toString());
 
@@ -75,7 +53,7 @@ public class EntityRestAPIController {
     @CrossOrigin
     @PostMapping("/delete")
     public ResponseEntity<Boolean> delete(@RequestBody DeleteRequestDTO deleteRequestDTO) {
-        boolean deleted = placedModelService.removeModelFromFactory(deleteRequestDTO.id);
+        boolean deleted = placedModelService.removeModelFromFactory(deleteRequestDTO.id());
         return ResponseEntity.ok(deleted);
     }
 
@@ -95,10 +73,10 @@ public class EntityRestAPIController {
     @CrossOrigin
     @PostMapping("/move")
     public ResponseEntity<Boolean> move(@RequestBody MoveRequestDTO moveRequestDTO) {
-        Position pos = new Position(moveRequestDTO.x, moveRequestDTO.y, moveRequestDTO.z);
-        boolean moved = placedModelService.moveModel(moveRequestDTO.id, pos);
+        Position pos = new Position(moveRequestDTO.x(), moveRequestDTO.y(), moveRequestDTO.z());
+        boolean moved = placedModelService.moveModel(moveRequestDTO.id(), pos);
         LOGGER.info(moveRequestDTO.toString());
-        LOGGER.info("move entity: " + String.valueOf(moveRequestDTO.id) + String.valueOf(moved));
+        LOGGER.info("move entity: " + moveRequestDTO.id() + moved);
         return ResponseEntity.ok(true);
     }
 
