@@ -10,10 +10,6 @@ const props = defineProps({
     type: Object as () => IFactory,
     required: true
   }
-  // rotateCard: {
-  //   type: Object as () => (clickTarget: EventTarget | null) => void,
-  //   required: true
-  // }
 })
 
 const currentlyRotatedCard = ref<HTMLElement | null>(null)
@@ -74,9 +70,8 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
 
     if (response.ok) {
       const data = await response.json()
-      router.push('/factory')
-
       if (data === true) {
+        router.push('/factory')
         console.log('Passwort ist korrekt')
       } else {
         console.log('Passwort ist falsch')
