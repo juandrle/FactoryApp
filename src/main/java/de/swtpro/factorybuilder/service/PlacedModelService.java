@@ -1,54 +1,132 @@
 package de.swtpro.factorybuilder.service;
 
 import de.swtpro.factorybuilder.entity.*;
-import de.swtpro.factorybuilder.repository.FactoryRepository;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.utility.Position;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 public class PlacedModelService {
-    PlacedModelRepository placedModelRepository;
 
-    FactoryRepository factoryRepository;
+    //testwise
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlacedModelService.class);
+    PlacedModelRepository placedModelRepository;
+    FactoryService factoryService;
     FieldService fieldService;
-    PlacedModelService(PlacedModelRepository placedModelRepository, FieldService fieldService, FactoryRepository factoryRepository){
+    PlacedModelService(PlacedModelRepository placedModelRepository, FieldService fieldService, FactoryService factoryService){
         this.placedModelRepository = placedModelRepository;
         this.fieldService = fieldService;
-        this.factoryRepository = factoryRepository;
+        this.factoryService = factoryService;
     }
     public Optional<PlacedModel> getPlacedModelById(long id) {
         return placedModelRepository.findById(id);
     }
-    private PlacedModel placeModelIntoField(PlacedModel placedModel, Field field) {
-        field.setPlacedModel(placedModel);
-        return placedModelRepository.save(placedModel);
+    private Position createNewPosition(int x, int y, int z){
+        return new Position(x,y,z);
+    }
+    private void fillPlacedModelLists(PlacedModel placedModel){
+        //TODO röhren hinzufügen
+        //TODO in und output
+        Position rootPos = placedModel.getRootPos();
+        List<Field> placedFields = placedModel.getPlacedFields();
+        switch(placedModel.getModel().getName()){
+            //Maschine
+            case "brennerofen", "schmelzofen":
+                for(int i = 0; i < 2;i++)
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY(), rootPos.getZ()+i), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "elektronikmaschine", "saegemuehle":
+                for(int i = 0; i < 2;i++)
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "erzreiniger", "planiermaschine":
+                for(int i = 0; i < 3;i++)
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY(), rootPos.getZ()+1), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "farbmischer", "schleifmaschine":
+                placedFields.add(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "farbsprueher", "vulkanisierer":
+                for(int i = 0; i < 2;i++){
+                    for(int j = 0; j < 2;j++)
+                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                }
+                break;
+            case "montagemaschine_gross":
+                for(int i = 0; i < 3;i++){
+                    for(int j = 0; j < 3;j++){
+                        for(int k = 0; k < 2;k++)
+                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()+k), placedModel.getFactoryID()).orElseThrow());
+                    }
+                }
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+1, rootPos.getZ()+3), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "montagemaschine_klein":
+                for(int i = 0; i < 3;i++)
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()-1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()-1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY(), rootPos.getZ()+1), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "montagemaschine_mittel":
+                for(int i = 0; i < 3;i++){
+                    for(int j = 0; j < 3;j++)
+                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                }
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+1, rootPos.getZ()+1), placedModel.getFactoryID()).orElseThrow());
+                break;
+
+            //start-/endpunkt
+            case "rohstoffannahme":
+                for(int i = 0; i < 3;i++){
+                    for(int j = 0; j < 3;j++){
+                        for(int k = 0; k < 3;k++)
+                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()+k), placedModel.getFactoryID()).orElseThrow());
+                    }
+                }
+                break;
+            case "warenausgabe":
+                for(int i = 0; i < 3;i++){
+                    for(int j = 0; j < 3;j++){
+                        for(int k = 0; k < 3;k++)
+                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()+k), placedModel.getFactoryID()).orElseThrow());
+                    }
+                }
+                break;
+
+            //hindernisse
+            case "saeule", "schild":
+                for(int i = 0; i < 2;i++)
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY(), rootPos.getZ()+i), placedModel.getFactoryID()).orElseThrow());
+                break;
+
+        }
     }
     public PlacedModel createPlacedModel(Model model, Position rootPosition, long factoryID) {
-        // TODO get in and outputs from frontend
+        Factory factory = factoryService.getFactoryById(factoryID).orElseThrow();
+        PlacedModel placedModel = new PlacedModel(factory, rootPosition, model);
+
+        // TODO placedModel befüllen
+        fillPlacedModelLists(placedModel);
+
+        // TODO checkForPlacement
         // return checkForPlacement(m);
 
-
-        Factory factory = factoryRepository.findById(factoryID).orElseThrow();
-
-        PlacedModel placedModel = new PlacedModel(factory, rootPosition, model);
-        // TODO placed model befüllen
-
+        // TODO placedModel in fieldRepository speichern
+        for(Field f:placedModel.getPlacedFields()){
+            fieldService.placeModelIntoField(placedModel, f);
+        }
         return placedModelRepository.save(placedModel);
     }
     public List<PlacedModel> findAllByFactoryId(Factory factory) {
         return placedModelRepository.findByFactory(factory);
-    }
-    private void putModelOnField(PlacedModel placedModel, Position rootPosition) {
-        // TODO: create model from input of frontend
-//        if (checkForPlacement(new PlacedModel())) {
-//            // todo place it on the field and call placeModelIntoField(to refresh the
-//            // database
-//            // also answer frontend
-//        }
     }
     private void removeModelFromField(Field field) {
         field.setPlacedModel(null);
@@ -182,7 +260,7 @@ public class PlacedModelService {
                 removeModelFromField(f);
             }
             for (Field f : thisModel.getPlacedFields()) {
-                placeModelIntoField(thisModel, f);
+                fieldService.placeModelIntoField(thisModel, f);
             }
             return true;
         }

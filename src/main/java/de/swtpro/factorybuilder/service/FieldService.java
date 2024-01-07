@@ -2,8 +2,10 @@ package de.swtpro.factorybuilder.service;
 
 import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Field;
+import de.swtpro.factorybuilder.entity.PlacedModel;
 import de.swtpro.factorybuilder.repository.FieldRepository;
 import de.swtpro.factorybuilder.utility.Position;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,5 +40,9 @@ public class FieldService {
             }
         }
         fieldRepository.saveAll(fields);
+    }
+    @Transactional
+    public void placeModelIntoField(PlacedModel placedModel, Field field) {
+        field.setPlacedModel(placedModel);
     }
 }
