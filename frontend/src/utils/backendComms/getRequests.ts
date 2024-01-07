@@ -14,3 +14,21 @@ export const getAllEntitysInFactory: (factoryId: number) => Promise<IBackendEnti
 export const getAllFactories = async () => {
   return fetch(backendUrl + '/api/factory/getAll').then((res) => res.json())
 }
+
+export const fetchCurrentUser = async () => {
+  try {
+      const response = await fetch(backendUrl + '/api/user/current', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              // Include any necessary authentication headers (e.g., tokens)
+          },
+      });
+
+      return response;
+  } catch (error) {
+      // Handle other errors, such as network issues
+      console.error('Error during fetchCurrentUser:', error);
+      throw error;
+  }
+}

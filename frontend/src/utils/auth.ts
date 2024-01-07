@@ -7,10 +7,17 @@ import { inject, type Ref } from 'vue';
 //   sessUser: Ref<string>,
 //   updateSessUser: (newUser: string) => void
 // }>('sessUser')
-// const sessUser = inject('sessUser');
-// console.log("weird", updateSessUser.sessUser.value)
+const sessUser = inject('sessUser');
+console.log("weird", sessUser)
 
 
 export const isUserAuthenticated = () => {
-  return true;
+
+  if(sessUser == '' || sessUser == undefined){
+    return false;
+  }else{
+    return true;
+  }
+
+  // return sessUser !== '';
 };

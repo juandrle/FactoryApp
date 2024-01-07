@@ -34,13 +34,13 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
-      beforeEnter:(to, from, next) => {
-        if(isUserAuthenticated()){
-          next('/');
-        }else {
-          next();
-        }
-      }
+      // beforeEnter:(to, from, next) => {
+      //   if(isUserAuthenticated()){
+      //     next('/');
+      //   }else {
+      //     next();
+      //   }
+      // }
     },
     {
       path: '/signup',

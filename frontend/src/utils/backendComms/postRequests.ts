@@ -126,6 +126,29 @@ export const loginUser = async (loginForm : ILoginForm) => {
     }catch (error) {
         console.error('Error during signup:', error)
         return error
-        // Handle other errors, such as network issues
+        
     }
 }
+
+export const logoutUser = async () => {
+    
+    const response = await fetch(backendUrl + '/api/users/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) {
+       
+        return "logout unsuccessful"
+        
+    }
+    
+    if(response.ok){
+        const res = await response.text()
+        console.log(res)
+        return res
+    }
+}
+

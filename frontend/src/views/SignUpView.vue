@@ -44,7 +44,7 @@ const signUp = async () => {
         usernameTaken.value = false
         passwordNotEqual.value = false
       }
-      updateSessUser(username.textContent)
+      updateSessUser(username.value)
       await router.push('/')
       break
     default:

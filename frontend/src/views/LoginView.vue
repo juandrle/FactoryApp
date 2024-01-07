@@ -34,14 +34,16 @@ const login = async () => {
         userNotExisting.value = true
       }
       break
-    case "login successfull":
+    case "login successful":
       if(username && password){
         username.classList.remove('input-invalid')
         password.classList.remove('input-invalid')
         userNotExisting.value = false
         passwordFalse.value = false
+        console.log("logged in as user:", username.value)
       }
-      updateSessUser(username.textContent)
+      updateSessUser(username.value)
+      console.log()
       await router.push('/')
       break
     default:

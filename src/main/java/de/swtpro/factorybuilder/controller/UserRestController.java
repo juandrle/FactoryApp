@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import de.swtpro.factorybuilder.DTO.UserDTO;
+import de.swtpro.factorybuilder.component.SessionManager;
 import de.swtpro.factorybuilder.entity.User;
 import de.swtpro.factorybuilder.service.user.UserFormular;
 import de.swtpro.factorybuilder.service.user.UserServiceImpl;
@@ -37,6 +40,15 @@ public class UserRestController {
     Logger logger = LoggerFactory.getLogger(UserRestController.class); 
     @Autowired
     private UserServiceImpl userServiceImpl;
+    @Autowired
+    private SessionManager sessionManager;
+    
+
+    @GetMapping("/current")
+    public ResponseEntity<String> getCurrentUser() {
+        String username = sessionManager.getCurrentUsername();
+        return ResponseEntity.ok(username);
+    }
     
     
     @PostMapping("/api/users/signup")
@@ -70,7 +82,7 @@ public class UserRestController {
     }
 }
 
-@PostMapping("/api/users/login")
+    @PostMapping("/api/users/login")
     @ResponseBody
     public ResponseEntity<String> login(@Valid @RequestBody UserDTO userDTO, BindingResult userFormularError) {
         if (userFormularError.hasErrors()) {
@@ -85,6 +97,7 @@ public class UserRestController {
             User currentUser = userExists.get();
 
             if(userServiceImpl.checkPassword(userDTO.password(), currentUser.getPassword())){
+                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(currentUser.getUsername(), null));
                 return ResponseEntity.ok("login successful");
             }else{
                 return ResponseEntity.ok("wrong password");
@@ -96,6 +109,14 @@ public class UserRestController {
     }
 
         
+    }
+
+    @PostMapping("/api/users/logout")
+    @ResponseBody
+    public ResponseEntity<String> logout(){
+
+        SecurityContextHolder.getContext().setAuthentication(null);
+        return ResponseEntity.ok("logout successful");
     }
 
 }

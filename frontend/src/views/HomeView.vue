@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref,inject, type Ref } from 'vue';
 import { isUserAuthenticated } from '@/utils/auth';
+import { logoutUser} from "@/utils/backendComms/postRequests"
 import router from "@/router"
+import { fetchCurrentUser } from "@/utils/backendComms/getRequests"
 
 import Button from '../components/Button.vue'
+import { isAwaitKeyword } from 'typescript';
   const buttonData = ref([
     {text: 'Fabrik erstellen', link: "/create"},
     {text: 'Fabrik beitreten', link:"/enter"}, 
@@ -16,21 +19,13 @@ const {updateSessUser} = inject<{
   updateSessUser: (newUser: string) => void
 }>('sessUser')
 
-const isUserAuthenticated = () => {
-  if(updateSessUser.sessUser.value != ''){
-    return true
-  }else{
-    return false
-  }
-};
-
 const logout = async() => {
-  let empty = ''
-updateSessUser(empty)
-
-setTimeout(() => {
-    location.reload();
-  }, 100);
+  switch(await logoutUser()){
+    
+    case "logout successful":
+      updateSessUser(null)
+      await router.push('/login')
+  }
 }
 
 const redirectToLogin = async() => {
@@ -42,10 +37,12 @@ const redirectToLogin = async() => {
 
 <template>
   <div class="container">
-    <form v-if="isUserAuthenticated()" @submit.prevent="logout">
+    <form @submit.prevent="logout">
       <button type="submit">Logout</button>
     </form>
-    <button v-else @click="redirectToLogin">Login</button>
+    
+    <button @click="redirectToLogin">Login</button>
+    
     <div class="s-item">
       <div class="button-container">
         <Button v-for="item in buttonData" :text="item.text" :link="item.link"></Button>
