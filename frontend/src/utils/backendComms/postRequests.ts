@@ -113,16 +113,13 @@ export const loginUser = async (loginForm : ILoginForm) => {
             },
             body : JSON.stringify(loginForm)
         });
-        console.log("das is von backend", response)
         if(!response.ok){
-
             return "communcation error"
         }
-        if(response.ok){
-            const res = await response.text()
-            console.log(res)
-            return res
-        }
+        const res = await response.text()
+        console.log(res)
+        return res
+        
     }catch (error) {
         console.error('Error during signup:', error)
         return error

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref,inject, type Ref } from 'vue';
+import { ref,inject, type Ref, onMounted } from 'vue';
 import { isUserAuthenticated } from '@/utils/auth';
 import { logoutUser} from "@/utils/backendComms/postRequests"
 import router from "@/router"
@@ -28,15 +28,38 @@ const logout = async() => {
   }
 }
 
+const username = ref('');
+
+const loadCurrentUser = async () => {
+    try {
+        const response = await fetchCurrentUser();
+        if (response.ok) {
+            username.value = await response.text();
+        } else {
+            // Handle non-successful responses
+            console.error('Failed to fetch current user');
+        }
+    } catch (error) {
+        // Handle other errors, such as network issues
+        console.error('Error during fetchCurrentUser:', error);
+    }
+};
+
+
 const redirectToLogin = async() => {
   
   await router.push('/login');
 }
 
+onMounted(() => {
+  loadCurrentUser()
+})
+
 </script>
 
 <template>
   <div class="container">
+    <p>Logged in as {{ username }}</p>
     <form @submit.prevent="logout">
       <button type="submit">Logout</button>
     </form>

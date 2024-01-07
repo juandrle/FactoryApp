@@ -21,14 +21,15 @@ export const fetchCurrentUser = async () => {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json',
-              // Include any necessary authentication headers (e.g., tokens)
+              
           },
       });
 
       return response;
   } catch (error) {
-      // Handle other errors, such as network issues
+      
       console.error('Error during fetchCurrentUser:', error);
-      throw error;
+      return error;
   }
+  
 }

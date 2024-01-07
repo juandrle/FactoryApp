@@ -43,11 +43,12 @@ public class UserRestController {
     @Autowired
     private SessionManager sessionManager;
     
-
-    @GetMapping("/current")
+    @CrossOrigin
+    @GetMapping("/api/users/current")
     public ResponseEntity<String> getCurrentUser() {
         String username = sessionManager.getCurrentUsername();
-        return ResponseEntity.ok(username);
+        logger.info(username);
+        return ResponseEntity.ok("na hööör mal" + username);
     }
     
     
