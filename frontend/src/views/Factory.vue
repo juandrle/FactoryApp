@@ -37,7 +37,7 @@ const manipulationMode: Ref<ManipulationMode> = ref<ManipulationMode>(Manipulati
 const allEntitys: Ref<IBackendEntityPreview[] | undefined> = ref()
 const activeEntity: Ref<IBackendEntityPreview | undefined> = ref()
 // quick fix to any
-let currentObjectSelected: any;
+let currentObjectSelected: any
 let lastObjectSelected: any
 let currObjSelectedOriginPos: IVector3 = { x: 0, y: 0, z: 0 }
 const showCircMenu: Ref<Boolean> = ref(false)

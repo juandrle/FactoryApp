@@ -1,15 +1,15 @@
 import { CameraMode } from '@/enum/CameraMode'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { CustomFlyControls } from './CustomFlyControlls.js'
-import type { ICameraInfos } from '@/types/global.js'
+import type { ICameraInfo } from '@/types/global.js'
 import { ExtractCameraInfo, SetCameraInfo } from '@/utils/threeJS/camera.js'
 
 class CameraControlsManager {
   public currentMode: CameraMode | null = null
   public controlls: CustomFlyControls | OrbitControls | null = null
   public camera: any = null
-  public orbitCameraInfos: ICameraInfos | null = null
-  public freeCameraInfos: ICameraInfos | null = null
+  public orbitCameraInfos: ICameraInfo | null = null
+  public freeCameraInfos: ICameraInfo | null = null
   private domElement: any = null
 
   constructor(camera: any, domElement: any, mode: CameraMode) {
