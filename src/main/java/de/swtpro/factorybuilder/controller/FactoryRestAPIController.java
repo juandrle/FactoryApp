@@ -2,6 +2,7 @@ package de.swtpro.factorybuilder.controller;
 
 import de.swtpro.factorybuilder.DTO.FactoryDTO;
 import de.swtpro.factorybuilder.DTO.FactoryEnterDTO;
+import de.swtpro.factorybuilder.DTO.FactoryPasswordCheckDTO;
 import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
 import de.swtpro.factorybuilder.DTO.UpdateImageFactoryDTO;
 import de.swtpro.factorybuilder.entity.Factory;
@@ -63,7 +64,8 @@ public class FactoryRestAPIController {
         List<FactoryEnterDTO> factories = new ArrayList<>();
         for (Factory f : factoryService.getAllFactories()) {
             factories
-                    .add(new FactoryEnterDTO(f.getFactoryID(), f.getName(), f.getWidth(), f.getDepth(), f.getHeight()));
+                    .add(new FactoryEnterDTO(f.getFactoryID(), f.getName(), f.getWidth(), f.getDepth(), f.getHeight(), f.getPassword().equals("") ? false : true));
+                    LOGGER.info(f.getPassword());
         }
         ;
         return factories;
@@ -96,13 +98,14 @@ public class FactoryRestAPIController {
 
     @CrossOrigin
     @PostMapping("/checkPassword")
-    public ResponseEntity<Boolean> checkPassword(@RequestParam long factoryId, @RequestParam String passwordFrontend) {
+    public ResponseEntity<Boolean> checkPassword(@RequestBody FactoryPasswordCheckDTO check) {
         try {
             // get password from DB 
-            Factory factory = factoryService.getFactoryById(factoryId).orElseThrow();
+            Factory factory = factoryService.getFactoryById(check.id()).orElseThrow();
             String passwordFromDB = factory.getPassword();
     
-            boolean passwordsMatch = passwordFrontend.equals(passwordFromDB);
+            boolean passwordsMatch = check.password().equals(passwordFromDB);
+            LOGGER.info(passwordFromDB);
     
             return ResponseEntity.ok(passwordsMatch);
 

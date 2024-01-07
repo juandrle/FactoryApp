@@ -26,8 +26,9 @@ const currOwner = ref('')
 const existing_factories: Ref<IFactory[]> = ref([])
 
 onMounted(() => {
-  getAllFactories().then((json) => {
+  getAllFactories().then((json: any) => {
     existing_factories.value = json
+    console.log(json)
   })
 })
 
@@ -58,35 +59,6 @@ const filteredFactories = computed(() => {
     return matchesSearchTerm && matchesSize
   })
 })
-
-const currentlyRotatedCard = ref<HTMLElement | null>(null)
-const rotateCard = (clickTarget: EventTarget | null) => {
-  if (!clickTarget) return
-  const card = clickTarget as HTMLElement
-  if (card) {
-    const front = card.querySelector('.card-front') as HTMLElement
-    const back = card.querySelector('.card-back') as HTMLElement
-
-    // Karte drehen
-    if (currentlyRotatedCard.value === clickTarget) {
-      back.style.display = 'none' // Rückseite ausblenden
-      front.style.display = 'flex' // Vorderseite anzeigen
-      currentlyRotatedCard.value = null // Zustand aktualisieren
-    } else if (currentlyRotatedCard.value === null) {
-      back.style.display = 'flex' // Rückseite anzeigen
-      front.style.display = 'none' // Vorderseite ausblenden
-      currentlyRotatedCard.value = clickTarget as HTMLElement // Zustand aktualisieren
-    } else {
-      ;(currentlyRotatedCard.value.querySelector('.card-back') as HTMLElement).style.display =
-        'none' // Rückseite ausblenden
-      ;(currentlyRotatedCard.value.querySelector('.card-front') as HTMLElement).style.display =
-        'flex'
-      back.style.display = 'flex' // Rückseite anzeigen
-      front.style.display = 'none' // Vorderseite ausblenden
-      currentlyRotatedCard.value = clickTarget as HTMLElement // Zustand aktualisieren
-    }
-  }
-}
 
 </script>
 
@@ -119,7 +91,6 @@ const rotateCard = (clickTarget: EventTarget | null) => {
         <div class="factory-cards">
           <FactoryCard
             v-for="factory in filteredFactories"
-            :rotateCard="rotateCard"
             :key="factory.id"
             :factory="factory"
           ></FactoryCard>

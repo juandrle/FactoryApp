@@ -1,48 +1,89 @@
 <script setup lang="ts">
-import {defineProps, onMounted, type Ref, ref} from 'vue'
-import type { IFactory } from '@/types/backendEntity';
-import {getFactoryImage} from "@/utils/backendComms/getRequests";
+import { defineProps, onMounted, type Ref, ref } from 'vue'
+import type { IFactory } from '@/types/backendEntity'
+import { getFactoryImage } from '@/utils/backendComms/getRequests'
+import router from '@/router'
+import { backendUrl } from '@/utils/config/config.js'
 
 const props = defineProps({
   factory: {
     type: Object as () => IFactory,
     required: true
-  },
-  rotateCard: {
-    type: Object as () => (clickTarget: EventTarget | null) => void,
-    required: true
   }
+  // rotateCard: {
+  //   type: Object as () => (clickTarget: EventTarget | null) => void,
+  //   required: true
+  // }
 })
-onMounted(() =>{
+
+const currentlyRotatedCard = ref<HTMLElement | null>(null)
+
+const rotateCard = (clickTarget: EventTarget | null) => {
+  if (!clickTarget) return
+  const card = clickTarget as HTMLElement
+  console.log(props)
+  if (!props.factory.hasPassword) {
+    console.log("Factory hat kein Password.")
+    router.push('/factory')
+  } else {
+    if (card) {
+      const front = card.querySelector('.card-front') as HTMLElement
+      const back = card.querySelector('.card-back') as HTMLElement
+      // Karte drehen
+      if (currentlyRotatedCard.value === clickTarget) {
+        back.style.display = 'none' // Rückseite ausblenden
+        front.style.display = 'flex' // Vorderseite anzeigen
+        currentlyRotatedCard.value = null // Zustand aktualisieren
+      } else if (currentlyRotatedCard.value === null) {
+        back.style.display = 'flex' // Rückseite anzeigen
+        front.style.display = 'none' // Vorderseite ausblenden
+        currentlyRotatedCard.value = clickTarget as HTMLElement // Zustand aktualisieren
+      } else {
+        ;(currentlyRotatedCard.value.querySelector('.card-back') as HTMLElement).style.display =
+          'none' // Rückseite ausblenden
+        ;(currentlyRotatedCard.value.querySelector('.card-front') as HTMLElement).style.display =
+          'flex'
+        back.style.display = 'flex' // Rückseite anzeigen
+        front.style.display = 'none' // Vorderseite ausblenden
+        currentlyRotatedCard.value = clickTarget as HTMLElement // Zustand aktualisieren
+      }
+    }
+  }
+}
+
+onMounted(() => {
   getFactoryImage(props.factory?.id).then((dataURL) => {
     currentPicture.value = dataURL.toString()
   })
-
-});
-const currentPicture = ref("https://damassets.autodesk.net/content/dam/autodesk/www/industry/manufacturing/integrated-factory-modeling/what-is-integrated-factory-modeling-thumb-1172x660.jpg")
+})
+const currentPicture = ref(
+  'https://damassets.autodesk.net/content/dam/autodesk/www/industry/manufacturing/integrated-factory-modeling/what-is-integrated-factory-modeling-thumb-1172x660.jpg'
+)
 
 // Check password
 const factoryEnterPassword = ref('')
-async function submitPassword(factoryId:number,factoryEnterPassword:string) {
+async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   try {
-    const response = await fetch('/checkPassword', {
+    const response = await fetch(backendUrl + '/api/factory/checkPassword', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ id: factoryId, password: factoryEnterPassword }),
-    });
+      body: JSON.stringify({ id: factoryId, password: factoryEnterPassword })
+    })
 
     if (response.ok) {
-      const data = await response.json();
+      const data = await response.json()
+      router.push('/factory')
+
       if (data === true) {
-        console.log('Passwort ist korrekt');
+        console.log('Passwort ist korrekt')
       } else {
-        console.log('Passwort ist falsch');
+        console.log('Passwort ist falsch')
       }
     }
   } catch (error) {
-    console.error('Error while checking password: ', error);
+    console.error('Error while checking password: ', error)
   }
 }
 </script>
@@ -50,15 +91,11 @@ async function submitPassword(factoryId:number,factoryEnterPassword:string) {
 <template>
   <div class="factorycard" @click="(e) => rotateCard(e.currentTarget)">
     <div class="card-front">
-      <img
-        class="factory-image"
-        :src="currentPicture"
-        alt="Factoryimage"
-      />
+      <img class="factory-image" :src="currentPicture" alt="Factoryimage" />
       <div class="factorycard-content">
         <div style="width: max-content">
           <p>{{ factory.name }}</p>
-          <p>{{ factory.width}}x{{ factory.depth }}x{{ factory.height }}</p>
+          <p>{{ factory.width }}x{{ factory.depth }}x{{ factory.height }}</p>
           <!-- <p>{{ factory.author }}</p> -->
           <p>Name Author</p>
         </div>
@@ -68,7 +105,10 @@ async function submitPassword(factoryId:number,factoryEnterPassword:string) {
       </div>
     </div>
     <div class="card-back" style="display: none">
-      <form class="password-form" @submit.prevent="submitPassword(props.factory?.id, factoryEnterPassword)">
+      <form
+        class="password-form"
+        @submit.prevent="submitPassword(props.factory?.id, factoryEnterPassword)"
+      >
         <div class="input-wrapper">
           <input
             v-model="factoryEnterPassword"

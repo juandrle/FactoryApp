@@ -36,6 +36,6 @@ export interface IFactory {
     width: number;
     depth: number;
     height: number;
-    password: string;
+    hasPassword: boolean;
     // author: string;
 }
