@@ -3,38 +3,24 @@ import {computed, inject, onMounted, onUnmounted, type Ref, ref} from 'vue';
 import Button from '../components/ui/Button.vue'
 import {logoutUser} from "@/utils/backendComms/postRequests";
 import router from "@/router";
-  const buttonData = ref([
-    {text: 'Fabrik erstellen', link: "/create"},
-    {text: 'Fabrik beitreten', link:"/enter"},
-    //{text: 'Einstellungen', link:"/settings"}
-    ])
+import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
 
-const signUpClicked = ref(false);
-const sessUser = ref('');
-const updateSessUser = (newUser: string) => {
-  console.log('Updating sessUser', newUser)
-  sessUser.value = newUser
-};
+const buttonData = ref([
+  {text: 'Fabrik erstellen', link: "/create"},
+  {text: 'Fabrik beitreten', link: "/enter"},
+  //{text: 'Einstellungen', link:"/login"}
+])
 
-// const {sessUser, updateSessUser} = inject<{
-//     sessUser: Ref<string>,
-//     updateSessUser: (newUser: string) => void
-// }>('sessUser')
-
-const setUpInjections = () => {
-  const injections = inject<{
-    sessUser: Ref<string>, // Change the type as needed
-    updateSessUser: (newUser: string) => void
-  }>('sessUser');
-
-  if (injections) {
-    updateSessUser(injections.sessUser.value);
-  }
-};
+const signUpClicked = ref(false)
+const {sessUser, updateSessUser} = useSessUser()
+const showLogin = ref(false)
 
 
-const logout = async() => {
-  switch(await logoutUser()){
+
+
+
+const logout = async () => {
+  switch (await logoutUser()) {
 
     case "logout successful":
       updateSessUser('')
@@ -42,23 +28,20 @@ const logout = async() => {
   }
 }
 
-const redirectToLogin = async() => {
-
+const redirectToLogin = async () => {
   await router.push('/login');
 }
-const redirectToSignUp = async() => {
+const redirectToSignUp = async () => {
   signUpClicked.value = true;
   await router.push('/signup');
 }
-const loggedInUser = computed(() => sessUser.value);
 
 onMounted(() => {
-  setUpInjections()
+  if (sessUser.value === '') showLogin.value = true
 });
 
-onUnmounted(() =>{
-  if(sessUser.value === '' && !signUpClicked.value){
-
+onUnmounted(() => {
+  if (sessUser.value === '' && !signUpClicked.value) {
     router.replace('/login')
   }
 })
@@ -69,10 +52,10 @@ onUnmounted(() =>{
   <div class="container">
     <div class="s-item">
       <div class="content-s-item">
-      <a href="/">
-        <img src="/icons8-fabric-96.png" width="20px" height="auto" alt=""/>
-        <p class="logo-title">Machine Deluxe 3000</p>
-      </a>
+        <a @click="router.push('/')">
+          <img src="/icons8-fabric-96.png" width="20px" height="auto" alt=""/>
+          <p class="logo-title">Machine Deluxe 3000</p>
+        </a>
       </div>
       <div class="button-container">
         <Button v-for="item in buttonData" :text="item.text" :link="item.link"></Button>
@@ -84,21 +67,21 @@ onUnmounted(() =>{
     </div>
     <div class="s-item">
       <div class="header">
-        <p v-if="sessUser !== ''">logged in as {{ loggedInUser }}</p>
+        <p v-if="!showLogin">logged in as {{ sessUser }}</p>
 
-        <form v-if="sessUser !== ''" @submit.prevent="logout">
+        <form v-if="!showLogin" @submit.prevent="logout">
           <button type="submit" link="">Logout</button>
         </form>
         <button class="signupbutton" v-if="sessUser === ''" @click="redirectToSignUp" link="">Sign Up</button>
-        <button v-if="sessUser === ''" @click="redirectToLogin" link="">Login</button>
+        <button v-if="showLogin" @click="redirectToLogin" link="">Login</button>
       </div>
     </div>
-  </div> 
+  </div>
 </template>
 
 <style>
 .container {
-  display: flex; 
+  display: flex;
   min-width: 100vw;
   min-height: 100vh;
   background-image: url('../assets/rectangles.svg');
@@ -106,6 +89,7 @@ onUnmounted(() =>{
   background-attachment: fixed;
   background-position: right bottom;
 }
+
 .container .s-item {
   display: flex;
   flex: 1 1 25%;
@@ -113,9 +97,10 @@ onUnmounted(() =>{
   align-items: flex-start;
   padding: 2rem;
 }
+
 .header {
-  margin-top:17px;
-  display:flex;
+  margin-top: 17px;
+  display: flex;
   position: relative;
   align-items: center;
   flex-direction: row;
@@ -124,51 +109,55 @@ onUnmounted(() =>{
 }
 
 
-.header p{
+.header p {
   margin-right: 10px;
   font-size: 18px;
 }
-.header button{
-  background-color:#683CE4;
-	text-align: center;
-	border-radius:35px;
-	cursor:pointer;
-	color:#ffffff;
-	font-size:16px;
-	text-decoration:none;
-	margin-right: 12px;
-	width: 110px;
-  height:28px;
-	border:none;
+
+.header button {
+  background-color: #683CE4;
+  text-align: center;
+  border-radius: 35px;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 16px;
+  text-decoration: none;
+  margin-right: 12px;
+  width: 110px;
+  height: 28px;
+  border: none;
   transition: background-color 0.4s ease;
   position: relative;
 
 }
-.header .signupbutton{
-  background-color:#10E5B2;
+
+.header .signupbutton {
+  background-color: #10E5B2;
 }
 
-.header .signupbutton:hover{
-  background-color:#683CE4;
+.header .signupbutton:hover {
+  background-color: #683CE4;
 
 }
 
-.header button:hover{
-  background-color:#4b2ba6;
+.header button:hover {
+  background-color: #4b2ba6;
 }
-.header button:active{
-  position:relative;
-	top:1px;
+
+.header button:active {
+  position: relative;
+  top: 1px;
 }
 
 .container .m-item {
-  flex: 1 1 50%; 
+  flex: 1 1 50%;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
 }
-.game-name{
+
+.game-name {
   position: absolute;
   top: 17%;
   font: normal normal bold 70px/84px Overpass;
@@ -176,17 +165,18 @@ onUnmounted(() =>{
   font-weight: 400;
   margin-bottom: 0;
 }
-.button-container{
+
+.button-container {
   display: flex;
   flex-direction: column;
-  position: absolute; 
+  position: absolute;
   left: 45%;
-  bottom: 15%; 
+  bottom: 15%;
   gap: 1rem;
 
 }
 
-.subtitle{
+.subtitle {
   font: normal normal 28px/40px Overpass;
   margin-bottom: 300px;
 
@@ -203,6 +193,7 @@ onUnmounted(() =>{
   bottom: 90%;
   top: 2.5%;
   margin-left: 32px;
+  cursor: pointer;
 }
 
 .content-s-item img {
@@ -210,7 +201,7 @@ onUnmounted(() =>{
   height: min-content;
 }
 
-.content-s-item a{
+.content-s-item a {
   display: flex;
   gap: 0.625rem;
   text-decoration: none;

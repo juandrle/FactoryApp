@@ -66,7 +66,7 @@ const filteredFactories = computed(() => {
   <div class="container">
     <div class="s-item">
       <div class="content-s-item">
-        <a href="/">
+        <a @click="router.push('/')">
           <img src="/icons8-fabric-96.png" alt=""/>
           <p class="logo-title">Machine Deluxe 3000</p>
         </a>
@@ -132,6 +132,7 @@ const filteredFactories = computed(() => {
   position: absolute;
   bottom: 90%;
   top: 2.5%;
+  cursor: pointer;
 }
 
 .content-s-item img {

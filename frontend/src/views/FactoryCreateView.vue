@@ -6,6 +6,8 @@ import type {IVector3} from "@/types/global"
 import router from "@/router";
 import {factoryCreateRequest} from "@/utils/backendComms/postRequests"
 import type {IFactoryCreate} from "@/types/backendTypes"
+import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
+import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
@@ -16,8 +18,8 @@ const sizes = ref([
 const factoryName = ref('')
 const factoryPassword = ref('')
 const selectedSize = ref()
-let updateFactorySize: (newSize: IVector3) => void
-let updateFactoryID: (newID: number) => void
+let updateFactorySize: (newSize: IVector3) => void = useFactorySize().updateFactorySize
+let updateFactoryID: (newID: number) => void = useFactoryID().updateFactoryID
 computed((size) => {
   return {
     x: size.width as number,
@@ -25,18 +27,6 @@ computed((size) => {
     z: size.height as number
   }
 });
-const setupInjections = () => {
-  const resultID = inject<{
-    factoryID: Ref<number>
-    updateFactoryID: (newID: number) => void
-  }>('factoryID')
-  if (resultID && typeof resultID === 'object') updateFactoryID = resultID.updateFactoryID
-  const resultSize = inject<{
-    factorySize: Ref<IVector3>,
-    updateFactorySize: (newSize: IVector3) => void
-  }>('factorySize')
-  if (resultSize && typeof resultSize === 'object') updateFactorySize = resultSize.updateFactorySize
-}
 const isLoading: Ref<boolean> = ref(false)
 function createFactory() {
   if (selectedSize.value && factoryName.value) {
@@ -71,16 +61,13 @@ function createFactory() {
   }
 }
 
-onMounted(() => {
-  setupInjections()
-})
 </script>
 
 <template>
   <div class="container">
     <div class="s-item">
       <div class="content-s-item">
-        <a href="/">
+        <a @click="router.push('/')">
           <img src="/icons8-fabric-96.png" alt=""/>
           <p class="logo-title">Machine Deluxe 3000</p>
         </a>
@@ -154,6 +141,7 @@ onMounted(() => {
   position: absolute;
   bottom: 90%;
   top: 2.5%;
+  cursor: pointer;
 }
 
 .content-s-item img {

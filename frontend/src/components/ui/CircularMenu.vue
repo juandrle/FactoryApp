@@ -1,42 +1,53 @@
 <template>
   <div>
-    <!-- <button :class="{ 'visible': isButtonVisible }" @click="buttonClicked">Click Me</button> -->
     <nav :class="{ 'visible': isButtonVisible }">
-        <!-- <input  class="menu-toggler" type="checkbox">
-        <label for="menu-toggler"></label> -->
-        <ul>
+      <ul>
         <li class="menu-item">
-            <a class="fa-solid fa-arrows-rotate" @click='rotateClicked'></a>
+          <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='rotateClicked'>
+            <a class="fa-solid fa-arrows-rotate"></a>
             <p>Drehen</p>
+          </div>
         </li>
         <li class="menu-item">
-            <a class="fa-solid fa-arrows-up-down-left-right" @click='moveClicked'></a>
+          <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='moveClicked'>
+            <a class="fa-solid fa-arrows-up-down-left-right"></a>
             <p>Versetzen</p>
+          </div>
         </li>
         <li class="menu-item">
-            <a class="fa-solid fa-trash" @click='delClicked'></a>
+          <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='delClicked'>
+            <a class="fa-solid fa-trash"></a>
             <p>Löschen</p>
+          </div>
         </li>
         <li class="menu-item">
-            <a class="fa-solid fa-code" @click='scriptClicked'></a>
+          <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='scriptClicked'>
+            <a class="fa-solid fa-code" ></a>
             <p>Skripten</p>
+          </div>
         </li>
         <li class="menu-item">
-            <a class="fa-regular fa-clone" @click='cloneClicked'></a>
+          <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='cloneClicked'>
+            <a class="fa-regular fa-clone" ></a>
             <p>Klonen</p>
+          </div>
         </li>
-        
-        </ul>
+      </ul>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-import {onMounted, inject, type Ref} from 'vue';
+
+import {ref, watch} from "vue";
+
+const props = defineProps<{
+  isButtonVisible: Boolean
+}>()
 const emit = defineEmits<{
   changeEntity: [string];
 }>()
-const delClicked = () =>{
+const delClicked = () => {
   emit('changeEntity', 'delete')
 }
 const rotateClicked = () => {
@@ -51,123 +62,124 @@ const scriptClicked = () => {
 const cloneClicked = () => {
   emit('changeEntity', 'clone')
 }
-const isButtonVisible: Ref<Boolean> = inject('showCircleMenu')
+const hoverEnabled = ref(false);
+
+watch(() => props.isButtonVisible, (newValue) => {
+  if (newValue) {
+    setTimeout(() => {
+      hoverEnabled.value = true;
+    }, 500);
+  } else {
+    hoverEnabled.value = false;
+  }
+});
 
 </script>
 
 <style scoped>
-/* ul {
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-} */
 
 .visible .menu-item {
   opacity: 1;
   user-select: none;
 }
 
+.visible .menu-item a {
+  pointer-events: auto;
+}
 .visible .menu-item:nth-child(1) {
-  transform: rotate(90deg) translate(-150px);
+  transform: translate(-50%, -50%) rotate(18deg) translateX(-150px);
 }
 
 .visible .menu-item:nth-child(2) {
-  transform: rotate(162deg) translateX(-150px);
+  transform: translate(-50%, -50%) rotate(90deg) translateX(-150px);
 }
 
 .visible .menu-item:nth-child(3) {
-  transform: rotate(234deg) translateX(-150px);
+  transform: translate(-50%, -50%) rotate(162deg) translateX(-150px);
 }
 
 .visible .menu-item:nth-child(4) {
-  transform: rotate(306deg) translateX(-150px);
+  transform: translate(-50%, -50%) rotate(234deg) translateX(-150px);
 }
 
 .visible .menu-item:nth-child(5) {
-  transform: rotate(378deg) translateX(-150px);
+  transform: translate(-50%, -50%) rotate(306deg) translateX(-150px);
+}
+.menu-item:nth-child(1) .menu-content {
+  transform: rotate(-18deg);
 }
 
-.visible .menu-item a {
-    pointer-events:auto;
-  }
-.menu-item:nth-child(1) a {
-    transform: rotate(-90deg);
-  }
-  .menu-item:nth-child(2) a {
-    transform: rotate(-162deg);
-  }
-  .menu-item:nth-child(3) a {
-    transform: rotate(-234deg);
-  }
-  .menu-item:nth-child(4) a {
-    transform: rotate(-306deg);
-  }
-  .menu-item:nth-child(5) a {
-    transform: rotate(-378deg);
-  }
+.menu-item:nth-child(2) .menu-content {
+  transform: rotate(-90deg);
+}
+
+.menu-item:nth-child(3) .menu-content {
+  transform: rotate(-162deg);
+}
+
+.menu-item:nth-child(4) .menu-content {
+  transform: rotate(-234deg);
+}
+
+.menu-item:nth-child(5) .menu-content {
+  transform: rotate(-306deg);
+}
+
 .menu-item {
-    position: absolute;
-    display: block;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 120px;
-    height: 120px;
-    opacity: 0;
-    transition: 0.5s;
-  }
- .menu-item a {
-    display: block;
-    width: inherit;
-    height: inherit;
-    line-height: 100px;
-    color: rgba(255, 255, 255, 0.7);
-    background: rgba(230, 230, 250, 0.7);
-    border-radius: 50%;
-    text-align: center;
-    text-decoration: none;
-    font-size: 50px;
-    pointer-events: none;
-    transition: 0.2s;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 120px;
+  opacity: 0;
+  transition: transform 0.5s, opacity 0.5s;
 }
-
-.menu-item p{
-  font-size: 14px;
+.menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(230, 230, 250, 0.7);
   transition: 0.2s;
+  user-select: none;
+}
+
+.menu-content.hoverable:hover {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.menu-content.hoverable:hover a {
+  color: white;
+  font-size: 44.44px;
+}
+
+.menu-content.hoverable:hover p {
+  font-size: 12px;
+  color: white;
+}
+
+.menu-content a {
+  font-size: 50px;
+  color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  top: 30px;
+}
+
+.menu-content p {
+  position: absolute;
+  font-size: 14px;
   text-align: center;
+  bottom: 0;
 }
-
-.menu-item:nth-child(1) p{
-  
-  transform: rotate(-90deg) translate(72px) translateY(35px);
-}
-.menu-item:nth-child(2) p{
-  
-  transform: rotate(-162deg) translate(23px) translateY(101px);
-}
-.menu-item:nth-child(3) p{
-  
-  transform: rotate(-234deg) translate(-55px) translateY(78px);
-}
-.menu-item:nth-child(4) p{
-  
-  transform: rotate(-306deg) translate(-56px) translateY(-6px);
-}
-.menu-item:nth-child(5) p{
-  
-  transform: rotate(-378deg) translate(22px) translateY(-31px);
-}
-
-.menu-item a:hover{
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
-    color: white;
-    background: rgba(255, 255, 255, 0.3);
-    font-size: 44.44px;
-}
-
-.menu-item a:hover + p {
-    font-size: 12px;
-    text-align: center;
+ul {
+  list-style: none;
+  padding: 0;
 }
 </style>

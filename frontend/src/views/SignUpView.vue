@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import {VueElement, ref, type Ref, inject} from 'vue'
+import {VueElement, ref, type Ref, inject, onMounted, watch} from 'vue'
 import router from "@/router"
 import type {IUserForm} from "@/types/backendTypes"
 import {signupUser} from "@/utils/backendComms/postRequests"
+import {useRoute} from "vue-router";
+import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
 
-const {updateSessUser} = inject<{
-  sessUser: Ref<string>,
-  updateSessUser: (newUser: string) => void
-}>('sessUser')
+const {sessUser, updateSessUser} = useSessUser()
+
 const userForm: Ref<IUserForm> = ref({
   username: '',
   password: '',
@@ -51,14 +51,18 @@ const signUp = async () => {
   }
 }
 
-
+onMounted(() => {
+  if (sessUser.value !== '') {
+    router.replace('/')
+  }
+})
 </script>
 
 <template>
   <div>
     <div class="container-left">
       <div class="content-s-item">
-      <a href="/">
+      <a @click="router.push('/')">
         <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
         <p class="logo-title">Machine Deluxe 3000</p>
       </a>
@@ -265,6 +269,7 @@ form {
   bottom: 90%;
   top: 2.5%;
   margin-left: 64px;
+  cursor: pointer;
 }
 
 .content-s-item img {

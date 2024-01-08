@@ -21,6 +21,8 @@ import {createRoom, moveHighlight, selectionObject, updateHighlightModel} from '
 
 import {highlightObjectWithColor, placeEntity, replaceEntity} from '@/utils/threeJS/entityManipulation'
 import {rotateModel, rotateModelfromXtoY, turnLeft, turnRight} from "@/utils/rotation/rotate";
+import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
+import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
 
 /**
  * Config
@@ -34,13 +36,14 @@ const ACTIVE_LAYER: number = 0
 
 const target = ref()
 const manipulationMode: Ref<ManipulationMode> = ref<ManipulationMode>(ManipulationMode.IDLE)
-const allEntitys: Ref<IBackendEntityPreview[] | undefined> = ref()
+const allEntities: Ref<IBackendEntityPreview[] | undefined> = ref()
 const activeEntity: Ref<IBackendEntityPreview | undefined> = ref()
 
 let currObjSelectedOriginPos: IVector3 = {x: 0, y: 0, z: 0}
 const showCircMenu: Ref<Boolean> = ref(false)
-let factorySize: Ref<IVector3>
-let factoryID: Ref<number>
+const showDynamicDiv: Ref<Boolean> = ref(false)
+let factorySize: Ref<IVector3> = useFactorySize().factorySize
+let factoryID: Ref<number> = useFactoryID().factoryID
 
 /**
  * Variables
@@ -77,19 +80,6 @@ let pivot: THREE.Object3D
 const setupScene = () => {
   scene = new THREE.Scene()
   scene.background = new THREE.Color('#12111A')
-}
-
-const setupInjections = () => {
-  const resultID = inject<{
-    factoryID: Ref<number>
-    updateFactoryID: (newID: number) => void
-  }>('factoryID')
-  if (resultID && typeof resultID === 'object') factoryID = resultID.factoryID
-  const resultSize = inject<{
-    factorySize: Ref<IVector3>
-    updateFactorySize: (newSize: IVector3) => void
-  }>('factorySize')
-  if (resultSize && typeof resultSize === 'object') factorySize = resultSize.factorySize
 }
 
 const setupRenderer = () => {
@@ -220,9 +210,9 @@ const onChangeEntityClicked = (situation: string) => {
       break
 
     case 'clone':
-      if (allEntitys.value) {
+      if (allEntities.value) {
         // Find highlight by name
-        activeEntity.value = allEntitys.value.find((obj) => obj.name === allPlacedEntities[currentObjectSelected.uuid].modelId)
+        activeEntity.value = allEntities.value.find((obj) => obj.name === allPlacedEntities[currentObjectSelected.uuid].modelId)
 
         // If it was the same, update manually
         if (activeEntity.value)
@@ -328,6 +318,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
 
 
       manipulationMode.value = ManipulationMode.IDLE
+        showDynamicDiv.value = false
       showCircMenu.value = false
       if (currentObjectSelected) highlightObjectWithColor(currentObjectSelected, false)
       scene.remove(highlight)
@@ -387,6 +378,7 @@ const handleMouseMove = (event: MouseEvent) => {
 const handleClick = (event: any) => {
   // close circle if is open
   if (showCircMenu.value) {
+    showDynamicDiv.value = false
     showCircMenu.value = false
     if (manipulationMode.value === ManipulationMode.IDLE)
       highlightObjectWithColor(currentObjectSelected, false)
@@ -416,10 +408,11 @@ const handleContextMenu = (event: MouseEvent) => {
 
       lastObjectSelected = lastObj
       if (dynamicDiv) {
-        dynamicDiv.style.left = event.clientX - 50 + 'px'
-        dynamicDiv.style.top = event.clientY + 20 + 'px'
+        dynamicDiv.style.left = event.clientX + 'px'
+        dynamicDiv.style.top = event.clientY + 'px'
         dynamicDiv.style.display = 'block'
       }
+      showDynamicDiv.value = true
       showCircMenu.value = true
     }
   }
@@ -462,9 +455,9 @@ onMounted(() => {
   getAllEntities().then((json) => {
     console.log(json)
     // Alle entittys sind nun zugänglich für uns
-    allEntitys.value = json
+    allEntities.value = json
     // Active entity ändern
-    activeEntity.value = allEntitys.value[0]
+    activeEntity.value = allEntities.value[0]
   })
 
   // Load all
@@ -514,7 +507,6 @@ const init = () => {
     ratio: window.innerWidth / window.innerHeight
   }
   setupScene()
-  setupInjections()
   setupRenderer()
   setupCamera()
   setupLights()
@@ -541,6 +533,7 @@ init()
   <div class="target" ref="target">
     <div id="dynamicDiv" style="position: absolute">
       <CircularMenu
+          :is-button-visible="showCircMenu"
           :toggleMenuVisibility="onToggleMenuVisibility"
           @changeEntity="onChangeEntityClicked"
       ></CircularMenu>
@@ -551,9 +544,9 @@ init()
     <div class="debug-bar"></div>
     <EntityBar
         id="ignore"
-        :entities="allEntitys"
+        :entities="allEntities"
         :active-entity="activeEntity"
-        @update-active-entity="(id) => (activeEntity = allEntitys[id])"
+        @update-active-entity="(id) => (activeEntity = allEntities[id])"
     />
   </div>
 </template>

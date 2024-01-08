@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import type { ILoginForm } from '@/types/backendTypes';
+import type {ILoginForm} from '@/types/backendTypes';
 import {loginUser} from "@/utils/backendComms/postRequests"
-import { VueElement, ref, type Ref, inject} from 'vue';
+import {VueElement, ref, type Ref, inject, onMounted} from 'vue';
 import router from "@/router"
+import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
 
-const {updateSessUser} = inject<{
-  sessUser: Ref<string>,
-  updateSessUser: (newUser: string) => void
-}>('sessUser')
+const {sessUser, updateSessUser} = useSessUser()
+
 const loginForm: Ref<ILoginForm> = ref({
   username: '',
   password: '',
@@ -20,21 +19,21 @@ const login = async () => {
   let password: HTMLInputElement | null = document.getElementById('password') as HTMLInputElement
   let username: HTMLInputElement | null = document.getElementById('username') as HTMLInputElement
 
-  switch(await loginUser(loginForm.value)){
+  switch (await loginUser(loginForm.value)) {
     case "wrong password":
-      if(password){
+      if (password) {
         password.classList.add('input-invalid')
-        passwordFalse.value = true  
+        passwordFalse.value = true
       }
       break
     case "user not found":
-      if(username){
+      if (username) {
         username.classList.add('input-invalid')
         userNotExisting.value = true
       }
       break
     case "login successful":
-      if(username && password){
+      if (username && password) {
         username.classList.remove('input-invalid')
         password.classList.remove('input-invalid')
         userNotExisting.value = false
@@ -42,24 +41,27 @@ const login = async () => {
         console.log("logged in as user:", username.value)
       }
       updateSessUser(username.value)
-      console.log()
       await router.push('/')
       break
     default:
       break
   }
 }
-
+onMounted(() => {
+  if (sessUser.value !== '') {
+    router.replace('/')
+  }
+})
 </script>
 
 <template>
   <div>
     <div class="container-left">
       <div class="content-s-item">
-      <a href="/">
-        <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
-        <p class="logo-title">Machine Deluxe 3000</p>
-      </a>
+        <a @click="router.push('/')">
+          <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
+          <p class="logo-title">Machine Deluxe 3000</p>
+        </a>
       </div>
       <div class="container2">
         <form @submit.prevent="login">
@@ -67,11 +69,11 @@ const login = async () => {
             <h2>Login</h2>
             <div class="factory-name">
               <input v-model="loginForm.username" id="username" name="username"
-               placeholder="Type in name" required/>
-               <p v-if="userNotExisting" class="input-feedback">user doesn't exist</p>
+                     placeholder="Type in name" required/>
+              <p v-if="userNotExisting" class="input-feedback">user doesn't exist</p>
               <input type="password" v-model="loginForm.password" id="password" name="password"
                      placeholder="Type in password" required/>
-                <p v-if="passwordFalse" class="input-feedback">wrong password</p>
+              <p v-if="passwordFalse" class="input-feedback">wrong password</p>
             </div>
             <div class="b-container">
               <button type="submit">Login</button>
@@ -120,21 +122,21 @@ const login = async () => {
   flex-direction: column;
   align-items: center;
   position: relative;
-  
+
 }
 
-.title{
-  margin-top: 200px; 
+.title {
+  margin-top: 200px;
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0px;
   font-weight: 400;
   margin-bottom: 0px;
 }
 
-.subtitle{
+.subtitle {
   font: normal normal 28px/40px Overpass;
   margin-bottom: 100px;
-  
+
 }
 
 .form-container {
@@ -165,13 +167,13 @@ const login = async () => {
   align-items: center;
   justify-content: center;
   margin-top: 1.3rem;
-  
+
 }
 
 .b-container2 {
   display: flex;
   align-items: center;
-  justify-content:space-between;
+  justify-content: space-between;
   margin-top: 1.5rem;
   font-size: 14px;
   margin-right: 10px;
@@ -179,19 +181,19 @@ const login = async () => {
 }
 
 .b-container2 a {
-   margin-left: 10px;
-   margin-left: 10px;
+  margin-left: 10px;
+  margin-left: 10px;
   color: #10E5B2;
   font-size: 16px; /* Adjust the font size as needed */
-   /* Add bold styling */
+  /* Add bold styling */
   text-decoration: none;
   transition: color 0.4s ease;
 }
 
-.b-container2 a:hover{
+.b-container2 a:hover {
   color: #683CE4;
   cursor: pointer;
-  
+
 }
 
 button {
@@ -228,14 +230,16 @@ input {
 input:focus {
   outline: none;
 }
+
 .input-invalid {
   border: 2px solid red;
   background-color: #483d5d;
 }
+
 .input-feedback {
   color: red;
   margin: -5px;
-  
+
 }
 
 form {
@@ -261,6 +265,7 @@ form {
   bottom: 90%;
   top: 2.5%;
   margin-left: 64px;
+  cursor: pointer;
 }
 
 .content-s-item img {
@@ -268,7 +273,7 @@ form {
   height: min-content;
 }
 
-.content-s-item a{
+.content-s-item a {
   display: flex;
   gap: 0.625rem;
   text-decoration: none;
