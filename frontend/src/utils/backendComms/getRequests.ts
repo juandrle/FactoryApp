@@ -15,3 +15,7 @@ export const getAllFactories = async () => {
 export const getFactoryImage: (factoryId: number) => Promise<String> = async (factoryId: number) => {
   return fetch(backendUrl + '/api/factory/getImage/' + factoryId).then((res) => res.text())
 }
+export const getAllFactories = async () => {
+  return fetch(backendUrl + '/api/factory/getAll').then((res) => res.json())
+}
+

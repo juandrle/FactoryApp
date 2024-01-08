@@ -1,9 +1,13 @@
 import type {
-    IEntityDelete, IEntityMove, IEntityRotate,
+    IEntityDelete,
+    IEntityMove,
+    IEntityRotate,
     IFactoryCreate,
     IFactoryDelete,
     IManipulationRequest,
-    IPlaceRequest
+    IPlaceRequest,
+    IUserForm,
+    ILoginForm
 } from "@/types/backendTypes";
 import {backendUrl} from "@/utils/config/config"
 
@@ -104,3 +108,79 @@ export const factoryImageUpdate = async (factoryID: number, screenshot: string) 
         return false
     }
 }
+export const signupUser = async (userForm: IUserForm) => {
+    try {
+        const response = await fetch(backendUrl + '/api/users/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userForm),
+        });
+        console.log("das is von backend", response)
+        if (response.status === 400) {
+            return await response.text()
+        }
+        if (!response.ok) {
+            // Handle non-successful responses
+            return "communication error"
+        }
+        if (response.ok) {
+            const res = await response.text()
+            console.log(res)
+            return res
+            // Optionally, you can redirect the user to the home page or perform other actions
+        }
+    } catch (error) {
+        console.error('Error during signup:', error)
+        return error
+        // Handle other errors, such as network issues
+    }
+};
+
+export const loginUser = async (loginForm : ILoginForm) => {
+    try{
+        const response = await fetch(backendUrl + '/api/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json',
+            },
+            body : JSON.stringify(loginForm)
+        });
+        if(!response.ok){
+            return "communcation error"
+        }
+        const res = await response.text()
+
+        console.log(res)
+        return res
+
+    }catch (error) {
+        console.error('Error during signup:', error)
+        return error
+
+    }
+}
+
+export const logoutUser = async () => {
+
+    const response = await fetch(backendUrl + '/api/users/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) {
+
+        return "logout unsuccessful"
+
+    }
+
+    if(response.ok){
+        const res = await response.text()
+        console.log(res)
+        return res
+    }
+}
+

@@ -3,20 +3,94 @@ import { ref } from 'vue';
 import Button from '../components/ui/Button.vue'
   const buttonData = ref([
     {text: 'Fabrik erstellen', link: "/create"},
-    {text: 'Fabrik beitreten', link:"/enter"}, 
-    {text: 'Einstellungen', link:"/settings"}
+    {text: 'Fabrik beitreten', link:"/enter"},
+    //{text: 'Einstellungen', link:"/settings"}
     ])
+
+const signUpClicked = ref(false);
+const sessUser = ref('');
+const updateSessUser = (newUser: string) => {
+  console.log('Updating sessUser', newUser)
+  sessUser.value = newUser
+};
+
+// const {sessUser, updateSessUser} = inject<{
+//     sessUser: Ref<string>,
+//     updateSessUser: (newUser: string) => void
+// }>('sessUser')
+
+const setUpInjections = () => {
+  const injections = inject<{
+    sessUser: Ref<string>, // Change the type as needed
+    updateSessUser: (newUser: string) => void
+  }>('sessUser');
+
+  if (injections) {
+    updateSessUser(injections.sessUser.value);
+  }
+};
+
+
+const logout = async() => {
+  switch(await logoutUser()){
+
+    case "logout successful":
+      updateSessUser('')
+      await router.push('/login')
+  }
+}
+
+const redirectToLogin = async() => {
+
+  await router.push('/login');
+}
+const redirectToSignUp = async() => {
+  signUpClicked.value = true;
+  await router.push('/signup');
+}
+const loggedInUser = computed(() => sessUser.value);
+
+onMounted(() => {
+  setUpInjections()
+});
+
+onUnmounted(() =>{
+  if(sessUser.value === '' && !signUpClicked.value){
+
+    router.replace('/login')
+  }
+})
+
 </script>
 
 <template>
   <div class="container">
     <div class="s-item">
+      <div class="content-s-item">
+      <a href="/">
+        <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
+        <p class="logo-titel">Machine Deluxe 3000</p>
+      </a>
+      </div>
       <div class="button-container">
         <Button v-for="item in buttonData" :text="item.text" :link="item.link"></Button>
       </div>
     </div>
-    <div class="m-item"><h1 class="game-name">Machine Deluxe 3000</h1></div>
-    <div class="s-item"></div>
+    <div class="m-item">
+      <h1 class="game-name">Machine Deluxe 3000</h1>
+      <h2 class="subtitle">create your own factory</h2>
+    </div>
+    <div class="s-item">
+      <div class="header">
+        <p v-if="sessUser !== ''">logged in as {{ loggedInUser }}</p>
+
+        <form v-if="sessUser !== ''" @submit.prevent="logout">
+          <button type="submit">Logout</button>
+        </form>
+        <button class="signupbutton" v-if="sessUser === ''" @click="redirectToSignUp">Sign Up</button>
+        <button v-if="sessUser === ''" @click="redirectToLogin">Login</button>
+      </div>
+    </div>
   </div> 
 </template>
 
@@ -34,14 +108,71 @@ import Button from '../components/ui/Button.vue'
   display: flex;
   flex: 1 1 25%;
   position: relative;
-  align-items: flex-end; 
+  align-items: flex-start;
   padding: 2rem;
 }
+.header {
+  margin-top:17px;
+  display:flex;
+  position: relative;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+
+}
+
+
+.header p{
+  margin-right: 10px;
+  font-size: 18px;
+}
+.header button{
+  background-color:#683CE4;
+	text-align: center;
+	border-radius:35px;
+	cursor:pointer;
+	color:#ffffff;
+	font-size:16px;
+	text-decoration:none;
+	margin-right: 12px;
+	width: 110px;
+  height:28px;
+	border:none;
+  transition: background-color 0.4s ease;
+  position: relative;
+
+}
+.header .signupbutton{
+  background-color:#10E5B2;
+}
+
+.header .signupbutton:hover{
+  background-color:#683CE4;
+
+}
+
+.header button:hover{
+  background-color:#4b2ba6;
+}
+.header button:active{
+  position:relative;
+	top:1px;
+}
+
 .container .m-item {
   flex: 1 1 50%; 
   display: flex;
   justify-content: center;
-  /* border: solid 1px green; */
+  flex-direction: column;
+  align-items: center;
+}
+.game-name{
+  position: absolute;
+  top: 17%;
+  font: normal normal bold 70px/84px Overpass;
+  letter-spacing: 0px;
+  font-weight: 400;
+  margin-bottom: 0px;
 }
 .button-container{
   display: flex;
@@ -50,11 +181,38 @@ import Button from '../components/ui/Button.vue'
   left: 45%;
   bottom: 15%; 
   gap: 1rem;
+
 }
-.game-name{
+
+.subtitle{
+  font: normal normal 28px/40px Overpass;
+  margin-bottom: 300px;
+
+}
+
+.logo-titel {
+  font: normal normal bold 0.938rem/1.25rem Overpass;
+  letter-spacing: 0px;
+}
+
+.content-s-item {
+  display: flex;
   position: absolute;
-  top: 20%; 
-  font: normal normal bold 70px/84px Overpass;
-  letter-spacing: 0;
+  bottom: 90%;
+  top: 2.5%;
+  margin-left: 32px;
+}
+
+.content-s-item img {
+  width: 2.5rem;
+  height: min-content;
+}
+
+.content-s-item a{
+  display: flex;
+  gap: 0.625rem;
+  text-decoration: none;
+  align-items: center;
+  color: white;
 }
 </style>

@@ -26,6 +26,7 @@ defineProps({
   padding: 10px 10px 10px 10px;
   margin: auto;
   width: 290px;
+  border: none;
 }
 
 .v-button:hover {
