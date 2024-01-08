@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, type Ref, ref } from 'vue'
-import FactoryCard from '@/components/FactoryCard.vue'
+import FactoryCard from '@/components/ui/FactoryCard.vue'
 import type { IFactory } from '@/types/backendTypes'
 import { getAllFactories } from '@/utils/backendComms/getRequests'
 
@@ -67,7 +67,7 @@ const filteredFactories = computed(() => {
     <div class="s-item">
       <div class="content-s-item">
         <a href="/">
-          <img src="/icons8-fabric-96.png" width="20px" height="auto" />
+          <img src="/icons8-fabric-96.png" alt=""/>
           <p class="logo-titel">Machine Deluxe 3000</p>
         </a>
       </div>
@@ -110,7 +110,9 @@ const filteredFactories = computed(() => {
   flex: 1 1 25%;
   position: relative;
   align-items: flex-end;
-  padding: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 3rem;
+  transform: translateY(50px);
 }
 .container .m-item {
   flex: 1 1 50%;
@@ -118,10 +120,11 @@ const filteredFactories = computed(() => {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  transform: translateY(30px);
 }
 .headline {
   font: normal normal bold 70px/84px Overpass;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   font-weight: 400;
 }
 .content-s-item {

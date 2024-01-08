@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { defineProps, onMounted, ref } from 'vue'
-import type { IFactory } from '@/types/backendTypes'
-import { getFactoryImage } from '@/utils/backendComms/getRequests'
+import {defineProps, inject, onMounted, type Ref, ref} from 'vue'
+import type {IFactory} from '@/types/backendTypes'
+import {getFactoryImage} from '@/utils/backendComms/getRequests'
 import router from '@/router'
-import { backendUrl } from '@/utils/config/config.js'
+import {backendUrl} from '@/utils/config/config'
+import type {IVector3} from "@/types/global";
 
 const props = defineProps({
   factory: {
@@ -11,22 +12,47 @@ const props = defineProps({
     required: true
   }
 })
-
+const factoryEnterPassword = ref('')
+const currentPicture = ref(
+    'https://damassets.autodesk.net/content/dam/autodesk/www/industry/manufacturing/integrated-factory-modeling/what-is-integrated-factory-modeling-thumb-1172x660.jpg'
+)
+const isInputValid = ref(true)
+const setupInjections = () => {
+  const resultID = inject<{
+    factoryID: Ref<number>
+    updateFactoryID: (newID: number) => void
+  }>('factoryID')
+  if (resultID && typeof resultID === 'object') updateFactoryID = resultID.updateFactoryID
+  const resultSize = inject<{
+    factorySize: Ref<IVector3>,
+    updateFactorySize: (newSize: IVector3) => void
+  }>('factorySize')
+  if (resultSize && typeof resultSize === 'object') updateFactorySize = resultSize.updateFactorySize
+}
 const currentlyRotatedCard = ref<HTMLElement | null>(null)
+let updateFactorySize: (newSize: IVector3) => void
+let updateFactoryID: (newID: number) => void
 
 const rotateCard = (clickTarget: EventTarget | null) => {
   if (!clickTarget) return
   const card = clickTarget as HTMLElement
-  console.log(props)
+  const newSize = {
+    x: props.factory?.width,
+    y: props.factory?.depth,
+    z: props.factory?.height
+  } as IVector3
+  updateFactoryID(props.factory?.id)
+  updateFactorySize(newSize)
   if (!props.factory.hasPassword) {
-    console.log("Factory hat kein Password.")
     router.push('/factory')
   } else {
     if (card) {
       const front = card.querySelector('.card-front') as HTMLElement
       const back = card.querySelector('.card-back') as HTMLElement
+      (back.children[0].children[0].children[0] as HTMLInputElement).value = ''
       // Karte drehen
       if (currentlyRotatedCard.value === clickTarget) {
+        isInputValid.value = true
         back.style.display = 'none' // Rückseite ausblenden
         front.style.display = 'flex' // Vorderseite anzeigen
         currentlyRotatedCard.value = null // Zustand aktualisieren
@@ -36,9 +62,9 @@ const rotateCard = (clickTarget: EventTarget | null) => {
         currentlyRotatedCard.value = clickTarget as HTMLElement // Zustand aktualisieren
       } else {
         ;(currentlyRotatedCard.value.querySelector('.card-back') as HTMLElement).style.display =
-          'none' // Rückseite ausblenden
+            'none' // Rückseite ausblenden
         ;(currentlyRotatedCard.value.querySelector('.card-front') as HTMLElement).style.display =
-          'flex'
+            'flex'
         back.style.display = 'flex' // Rückseite anzeigen
         front.style.display = 'none' // Vorderseite ausblenden
         currentlyRotatedCard.value = clickTarget as HTMLElement // Zustand aktualisieren
@@ -48,16 +74,13 @@ const rotateCard = (clickTarget: EventTarget | null) => {
 }
 
 onMounted(() => {
+  setupInjections()
   getFactoryImage(props.factory?.id).then((dataURL) => {
     currentPicture.value = dataURL.toString()
   })
 })
-const currentPicture = ref(
-  'https://damassets.autodesk.net/content/dam/autodesk/www/industry/manufacturing/integrated-factory-modeling/what-is-integrated-factory-modeling-thumb-1172x660.jpg'
-)
 
 // Check password
-const factoryEnterPassword = ref('')
 async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   try {
     const response = await fetch(backendUrl + '/api/factory/checkPassword', {
@@ -65,16 +88,15 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ id: factoryId, password: factoryEnterPassword })
+      body: JSON.stringify({id: factoryId, password: factoryEnterPassword})
     })
 
     if (response.ok) {
       const data = await response.json()
-      if (data === true) {
-        router.push('/factory')
-        console.log('Passwort ist korrekt')
+      if (data) {
+        await router.push('/factory')
       } else {
-        console.log('Passwort ist falsch')
+        isInputValid.value = false
       }
     }
   } catch (error) {
@@ -86,7 +108,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
 <template>
   <div class="factorycard" @click="(e) => rotateCard(e.currentTarget)">
     <div class="card-front">
-      <img class="factory-image" :src="currentPicture" alt="Factoryimage" />
+      <img class="factory-image" :src="currentPicture" alt=""/>
       <div class="factorycard-content">
         <div style="width: max-content">
           <p>{{ factory.name }}</p>
@@ -95,25 +117,26 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
           <p>Name Author</p>
         </div>
         <button class="dustbin-btn" @click="(e) => e.stopPropagation()">
-          <img class="dustbin" src="../assets/icons8-mülleimer-48.png" alt="Papierkorb" />
+          <img class="dustbin" src="../../assets/icons8-mülleimer-48.png" alt="Papierkorb"/>
         </button>
       </div>
     </div>
     <div class="card-back" style="display: none">
       <form
-        class="password-form"
-        @submit.prevent="submitPassword(props.factory?.id, factoryEnterPassword)"
+          class="password-form"
+          @submit.prevent="submitPassword(props.factory?.id, factoryEnterPassword)"
       >
-        <div class="input-wrapper">
+        <div class="input-wrapper" :class="{'invalid': !isInputValid}">
           <input
-            v-model="factoryEnterPassword"
-            type="password"
-            placeholder="Passwort eingeben"
-            class="password-input"
-            @click="(e) => e.stopPropagation()"
+              v-model="factoryEnterPassword"
+              type="password"
+              placeholder="Passwort eingeben"
+              class="password-input"
+              @click="(e) => e.stopPropagation()"
+              @input="isInputValid = true"
           />
-          <button type="submit" class="arrow-button">
-            <img src="/icons8-pfeil-rechts-48.png" alt="Pfeil" />
+          <button type="submit" class="arrow-button" @click.stop>
+            <img src="/icons8-pfeil-rechts-48.png" alt="Pfeil"/>
           </button>
         </div>
       </form>
@@ -130,9 +153,11 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   transition: transform 0.5s;
   border: 1px solid transparent;
 }
+
 .factorycard:hover {
   border: 1px solid #683ce4;
 }
+
 .card-front {
   position: absolute;
   top: 0;
@@ -141,6 +166,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   height: 100%;
   backface-visibility: hidden;
 }
+
 .card-back {
   align-items: center;
   height: 100%;
@@ -148,6 +174,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   padding: 0 10px 0 10px;
   border-radius: 30px;
 }
+
 .input-wrapper {
   display: flex;
   border: 1.5px solid #683ce4;
@@ -156,6 +183,24 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   align-items: center;
   gap: 5px;
 }
+
+.input-wrapper.invalid {
+  animation: wiggle 0.2s ease;
+  border-color: red;
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
 .password-input {
   /* display: block;
   box-sizing: border-box; */
@@ -164,15 +209,18 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   width: 100%;
   border: none;
 }
+
 .password-input:focus {
   outline: none;
 }
+
 .password-form {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
 }
+
 .factory-image {
   /* position: absolute; */
   width: 100%;
@@ -181,6 +229,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   object-position: center;
   border-radius: 30px;
 }
+
 .factorycard-content {
   display: flex;
   position: absolute;
@@ -192,15 +241,19 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   width: 100%;
   background-color: #342844;
 }
+
 .factorycard-content p {
   margin: 0;
 }
+
 .factorycard-content p:not(:first-child) {
   font-size: 12px;
 }
+
 .factorycard-content > :first-child {
   text-transform: uppercase;
 }
+
 .dustbin-btn {
   background-color: transparent;
   border: none;
@@ -210,15 +263,18 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   padding: 6px;
   border-radius: 50%; /* damit Button rund ist */
 }
+
 .dustbin-btn:hover {
   background-color: red;
   color: white;
 }
+
 .dustbin {
   height: 22.5px;
   width: auto;
   object-fit: cover;
 }
+
 .arrow-button {
   border: none;
   background: transparent;

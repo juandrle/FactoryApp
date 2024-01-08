@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, inject, onMounted, ref} from 'vue'
 import type {Ref} from 'vue'
-import Button from '../components/temp/Button.vue'
+import Button from '../components/ui/Button.vue'
 import type {IVector3} from "@/types/global"
 import router from "@/router";
 import {factoryCreateRequest} from "@/utils/backendComms/postRequests"
@@ -78,11 +78,12 @@ onMounted(() => {
 
 <template>
   <div class="container">
-
     <div class="s-item">
       <div class="content-s-item">
-        <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
-        <p class="logo-titel">Machine Deluxe 3000</p>
+        <a href="/">
+          <img src="/icons8-fabric-96.png" alt=""/>
+          <p class="logo-titel">Machine Deluxe 3000</p>
+        </a>
       </div>
     </div>
     <div class="loading" v-if="isLoading">
@@ -96,7 +97,7 @@ onMounted(() => {
           <div class="form">
             <div class="factory-name">
               <input v-model="factoryName" placeholder="Name"/>
-              <input v-model="factoryPassword" placeholder="Passwort"/>
+              <input v-model="factoryPassword" placeholder="Passwort" type="password"/>
             </div>
             <div class="size-radio-container">
               <div class="radio-option" v-for="size in sizes" :key="size.label">
@@ -106,7 +107,7 @@ onMounted(() => {
             </div>
           </div>
           <div class="button-create">
-            <button class="v-button v-form-button" type="submit">Fabrik erstellen</button>
+            <button class="v-button v-form-button" type="submit" link="">Fabrik erstellen</button>
           </div>
         </form>
       </div>
@@ -148,6 +149,24 @@ onMounted(() => {
   display: flex;
   justify-content: center;
 }
+.content-s-item {
+  display: flex;
+  position: absolute;
+  bottom: 90%;
+  top: 2.5%;
+}
+
+.content-s-item img {
+  width: 2.5rem;
+  height: min-content;
+}
+.content-s-item a {
+  display: flex;
+  gap: 0.625rem;
+  text-decoration: none;
+  align-items: center;
+  color: white;
+}
 
 .game-name {
   position: absolute;
@@ -184,7 +203,7 @@ onMounted(() => {
 
 .logo-titel {
   font: normal normal bold 0.938rem/1.25rem Overpass;
-  letter-spacing: 0px;
+  letter-spacing: 0;
 }
 
 .content-s-item {

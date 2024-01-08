@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import Button from '../components/temp/Button.vue'
+import Button from '../components/ui/Button.vue'
   const buttonData = ref([
     {text: 'Fabrik erstellen', link: "/create"},
     {text: 'Fabrik beitreten', link:"/enter"}, 
