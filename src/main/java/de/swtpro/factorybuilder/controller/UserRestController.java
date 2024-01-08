@@ -37,19 +37,16 @@ import jakarta.validation.Valid;
 @RestController
 
 public class UserRestController {
-    Logger logger = LoggerFactory.getLogger(UserRestController.class); 
-    @Autowired
-    private UserServiceImpl userServiceImpl;
-    @Autowired
-    private SessionManager sessionManager;
+
     
-    @CrossOrigin
-    @GetMapping("/api/users/current")
-    public ResponseEntity<String> getCurrentUser() {
-        String username = sessionManager.getCurrentUsername();
-        logger.info(username);
-        return ResponseEntity.ok("na hööör mal" + username);
+    Logger logger = LoggerFactory.getLogger(UserRestController.class); 
+    
+    private UserServiceImpl userServiceImpl;
+    
+    public UserRestController(UserServiceImpl userServiceImpl){
+        this.userServiceImpl = userServiceImpl;
     }
+    
     
     
     @PostMapping("/api/users/signup")

@@ -15,21 +15,3 @@ export const getAllFactories = async () => {
   return fetch(backendUrl + '/api/factory/getAll').then((res) => res.json())
 }
 
-export const fetchCurrentUser = async () => {
-  try {
-      const response = await fetch(backendUrl + '/api/user/current', {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json',
-              
-          },
-      });
-
-      return response;
-  } catch (error) {
-      
-      console.error('Error during fetchCurrentUser:', error);
-      return error;
-  }
-  
-}

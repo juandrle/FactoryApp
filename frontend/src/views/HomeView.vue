@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref,inject, type Ref, onMounted } from 'vue';
+import { ref,inject, type Ref, onMounted, onUnmounted, computed } from 'vue';
 import { isUserAuthenticated } from '@/utils/auth';
 import { logoutUser} from "@/utils/backendComms/postRequests"
 import router from "@/router"
@@ -14,10 +14,16 @@ import { isAwaitKeyword } from 'typescript';
     ])
 
 
-const {updateSessUser} = inject<{
+const {sessUser, updateSessUser} = inject<{
   sessUser: Ref<string>,
   updateSessUser: (newUser: string) => void
 }>('sessUser')
+
+
+
+onMounted(() => {
+  let sessUser = inject('sessUser');
+});
 
 const logout = async() => {
   switch(await logoutUser()){
@@ -28,43 +34,30 @@ const logout = async() => {
   }
 }
 
-const username = ref('');
-
-const loadCurrentUser = async () => {
-    try {
-        const response = await fetchCurrentUser();
-        if (response.ok) {
-            username.value = await response.text();
-        } else {
-            // Handle non-successful responses
-            console.error('Failed to fetch current user');
-        }
-    } catch (error) {
-        // Handle other errors, such as network issues
-        console.error('Error during fetchCurrentUser:', error);
-    }
-};
-
-
 const redirectToLogin = async() => {
   
   await router.push('/login');
 }
+const loggedInUser = computed(() => sessUser.value);
 
-onMounted(() => {
-  loadCurrentUser()
+
+onUnmounted(() =>{
+  if(sessUser.value === ''){
+
+    router.replace('/login')
+  }
 })
 
 </script>
 
 <template>
   <div class="container">
-    <p>Logged in as {{ username }}</p>
-    <form @submit.prevent="logout">
+    <p v-if="sessUser.value !== ''">Logged in as {{ loggedInUser }}</p>
+    <form v-if="sessUser.value !== ''" @submit.prevent="logout">
       <button type="submit">Logout</button>
     </form>
     
-    <button @click="redirectToLogin">Login</button>
+    <button v-if="sessUser.value === ''" @click="redirectToLogin">Login</button>
     
     <div class="s-item">
       <div class="button-container">

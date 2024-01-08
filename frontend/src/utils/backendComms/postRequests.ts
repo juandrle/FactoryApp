@@ -117,6 +117,7 @@ export const loginUser = async (loginForm : ILoginForm) => {
             return "communcation error"
         }
         const res = await response.text()
+        
         console.log(res)
         return res
         
