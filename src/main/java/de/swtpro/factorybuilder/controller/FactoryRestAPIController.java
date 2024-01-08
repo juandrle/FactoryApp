@@ -55,10 +55,6 @@ public class FactoryRestAPIController {
         factoryService.deleteFactoryById(idToDelete);
         return ResponseEntity.ok(true);
     }
-    @PostMapping("/getAll")
-    public ResponseEntity<List<Factory>> getAll() {
-        return ResponseEntity.ok(factoryService.getAllFactories());
-    }
 
     @CrossOrigin
     @GetMapping("/getAll")

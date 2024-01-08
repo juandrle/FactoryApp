@@ -57,6 +57,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authz -> authz.anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(withDefaults())
+                .cors(withDefaults())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
@@ -68,12 +69,13 @@ public class SecurityConfiguration {
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(toH2Console()).permitAll()
-                        .requestMatchers(mvc.pattern(HttpMethod.GET, "/assets/**")).permitAll()
+                        .requestMatchers(mvc.pattern(HttpMethod.GET, "/models/**")).permitAll()
                         .anyRequest()
                         .authenticated())
                 .formLogin(withDefaults()).formLogin(in -> in.defaultSuccessUrl("/h2-console", true))
                 .csrf(csrf -> csrf.ignoringRequestMatchers(toH2Console()))
                 .headers(hdrs -> hdrs.frameOptions().sameOrigin())
+                .cors(withDefaults())
                 .logout(withDefaults()).logout(out -> out.logoutSuccessUrl("/login"));
 
         return http.build();

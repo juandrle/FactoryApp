@@ -68,7 +68,7 @@ const filteredFactories = computed(() => {
       <div class="content-s-item">
         <a href="/">
           <img src="/icons8-fabric-96.png" alt=""/>
-          <p class="logo-titel">Machine Deluxe 3000</p>
+          <p class="logo-title">Machine Deluxe 3000</p>
         </a>
       </div>
     </div>

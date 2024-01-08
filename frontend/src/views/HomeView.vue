@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {computed, inject, onMounted, onUnmounted, type Ref, ref} from 'vue';
 import Button from '../components/ui/Button.vue'
+import {logoutUser} from "@/utils/backendComms/postRequests";
+import router from "@/router";
   const buttonData = ref([
     {text: 'Fabrik erstellen', link: "/create"},
     {text: 'Fabrik beitreten', link:"/enter"},
@@ -68,8 +70,8 @@ onUnmounted(() =>{
     <div class="s-item">
       <div class="content-s-item">
       <a href="/">
-        <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
-        <p class="logo-titel">Machine Deluxe 3000</p>
+        <img src="/icons8-fabric-96.png" width="20px" height="auto" alt=""/>
+        <p class="logo-title">Machine Deluxe 3000</p>
       </a>
       </div>
       <div class="button-container">
@@ -85,10 +87,10 @@ onUnmounted(() =>{
         <p v-if="sessUser !== ''">logged in as {{ loggedInUser }}</p>
 
         <form v-if="sessUser !== ''" @submit.prevent="logout">
-          <button type="submit">Logout</button>
+          <button type="submit" link="">Logout</button>
         </form>
-        <button class="signupbutton" v-if="sessUser === ''" @click="redirectToSignUp">Sign Up</button>
-        <button v-if="sessUser === ''" @click="redirectToLogin">Login</button>
+        <button class="signupbutton" v-if="sessUser === ''" @click="redirectToSignUp" link="">Sign Up</button>
+        <button v-if="sessUser === ''" @click="redirectToLogin" link="">Login</button>
       </div>
     </div>
   </div> 
@@ -170,9 +172,9 @@ onUnmounted(() =>{
   position: absolute;
   top: 17%;
   font: normal normal bold 70px/84px Overpass;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   font-weight: 400;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 .button-container{
   display: flex;
@@ -190,9 +192,9 @@ onUnmounted(() =>{
 
 }
 
-.logo-titel {
+.logo-title {
   font: normal normal bold 0.938rem/1.25rem Overpass;
-  letter-spacing: 0px;
+  letter-spacing: 0;
 }
 
 .content-s-item {

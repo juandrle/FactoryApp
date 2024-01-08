@@ -38,19 +38,19 @@ public class ResourceLoader implements CommandLineRunner {
             for (ModelType type : types) {
                 switch (type) {
                     case MACHINE:
-                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/machines/", ModelType.MACHINE, "machine.png"));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/machines", ModelType.MACHINE, "machine.png"));
                         break;
                     case OTHER:
-                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/other/", ModelType.OTHER, "other.png"));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/other", ModelType.OTHER, "other.png"));
                         break;
                     case ITEM_PRODUCT:
-                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/products/", ModelType.ITEM_PRODUCT, "other.png"));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/products", ModelType.ITEM_PRODUCT, "other.png"));
                         break;
                     case ITEM_RESOURCE:
-                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/resources/", ModelType.ITEM_RESOURCE, "other.png"));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/resources", ModelType.ITEM_RESOURCE, "other.png"));
                         break;
                     case ITEM_PROCESSED:
-                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/processed/", ModelType.ITEM_PROCESSED, "other.png"));
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/processed", ModelType.ITEM_PROCESSED, "other.png"));
                         break;
                 }
             }
@@ -70,7 +70,7 @@ public class ResourceLoader implements CommandLineRunner {
                 Path relativePath = path.relativize(e);
                 String filePath = "/models/mock" + type + "/" + relativePath.toString().replace(File.separator, "/");
                 String[] suffixPaths = type.split("/");
-                if (!filePath.endsWith(suffixPaths[suffixPaths.length - 1] + "//")) {
+                if (!filePath.endsWith(suffixPaths[suffixPaths.length - 1] + "/")) {
                     Model m = new Model();
                     m.setModelFile(filePath);
                     m.setIcon("/icons/models/" + fileName);

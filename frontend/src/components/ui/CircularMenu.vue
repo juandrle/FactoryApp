@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, inject, Ref} from 'vue';
+import {onMounted, inject, type Ref} from 'vue';
 const emit = defineEmits<{
   changeEntity: [string];
 }>()

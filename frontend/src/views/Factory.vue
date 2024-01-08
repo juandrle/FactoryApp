@@ -534,11 +534,12 @@ const animate = (timestamp: any) => {
   ccm.update(deltaTime)
   renderer.render(scene, camera)
 }
+init()
 </script>
 
 <template>
   <div class="target" ref="target">
-    <div id="dynamicDiv" style="background-color: #2c3e50; position: absolute">
+    <div id="dynamicDiv" style="position: absolute">
       <CircularMenu
           :toggleMenuVisibility="onToggleMenuVisibility"
           @changeEntity="onChangeEntityClicked"

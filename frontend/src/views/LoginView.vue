@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import type { ILoginForm } from '@/types/backendEntity';
+import type { ILoginForm } from '@/types/backendTypes';
 import {loginUser} from "@/utils/backendComms/postRequests"
 import { VueElement, ref, type Ref, inject} from 'vue';
 import router from "@/router"
-// import Button from '../components/Button.vue'
 
 const {updateSessUser} = inject<{
   sessUser: Ref<string>,
@@ -59,7 +58,7 @@ const login = async () => {
       <div class="content-s-item">
       <a href="/">
         <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
-        <p class="logo-titel">Machine Deluxe 3000</p>
+        <p class="logo-title">Machine Deluxe 3000</p>
       </a>
       </div>
       <div class="container2">
@@ -251,7 +250,7 @@ form {
   margin-left: 100px;
 }
 
-.logo-titel {
+.logo-title {
   font: normal normal bold 0.938rem/1.25rem Overpass;
   letter-spacing: 0px;
 }

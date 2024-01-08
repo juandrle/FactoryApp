@@ -82,7 +82,7 @@ onMounted(() => {
       <div class="content-s-item">
         <a href="/">
           <img src="/icons8-fabric-96.png" alt=""/>
-          <p class="logo-titel">Machine Deluxe 3000</p>
+          <p class="logo-title">Machine Deluxe 3000</p>
         </a>
       </div>
     </div>
@@ -201,7 +201,7 @@ onMounted(() => {
   top: 75%;
 }
 
-.logo-titel {
+.logo-title {
   font: normal normal bold 0.938rem/1.25rem Overpass;
   letter-spacing: 0;
 }
