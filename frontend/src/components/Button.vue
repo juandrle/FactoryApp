@@ -26,9 +26,11 @@ defineProps({
 	margin: auto;
 	width: 290px; 
 	border:none;
+	transition: background-color 0.4s ease;
 }
 .v-button:hover {
 	background-color:#4b2ba6;
+	
 }
 .v-button:active {
 	position:relative;

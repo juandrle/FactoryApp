@@ -63,10 +63,10 @@ const login = async () => {
             <div class="factory-name">
               <input v-model="loginForm.username" id="username" name="username"
                placeholder="Type in name" required/>
-               <p v-if="userNotExisting">User doesn't exist</p>
+               <p v-if="userNotExisting" class="input-feedback">user doesn't exist</p>
               <input type="password" v-model="loginForm.password" id="password" name="password"
                      placeholder="Type in password" required/>
-                <p v-if="passwordFalse">Wrong Password</p>
+                <p v-if="passwordFalse" class="input-feedback">wrong password</p>
             </div>
             <div class="b-container">
               <button type="submit">Login</button>
@@ -129,6 +129,7 @@ const login = async () => {
 .subtitle{
   font: normal normal 28px/40px Overpass;
   margin-bottom: 100px;
+  
 }
 
 .form-container {
@@ -179,11 +180,13 @@ const login = async () => {
   font-size: 16px; /* Adjust the font size as needed */
    /* Add bold styling */
   text-decoration: none;
+  transition: color 0.4s ease;
 }
 
 .b-container2 a:hover{
   color: #683CE4;
   cursor: pointer;
+  
 }
 
 button {
@@ -199,6 +202,7 @@ button {
   border: none;
   width: 150px;
   height: 35px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -218,6 +222,15 @@ input {
 
 input:focus {
   outline: none;
+}
+.input-invalid {
+  border: 2px solid red;
+  background-color: #483d5d;
+}
+.input-feedback {
+  color: red;
+  margin: -5px;
+  
 }
 
 form {

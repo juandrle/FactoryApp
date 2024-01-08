@@ -64,12 +64,12 @@ const signUp = async () => {
             <h2>Sign Up</h2>
             <div class="factory-name">
               <input v-model="userForm.username" id="username" name="username" placeholder="Type in name" required/>
-              <p v-if="usernameTaken">Username already taken</p>
+              <p v-if="usernameTaken" class="input-feedback">username already taken</p>
               <input type="password" v-model="userForm.password" id="password" name="password"
                      placeholder="Type in password" required/>
               <input type="password" v-model="userForm.passwordCheck" id="checkPassword" name="passwordCheck"
                      placeholder="Repeat password" required/>
-              <p v-if="passwordNotEqual">Passwords don't match</p>
+              <p id="passwordNotEqual" v-if="passwordNotEqual" class="input-feedback">passwords don't match</p>
 
             </div>
             <div class="b-container">
@@ -183,6 +183,7 @@ const signUp = async () => {
   font-size: 16px; /* Adjust the font size as needed */
   /* Add bold styling */
   text-decoration: none;
+  transition: color 0.4s ease;
 }
 
 .b-container2 a:hover {
@@ -203,6 +204,7 @@ button {
   border: none;
   width: 150px;
   height: 35px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -223,6 +225,12 @@ input {
 .input-invalid {
   border: 2px solid red;
   background-color: #483d5d;
+}
+
+.input-feedback {
+  color: red;
+  margin: -5px;
+  
 }
 
 input:focus {
