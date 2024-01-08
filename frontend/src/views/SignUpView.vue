@@ -58,6 +58,12 @@ const signUp = async () => {
 <template>
   <div>
     <div class="container-left">
+      <div class="content-s-item">
+      <a href="/">
+        <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
+        <p class="logo-titel">Machine Deluxe 3000</p>
+      </a>
+      </div>
       <div class="container2">
         <form @submit.prevent="signUp">
           <div class="form-container">
@@ -247,5 +253,31 @@ form {
   border-radius: 25px;
   width: 400px;
   margin-left: 100px;
+}
+
+.logo-titel {
+  font: normal normal bold 0.938rem/1.25rem Overpass;
+  letter-spacing: 0px;
+}
+
+.content-s-item {
+  display: flex;
+  position: absolute;
+  bottom: 90%;
+  top: 2.5%;
+  margin-left: 32px;
+}
+
+.content-s-item img {
+  width: 2.5rem;
+  height: min-content;
+}
+
+.content-s-item a{
+  display: flex;
+  gap: 0.625rem;
+  text-decoration: none;
+  align-items: center;
+  color: white;
 }
 </style>
