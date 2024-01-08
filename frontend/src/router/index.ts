@@ -34,13 +34,7 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
-      // beforeEnter:(to, from, next) => {
-      //   if(isUserAuthenticated()){
-      //     next('/');
-      //   }else {
-      //     next();
-      //   }
-      // }
+      
     },
     {
       path: '/signup',
@@ -48,12 +42,6 @@ const router = createRouter({
       component: () => import('@/views/SignUpView.vue'),
       beforeEnter: (to, from, next) => {
         next();
-        // if(isUserAuthenticated()){
-          
-          // next('/');
-        // }else {
-        //   import('@/views/SignUpView.vue').then(() => next());
-        // }
         
       },
     }

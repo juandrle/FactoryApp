@@ -265,7 +265,7 @@ form {
   position: absolute;
   bottom: 90%;
   top: 2.5%;
-  margin-left: 32px;
+  margin-left: 64px;
 }
 
 .content-s-item img {
