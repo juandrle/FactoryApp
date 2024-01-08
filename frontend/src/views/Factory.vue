@@ -10,7 +10,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import EntityBar from '@/components/temp/EntityBar.vue'
 import Button from '@/components/temp/Button.vue'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
-import {moveRequest, placeRequest, rotationRequest} from '@/utils/backendComms/postRequests'
+import {factoryImageUpdate, moveRequest, placeRequest, rotationRequest} from '@/utils/backendComms/postRequests'
 import {entityDeleteRequest} from '@/utils/backendComms/deleteRequest';
 import {getAllEntities, getAllEntitiesInFactory} from '@/utils/backendComms/getRequests'
 import {backendUrl} from '@/utils/config/config'
