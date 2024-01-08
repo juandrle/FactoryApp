@@ -73,7 +73,12 @@ onUnmounted(() =>{
   <div class="container">
     
     <div class="s-item">
-      
+      <div class="content-s-item">
+      <a href="/">
+        <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
+        <p class="logo-titel">Machine Deluxe 3000</p>
+      </a>
+      </div>
       <div class="button-container">
         <Button v-for="item in buttonData" :text="item.text" :link="item.link"></Button>
       </div>
@@ -114,7 +119,7 @@ onUnmounted(() =>{
   padding: 2rem;
 }
 .header {
-  margin-top:30px;
+  margin-top:17px;
   display:flex;
   position: relative;
   align-items: center;
@@ -190,5 +195,31 @@ onUnmounted(() =>{
   font: normal normal 28px/40px Overpass;
   margin-bottom: 300px;
   
+}
+
+.logo-titel {
+  font: normal normal bold 0.938rem/1.25rem Overpass;
+  letter-spacing: 0px;
+}
+
+.content-s-item {
+  display: flex;
+  position: absolute;
+  bottom: 90%;
+  top: 2.5%;
+  margin-left: 32px;
+}
+
+.content-s-item img {
+  width: 2.5rem;
+  height: min-content;
+}
+
+.content-s-item a{
+  display: flex;
+  gap: 0.625rem;
+  text-decoration: none;
+  align-items: center;
+  color: white;
 }
 </style>
