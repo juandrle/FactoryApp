@@ -108,9 +108,12 @@ function createFactory() {
 
 <style>
 .form {
+  display: block;
   background-color: #342844;
   padding: 1.875rem 1.125rem;
   border-radius: 25px;
+  align-items: center;
+  justify-content: center;
 }
 .v-form-button {
   border-color: transparent;
@@ -168,13 +171,14 @@ function createFactory() {
 .radio-option {
   display: flex;
   align-items: center;
-  width: 50%;
-  padding: 2.5% 15%;
-  font-size: large;
-  accent-color: #683ce4;
+  flex-basis: 46%;
   gap: 0.5rem;
+  padding: 0.5rem;
+  accent-color: #683ce4;
 }
-
+.radio-option label {
+  margin-left: 0.5rem;
+}
 /* .radio-option:checked::before {
   color: green;
 } */
@@ -182,7 +186,11 @@ function createFactory() {
 .size-radio-container {
   flex-wrap: wrap;
   display: flex;
+  flex-direction: row;
   align-items: center;
+  max-width: 700px;
+  justify-content: center;
+  transform: translateX(12%);
 }
 
 .button-create {
@@ -215,7 +223,7 @@ function createFactory() {
   position: relative;
   min-width: 100%;
   top: 4rem;
-  padding: 11.5rem 6.25rem;
+  padding: 1.5rem 2.25rem;
 }
 
 .factory-name {
