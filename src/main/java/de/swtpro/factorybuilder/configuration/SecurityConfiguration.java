@@ -69,7 +69,7 @@ public class SecurityConfiguration {
         MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(toH2Console()).permitAll()
-                        .requestMatchers(mvc.pattern(HttpMethod.GET, "/models/**")).permitAll()
+                        .requestMatchers(mvc.pattern(HttpMethod.GET, "/models/**"), mvc.pattern(HttpMethod.GET, "/icons/**")).permitAll()
                         .anyRequest()
                         .authenticated())
                 .formLogin(withDefaults()).formLogin(in -> in.defaultSuccessUrl("/h2-console", true))
