@@ -1,6 +1,6 @@
 import { CameraMode } from '@/enum/CameraMode'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { CustomFlyControls } from './CustomFlyControlls.js'
+import { CustomFlyControls } from './CustomFlyControls.js'
 import type { ICameraInfo } from '@/types/global.js'
 import { ExtractCameraInfo, SetCameraInfo } from '@/utils/threeJS/camera.js'
 

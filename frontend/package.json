@@ -21,6 +21,7 @@
     "@rushstack/eslint-patch": "^1.3.3",
     "@tsconfig/node18": "^18.2.2",
     "@types/node": "^18.19.2",
+    "@types/stompjs": "^2.3.9",
     "@types/three": "^0.159.0",
     "@types/vue": "^2.0.0",
     "@vitejs/plugin-vue": "^4.4.0",
