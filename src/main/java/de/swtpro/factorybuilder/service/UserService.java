@@ -3,6 +3,8 @@ package de.swtpro.factorybuilder.service;
 import java.util.List;
 import java.util.Optional;
 
+import de.swtpro.factorybuilder.entity.Factory;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +53,10 @@ public class UserService {
     public boolean checkPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
-
+    @Transactional
+    public void addFactoryToUser(Factory factory, User user) {
+        user.addFactoryToCreatedFactories(factory);
+    }
     public List<User> getAll() {
         return userRepo.findAll();
     }

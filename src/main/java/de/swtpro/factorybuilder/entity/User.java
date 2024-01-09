@@ -76,8 +76,8 @@ public class User implements Serializable {
         return createdFactories;
     }
 
-    public void setCreatedFactories(List<Factory> createdFactories) {
-        this.createdFactories = createdFactories;
+    public void addFactoryToCreatedFactories(Factory factory) {
+        this.createdFactories.add(factory);
     }
 
     public String getRole() {

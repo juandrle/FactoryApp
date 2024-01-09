@@ -8,6 +8,7 @@ import de.swtpro.factorybuilder.DTO.entity.PlacedModelDTO;
 import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.PlacedModel;
+import de.swtpro.factorybuilder.entity.User;
 import de.swtpro.factorybuilder.service.*;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -49,8 +50,10 @@ public class FactoryRestAPIController {
             f.setDepth(factoryDTO.depth());
             f.setHeight(factoryDTO.height());
             f.setPassword(factoryDTO.password());
-            f.setAuthor(userService.getUserByName(factoryDTO.author()).orElseThrow());
+            User u = userService.getUserByName(factoryDTO.author()).orElseThrow();
+            f.setAuthor(u);
             f = factoryService.saveFactory(f);
+            u.addFactoryToCreatedFactories(f);
             fieldService.initializeField(f);
             return ResponseEntity.ok(f.getFactoryID());
         } catch (Exception e) {

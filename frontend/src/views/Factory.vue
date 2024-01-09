@@ -538,9 +538,6 @@ init()
           @changeEntity="onChangeEntityClicked"
       ></CircularMenu>
     </div>
-    <div class="button-bar">
-      <button @click="onLoadFactoryButton" link="">Test Load Factory</button>
-    </div>
     <div class="debug-bar"></div>
     <EntityBar
         id="ignore"
@@ -552,24 +549,6 @@ init()
 </template>
 
 <style>
-.button-bar {
-  display: flex;
-  position: absolute;
-  bottom: 60px;
-  left: 60px;
-  gap: 20px;
-}
-
-.button-bar button {
-  font-size: 20px;
-  cursor: pointer;
-  padding: 8px 12px;
-  background-color: #282b30;
-  border: 2px #7289da solid;
-  font-weight: 600;
-  border-radius: 10px;
-  color: #7289da;
-}
 
 .debug-bar {
   position: absolute;

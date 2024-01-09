@@ -100,7 +100,7 @@ public class UserRestController {
     public ResponseEntity<List<UserNameDTO>> getAll() {
         List<User> users = userService.getAll();
         List<UserNameDTO> userNameDTOs = new ArrayList<>();
-        for (User u: users) userNameDTOs.add(new UserNameDTO(u.getUsername()));
+        for (User u: users) if (!u.getCreatedFactories().isEmpty())userNameDTOs.add(new UserNameDTO(u.getUsername()));
         return ResponseEntity.ok(userNameDTOs);
     }
 
