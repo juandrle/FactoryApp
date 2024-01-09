@@ -3,6 +3,7 @@ import { computed, onMounted, type Ref, ref } from 'vue'
 import FactoryCard from '@/components/ui/FactoryCard.vue'
 import type { IFactory } from '@/types/backendTypes'
 import { getAllFactories } from '@/utils/backendComms/getRequests'
+import router from "@/router";
 
 const sizes = ref([
   { label: 'All', value: '' },
