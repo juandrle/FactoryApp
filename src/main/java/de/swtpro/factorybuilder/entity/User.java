@@ -28,9 +28,8 @@ public class User implements Serializable {
     // @Column
     // private Long lastFactoryId;
 
-    @ElementCollection
-    @Column(name = "factory_id")
-    private List<Long> usedFactories;
+    @OneToMany
+    private List<Factory> createdFactories;
 
 
     public String getUsername() {
@@ -73,12 +72,12 @@ public class User implements Serializable {
     //     this.lastFactoryId = lastFactoryId;
     // }
 
-    public List<Long> getUsedFactories() {
-        return usedFactories;
+    public List<Factory> getCreatedFactories() {
+        return createdFactories;
     }
 
-    public void setUsedFactories(List<Long> usedFactories) {
-        this.usedFactories = usedFactories;
+    public void setCreatedFactories(List<Factory> createdFactories) {
+        this.createdFactories = createdFactories;
     }
 
     public String getRole() {

@@ -1,25 +1,22 @@
 <script setup lang="ts">
-import { computed, onMounted, type Ref, ref } from 'vue'
+import {computed, onMounted, type Ref, ref} from 'vue'
 import FactoryCard from '@/components/ui/FactoryCard.vue'
-import type { IFactory } from '@/types/backendTypes'
-import { getAllFactories } from '@/utils/backendComms/getRequests'
+import type {IFactory} from '@/types/backendTypes'
+import {getAllFactories, getAllUsers} from '@/utils/backendComms/getRequests'
 import router from "@/router";
+import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
 
 const sizes = ref([
-  { label: 'All', value: '' },
-  { label: '30x50x8', value: '30x50x8' },
-  { label: '60x100x12', value: '60x100x12' },
-  { label: '90x150x16', value: '90x150x16' },
-  { label: '120x200x20', value: '120x200x20' }
+  {label: 'All', value: ''},
+  {label: '30x50x8', value: '30x50x8'},
+  {label: '60x100x12', value: '60x100x12'},
+  {label: '90x150x16', value: '90x150x16'},
+  {label: '120x200x20', value: '120x200x20'}
 ])
 const currSize = ref('')
 
 const owner = ref([
-  { label: 'All', value: '' },
-  { label: 'Vivien Esel', value: 'Vivien Esel' },
-  { label: 'Esel Esel', value: 'Esel Esel' },
-  { label: 'Vincent Flamingo', value: 'Vincent Flamingo' },
-  { label: 'David Flamingo', value: 'David Flamingo' }
+  {label: 'All', value: ''}
 ])
 const currOwner = ref('')
 
@@ -27,7 +24,12 @@ const currOwner = ref('')
 const existing_factories: Ref<IFactory[]> = ref([])
 
 onMounted(() => {
-  getAllFactories().then((json: any) => {
+  getAllUsers().then((json: { username: string }[]) => {
+    json.forEach((user: { username: string }) => {
+      owner.value.push({label: user.username, value: user.username})
+    })
+  })
+  getAllFactories().then((json: IFactory[]) => {
     existing_factories.value = json
     console.log(json)
   })
@@ -37,29 +39,14 @@ onMounted(() => {
 const searchTerm = ref('')
 
 const filteredFactories = computed(() => {
-  let matchesSize, matchesOwner, matchesSearchTerm
   return existing_factories.value.filter((factory) => {
-    // console.log(currSize.value, currOwner.value)
-    // filter factory size
-    if (currSize.value === '') {
-      matchesSize = true
-    } else {
-      const sizeString = `${factory.width}x${factory.depth}x${factory.height}`
-      matchesSize = currSize.value ? sizeString === currSize.value : true
-    }
-    // filter factory author
-    if (currOwner.value === '') {
-      matchesOwner = true
-    }
-    // else {
-    //   matchesOwner = currOwner.value ? factory.author === currOwner.value : true
-    // }
-    // filter factory name
-    matchesSearchTerm = factory.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-    // return matchesSearchTerm && matchesSize && matchesOwner
-    return matchesSearchTerm && matchesSize
-  })
-})
+    const matchesSize = currSize.value === '' || `${factory.width}x${factory.depth}x${factory.height}` === currSize.value;
+    const matchesOwner = currOwner.value === '' || factory.author === currOwner.value;
+    const matchesSearchTerm = factory.name.toLowerCase().includes(searchTerm.value.toLowerCase());
+    return matchesSize && matchesOwner && matchesSearchTerm;
+  });
+});
+
 
 </script>
 
@@ -74,10 +61,10 @@ const filteredFactories = computed(() => {
       </div>
     </div>
     <div class="m-item">
-      <h1 class="headline">Fabrik betreten</h1>
+      <h1 class="headline">enter factory</h1>
       <div class="contentDiv">
         <div class="filter-div">
-          <input placeholder="Suche..." v-model="searchTerm" />
+          <input placeholder="Suche..." v-model="searchTerm"/>
           <div class="custom-select">
             <select v-model="currOwner">
               <option v-for="o in owner" :value="o.value">{{ o.label }}</option>
@@ -91,9 +78,9 @@ const filteredFactories = computed(() => {
         </div>
         <div class="factory-cards">
           <FactoryCard
-            v-for="factory in filteredFactories"
-            :key="factory.id"
-            :factory="factory"
+              v-for="factory in filteredFactories"
+              :key="factory.id"
+              :factory="factory"
           ></FactoryCard>
         </div>
       </div>
@@ -106,6 +93,7 @@ const filteredFactories = computed(() => {
 .container {
   align-items: baseline;
 }
+
 .container .s-item {
   display: flex;
   flex: 1 1 25%;
@@ -115,6 +103,7 @@ const filteredFactories = computed(() => {
   padding-bottom: 3rem;
   transform: translateY(50px);
 }
+
 .container .m-item {
   flex: 1 1 50%;
   display: flex;
@@ -123,11 +112,13 @@ const filteredFactories = computed(() => {
   flex-direction: column;
   transform: translateY(30px);
 }
+
 .headline {
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0;
   font-weight: 400;
 }
+
 .content-s-item {
   display: flex;
   position: absolute;
@@ -140,6 +131,7 @@ const filteredFactories = computed(() => {
   width: 2.5rem;
   height: min-content;
 }
+
 .content-s-item a {
   display: flex;
   gap: 0.625rem;
@@ -147,6 +139,7 @@ const filteredFactories = computed(() => {
   align-items: center;
   color: white;
 }
+
 .contentDiv {
   display: flex;
   flex-direction: column;
@@ -155,6 +148,7 @@ const filteredFactories = computed(() => {
   /* position: relative;
   top: 20%; */
 }
+
 input {
   display: block;
   width: 390px;
@@ -165,19 +159,23 @@ input {
   border-radius: 30px;
   color: white;
 }
+
 input:focus {
   outline: none;
 }
+
 .filter-div {
   display: flex;
   gap: 1rem;
   padding-bottom: 3rem;
   justify-content: space-between;
 }
+
 .custom-select {
   position: relative;
   width: 200px;
 }
+
 select {
   width: 100%;
   padding: 12px 20px;
@@ -186,11 +184,13 @@ select {
   background-color: transparent;
   color: white;
 }
+
 option {
   background-color: #683ce4;
   color: white;
   padding: 8px;
 }
+
 .factory-cards {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

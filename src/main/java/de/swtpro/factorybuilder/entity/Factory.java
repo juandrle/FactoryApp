@@ -26,9 +26,20 @@ public class  Factory implements Serializable {
     private int depth;
     @Lob
     private byte[] screenshot;
+    @ManyToOne
+    @JoinColumn(name = "author", referencedColumnName = "username")
+    private User author;
 
     public String getPassword() {
         return password;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public void setPassword(String password) {

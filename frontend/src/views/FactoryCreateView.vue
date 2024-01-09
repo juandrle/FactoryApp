@@ -8,6 +8,7 @@ import {factoryCreateRequest} from "@/utils/backendComms/postRequests"
 import type {IFactoryCreate} from "@/types/backendTypes"
 import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
 import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
+import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
@@ -18,8 +19,9 @@ const sizes = ref([
 const factoryName = ref('')
 const factoryPassword = ref('')
 const selectedSize = ref()
-let updateFactorySize: (newSize: IVector3) => void = useFactorySize().updateFactorySize
-let updateFactoryID: (newID: number) => void = useFactoryID().updateFactoryID
+const updateFactorySize: (newSize: IVector3) => void = useFactorySize().updateFactorySize
+const updateFactoryID: (newID: number) => void = useFactoryID().updateFactoryID
+const sessUser = useSessUser().sessUser
 computed((size) => {
   return {
     x: size.width as number,
@@ -43,6 +45,7 @@ function createFactory() {
       width: selectedSize.value.x,
       depth: selectedSize.value.y,
       height: selectedSize.value.z,
+      author: sessUser.value
     };
 
     factoryCreateRequest(factory)

@@ -1,21 +1,26 @@
-package de.swtpro.factorybuilder.service.user;
+package de.swtpro.factorybuilder.service;
+
+import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import de.swtpro.factorybuilder.DTO.UserDTO;
+import de.swtpro.factorybuilder.DTO.user.UserDTO;
 import de.swtpro.factorybuilder.entity.User;
 import de.swtpro.factorybuilder.repository.UserRepository;
 
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserService {
 
-    @Autowired UserRepository userRepo;
-    @Autowired PasswordEncoder passwordEncoder;
+    UserRepository userRepo;
+    PasswordEncoder passwordEncoder;
 
+    public UserService(UserRepository userRepo, PasswordEncoder passwordEncoder) {
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
+    }
     // @Override
     // public User createUser(User v){
     //     User vs = new User();
@@ -24,19 +29,18 @@ public class UserServiceImpl implements UserService {
     //     vs = userRepo.save(v);
     //     return vs;
     // }
-    
-    @Override
-    public boolean checkUsername(String username){
+
+
+    public boolean checkUsername(String username) {
         return userRepo.existsById(username);
     }
 
-    @Override
-    public Optional<User> getUserByName(String username){
-        Optional<User> v = userRepo.findById(username);
-        return v;
+
+    public Optional<User> getUserByName(String username) {
+        return userRepo.findById(username);
     }
 
-    public void signUp (UserDTO userDTO){
+    public void signUp(UserDTO userDTO) {
         User vs = new User();
         vs.setUsername(userDTO.username());
         String encodedPassword = passwordEncoder.encode(userDTO.password());
@@ -47,5 +51,9 @@ public class UserServiceImpl implements UserService {
     public boolean checkPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
-    
+
+    public List<User> getAll() {
+        return userRepo.findAll();
+    }
+
 }

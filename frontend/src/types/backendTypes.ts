@@ -20,7 +20,8 @@ export interface IFactoryCreate {
     password: string;
     width: number;
     depth: number;
-    height: number
+    height: number;
+    author: string
 }
 export interface IFactoryDelete {
     id: number,
@@ -86,7 +87,7 @@ export interface IFactory {
     depth: number;
     height: number;
     hasPassword: boolean;
-    // author: string;
+    author: string;
 }
 export interface IUserForm{
     username: string;

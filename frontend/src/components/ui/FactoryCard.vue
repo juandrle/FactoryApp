@@ -7,6 +7,7 @@ import {backendUrl} from '@/utils/config/config'
 import type {IVector3} from "@/types/global";
 import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
 import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
+import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
 
 const props = defineProps({
   factory: {
@@ -22,6 +23,7 @@ const isInputValid = ref(true)
 const currentlyRotatedCard = ref<HTMLElement | null>(null)
 let updateFactorySize: (newSize: IVector3) => void = useFactorySize().updateFactorySize
 let updateFactoryID: (newID: number) => void = useFactoryID().updateFactoryID
+const sessUser = useSessUser().sessUser
 
 const rotateCard = (clickTarget: EventTarget | null) => {
   if (!clickTarget) return
@@ -33,7 +35,7 @@ const rotateCard = (clickTarget: EventTarget | null) => {
   } as IVector3
   updateFactoryID(props.factory?.id)
   updateFactorySize(newSize)
-  if (!props.factory.hasPassword) {
+  if (!props.factory.hasPassword || props.factory?.author === sessUser.value) {
     router.push('/factory')
   } else {
     if (card) {
@@ -102,8 +104,8 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
         <div style="width: max-content">
           <p>{{ factory.name }}</p>
           <p>{{ factory.width }}x{{ factory.depth }}x{{ factory.height }}</p>
-          <!-- <p>{{ factory.author }}</p> -->
-          <p>Name Author</p>
+          <p v-if="sessUser !== factory.author">{{ factory.author }}</p>
+          <p v-else>your factory</p>
         </div>
         <button class="dustbin-btn" @click="(e) => e.stopPropagation()">
           <img class="dustbin" src="../../assets/icons8-mülleimer-48.png" alt="Papierkorb"/>

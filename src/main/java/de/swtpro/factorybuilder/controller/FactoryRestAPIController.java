@@ -1,6 +1,6 @@
 package de.swtpro.factorybuilder.controller;
 
-import de.swtpro.factorybuilder.DTO.factory.FactoryDTO;
+import de.swtpro.factorybuilder.DTO.factory.FactoryCreateDTO;
 import de.swtpro.factorybuilder.DTO.factory.FactoryEnterDTO;
 import de.swtpro.factorybuilder.DTO.factory.FactoryPasswordCheckDTO;
 import de.swtpro.factorybuilder.DTO.factory.UpdateImageFactoryDTO;
@@ -27,27 +27,35 @@ public class FactoryRestAPIController {
     ModelService modelService;
     FieldService fieldService;
     ImgConverterService imgConverterService;
+    UserService userService;
 
     FactoryRestAPIController(FactoryService factoryService, PlacedModelService placedModelService,
-                             ModelService modelService, FieldService fieldService, ImgConverterService imgConverterService) {
+                             ModelService modelService, FieldService fieldService, ImgConverterService imgConverterService,
+                             UserService userService) {
         this.factoryService = factoryService;
         this.placedModelService = placedModelService;
         this.modelService = modelService;
         this.fieldService = fieldService;
         this.imgConverterService = imgConverterService;
+        this.userService = userService;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Long> create(@RequestBody FactoryDTO factoryDTO) {
-        Factory f = new Factory();
-        f.setName(factoryDTO.name());
-        f.setWidth(factoryDTO.width());
-        f.setDepth(factoryDTO.depth());
-        f.setHeight(factoryDTO.height());
-        f.setPassword(factoryDTO.password());
-        f = factoryService.saveFactory(f);
-        fieldService.initializeField(f);
-        return ResponseEntity.ok(f.getFactoryID());
+    public ResponseEntity<Long> create(@RequestBody FactoryCreateDTO factoryDTO) {
+        try {
+            Factory f = new Factory();
+            f.setName(factoryDTO.name());
+            f.setWidth(factoryDTO.width());
+            f.setDepth(factoryDTO.depth());
+            f.setHeight(factoryDTO.height());
+            f.setPassword(factoryDTO.password());
+            f.setAuthor(userService.getUserByName(factoryDTO.author()).orElseThrow());
+            f = factoryService.saveFactory(f);
+            fieldService.initializeField(f);
+            return ResponseEntity.ok(f.getFactoryID());
+        } catch (Exception e) {
+            return ResponseEntity.ok(0L);
+        }
     }
 
     @PostMapping("/delete")
@@ -63,7 +71,7 @@ public class FactoryRestAPIController {
         for (Factory f : factoryService.getAllFactories()) {
             factories
                     .add(new FactoryEnterDTO(f.getFactoryID(), f.getName(),
-                            f.getWidth(), f.getDepth(), f.getHeight(), !f.getPassword().isEmpty()));
+                            f.getWidth(), f.getDepth(), f.getHeight(), !f.getPassword().isEmpty(), f.getAuthor().getUsername()));
         }
 
         return factories;
@@ -104,15 +112,10 @@ public class FactoryRestAPIController {
     @PostMapping("/checkPassword")
     public ResponseEntity<Boolean> checkPassword(@RequestBody FactoryPasswordCheckDTO check) {
         try {
-            // get password from DB
             Factory factory = factoryService.getFactoryById(check.id()).orElseThrow();
             String passwordFromDB = factory.getPassword();
-
-            boolean passwordsMatch = check.password().equals(passwordFromDB);
-            LOGGER.info(passwordFromDB);
-
+            boolean passwordsMatch = factoryService.checkPassword(check.password(), passwordFromDB);
             return ResponseEntity.ok(passwordsMatch);
-
         } catch (Exception e) {
             return ResponseEntity.ok(false);
         }

@@ -7,6 +7,7 @@ import de.swtpro.factorybuilder.repository.FactoryRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,9 +19,11 @@ public class FactoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FactoryService.class);
 
     private final FactoryRepository factoryRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    FactoryService(FactoryRepository factoryRepository) {
+    FactoryService(FactoryRepository factoryRepository, PasswordEncoder passwordEncoder) {
         this.factoryRepository = factoryRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // @Bean
@@ -28,8 +31,7 @@ public class FactoryService {
     // return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     // }
     public Factory saveFactory(Factory factory) {
-        // PasswordEncoder passwordEncoder = passwordEncoderService();
-        // factory.setPassword(passwordEncoder.encode(factory.getPassword()));
+        factory.setPassword(passwordEncoder.encode(factory.getPassword()));
         return factoryRepository.save(factory);
     }
 
@@ -44,13 +46,14 @@ public class FactoryService {
     public List<Factory> getAllFactories(){
         return factoryRepository.findAll();
     }
-
-
     /**
      * public Model getModelById(Long id) {
      * return placedModelRepository.findById(id).orElse(null);
      * }
      **/
+    public boolean checkPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
 
 
 }
