@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import type {Intersection, Object3DEventMap} from "three";
 import {Object3D} from "three";
 
-import { highlightObjectWithColor } from '@/utils/threeJS/entityManipulation'
+import {highlightObjectWithColor} from '@/utils/threeJS/entityManipulation'
 
 let existingGrid: THREE.Mesh[] = []
 export const getGrid = (gridID: number, scene: THREE.Scene) => {
@@ -121,10 +121,25 @@ export const moveHighlight = (highlight: any, activeLayer: number, intersections
     if (intersection) {
         // Get the exact position of the Intersection and Make it snapping with the grid (floor, addScalar)
         const pos: THREE.Vector3 = new THREE.Vector3().copy(intersection.point).floor()
-
         // Set the highlight
         highlight.position.set(pos.x, pos.y, intersection.object.position.z)
+
+        const highlightBox = new THREE.Box3().setFromObject(highlight);
+        const contractionAmount = 0.3; // Adjust this value as needed
+        highlightBox.expandByScalar(-contractionAmount);
+        const sceneObjects = highlight.parent.children
+        let filteredSceneObjects = sceneObjects.filter((item: any) => (item.name.includes('entity')))
+        for (const obj of filteredSceneObjects) {
+            const objBox = new THREE.Box3().setFromObject(obj);
+            if (highlightBox.intersectsBox(objBox)) {
+                highlightObjectWithColor(highlight, true, 'red')
+                return true
+            } else {
+                highlightObjectWithColor(highlight, false)
+            }
+        }
     }
+    return false
 }
 export const updateHighlightModel: any = async (
     prevHighlight: any,
@@ -144,7 +159,7 @@ export const updateHighlightModel: any = async (
             newHighlight.name = prevHighlight.name
         } else {
             newHighlight.position.set(0, 0, 0)
-            newHighlight.name = "entity"
+            newHighlight.name = "highlight"
         }
 
         // Delete old highlight

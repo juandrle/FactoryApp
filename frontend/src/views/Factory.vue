@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {Ref} from 'vue'
-import {inject, onMounted, onUnmounted, provide, ref, watch} from 'vue'
+import {onMounted, onUnmounted, provide, ref, watch} from 'vue'
 import type {IEntity, IVector3} from '@/types/global'
 import type {IBackendEntity, IBackendEntityPreview} from '@/types/backendTypes'
 import * as THREE from 'three'
@@ -37,17 +37,16 @@ const target = ref()
 const manipulationMode: Ref<ManipulationMode> = ref<ManipulationMode>(ManipulationMode.IDLE)
 const allEntities: Ref<IBackendEntityPreview[] | undefined> = ref()
 const activeEntity: Ref<IBackendEntityPreview | undefined> = ref()
-
-let currObjSelectedOriginPos: IVector3 = {x: 0, y: 0, z: 0}
 const showCircMenu: Ref<Boolean> = ref(false)
 const showDynamicDiv: Ref<Boolean> = ref(false)
-let factorySize: Ref<IVector3> = useFactorySize().factorySize
-let factoryID: Ref<number> = useFactoryID().factoryID
+const highlightIsIntersectingWithObjects = ref(false)
+const factorySize: Ref<IVector3> = useFactorySize().factorySize
+const factoryID: Ref<number> = useFactoryID().factoryID
 
 /**
  * Variables
  **/
-
+let currObjSelectedOriginPos: IVector3 = {x: 0, y: 0, z: 0}
 let dynamicDiv: HTMLElement | null
 let sizes: {
   width: number
@@ -130,18 +129,12 @@ const captureScreenshot = () => {
   renderer.clear();
   renderer.render(scene, camera);
   setupCamera()
-  console.log(camera);
   const canvas = renderer.domElement
   return canvas.toDataURL("image/png")
 }
 /**
  * Buttons
  */
-
-const onLoadFactoryButton = () => {
-  if (factoryID === undefined) return
-
-}
 
 const onToggleMenuVisibility = () => {
   showCircMenu.value = !showCircMenu.value
@@ -233,7 +226,7 @@ const onChangeEntityClicked = (situation: string) => {
 const clickActionBasedOnMode = () => {
   switch (manipulationMode.value) {
     case ManipulationMode.SET:
-      if (activeEntity.value) {
+      if (activeEntity.value && !highlightIsIntersectingWithObjects.value) {
         placeRequest({
           x: highlight.position.x,
           y: highlight.position.y,
@@ -366,11 +359,11 @@ const handleMouseMove = (event: MouseEvent) => {
   // Update the highlighter
   if (highlight && manipulationMode.value === ManipulationMode.SET) {
     // Object model wird asynchron geladen
-    moveHighlight(highlight, ACTIVE_LAYER, intersections)
+    highlightIsIntersectingWithObjects.value = moveHighlight(highlight, ACTIVE_LAYER, intersections)
   } else if (currentObjectSelected && manipulationMode.value === ManipulationMode.MOVE) {
-    moveHighlight(currentObjectSelected, ACTIVE_LAYER, intersections)
+    highlightIsIntersectingWithObjects.value = moveHighlight(currentObjectSelected, ACTIVE_LAYER, intersections)
   } else if (currentObjectSelected && manipulationMode.value === ManipulationMode.CLONE) {
-    moveHighlight(currentObjectSelected, ACTIVE_LAYER, intersections)
+    highlightIsIntersectingWithObjects.value = moveHighlight(currentObjectSelected, ACTIVE_LAYER, intersections)
   }
 }
 
