@@ -116,7 +116,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
           <p v-if="sessUser !== factory.author">{{ factory.author }}</p>
           <p v-else>your factory</p>
         </div>
-        <button class="dustbin-btn" @click.stop="deleteButtonClicked">
+        <button v-if="props.factory?.author === sessUser" class="dustbin-btn" @click.stop="deleteButtonClicked">
           <img class="dustbin" src="../../assets/icons8-mülleimer-48.png" alt="Papierkorb"/>
         </button>
       </div>
