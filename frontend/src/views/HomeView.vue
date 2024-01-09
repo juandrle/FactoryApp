@@ -65,7 +65,7 @@ onUnmounted(() => {
       <h1 class="game-name">Machine Deluxe 3000</h1>
       <h2 class="subtitle">create your own factory</h2>
     </div>
-    <div class="s-item">
+    <div class="r-item">
       <div class="header">
         <p v-if="!showLogin">logged in as {{ sessUser }}</p>
 
@@ -90,7 +90,7 @@ onUnmounted(() => {
   background-position: right bottom;
 }
 
-.container .s-item {
+.container .r-item {
   display: flex;
   flex: 1 1 25%;
   position: relative;
