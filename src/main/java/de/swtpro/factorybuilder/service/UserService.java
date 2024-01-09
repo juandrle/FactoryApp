@@ -53,10 +53,6 @@ public class UserService {
     public boolean checkPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
-    @Transactional
-    public void addFactoryToUser(Factory factory, User user) {
-        user.addFactoryToCreatedFactories(factory);
-    }
     public List<User> getAll() {
         return userRepo.findAll();
     }

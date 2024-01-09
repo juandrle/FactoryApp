@@ -79,6 +79,9 @@ public class User implements Serializable {
     public void addFactoryToCreatedFactories(Factory factory) {
         this.createdFactories.add(factory);
     }
+    public void removeFactoryFromCreatedFactories(Factory factory) {
+        this.createdFactories.remove(factory);
+    }
 
     public String getRole() {
         return role;

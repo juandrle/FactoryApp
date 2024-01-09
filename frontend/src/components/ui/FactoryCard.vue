@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {defineProps, inject, onMounted, type Ref, ref} from 'vue'
-import type {IFactory} from '@/types/backendTypes'
+import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
 import {getFactoryImage} from '@/utils/backendComms/getRequests'
 import router from '@/router'
 import {backendUrl} from '@/utils/config/config'
@@ -8,6 +8,7 @@ import type {IVector3} from "@/types/global";
 import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
 import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
 import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
+import {factoryDeleteRequest} from "@/utils/backendComms/deleteRequest";
 
 const props = defineProps({
   factory: {
@@ -15,6 +16,7 @@ const props = defineProps({
     required: true
   }
 })
+const factoryCardRef = ref(null)
 const factoryEnterPassword = ref('')
 const currentPicture = ref(
     'https://damassets.autodesk.net/content/dam/autodesk/www/industry/manufacturing/integrated-factory-modeling/what-is-integrated-factory-modeling-thumb-1172x660.jpg'
@@ -64,6 +66,13 @@ const rotateCard = (clickTarget: EventTarget | null) => {
     }
   }
 }
+const deleteButtonClicked = () => {
+  const factoryDelete = {
+    id: props.factory?.id,
+    element: factoryCardRef.value
+  }  as IFactoryDelete
+  factoryDeleteRequest(factoryDelete)
+}
 
 onMounted(() => {
   getFactoryImage(props.factory?.id).then((dataURL) => {
@@ -97,7 +106,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
 </script>
 
 <template>
-  <div class="factorycard" @click="(e) => rotateCard(e.currentTarget)">
+  <div class="factorycard" ref="factoryCardRef" @click="(e) => rotateCard(e.currentTarget)">
     <div class="card-front">
       <img class="factory-image" :src="currentPicture" alt=""/>
       <div class="factorycard-content">
@@ -107,7 +116,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
           <p v-if="sessUser !== factory.author">{{ factory.author }}</p>
           <p v-else>your factory</p>
         </div>
-        <button class="dustbin-btn" @click="(e) => e.stopPropagation()">
+        <button class="dustbin-btn" @click.stop="deleteButtonClicked">
           <img class="dustbin" src="../../assets/icons8-mülleimer-48.png" alt="Papierkorb"/>
         </button>
       </div>

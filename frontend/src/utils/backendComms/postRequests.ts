@@ -68,25 +68,6 @@ export const factoryCreateRequest = async (factory: IFactoryCreate) => {
     }
 }
 
-export const factoryDeleteRequest = async (factory: IFactoryDelete) => {
-    try {
-        const url = 'api/factory/delete'
-        const requestBody = JSON.stringify(factory.id)
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: requestBody,
-        })
-        if (!response.ok) throw new Error(response.statusText)
-        const jsonData: boolean = await response.json()
-        if (jsonData)
-        factory.element.parent.remove(factory.element)
-
-    } catch (err) {
-        return false
-    }
-}
-
 export const factoryImageUpdate = async (factoryID: number, screenshot: string) : Promise<boolean> => {
 
     try {

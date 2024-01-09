@@ -60,9 +60,17 @@ public class FactoryRestAPIController {
             return ResponseEntity.ok(0L);
         }
     }
-
     @PostMapping("/delete")
     public ResponseEntity<Boolean> delete(@RequestBody long idToDelete) {
+        Factory f = factoryService.getFactoryById(idToDelete).orElseThrow();
+        List<PlacedModel> allPlacedModelsOfFactory = placedModelService.findAllByFactoryId(f);
+        new Thread(() -> {
+            fieldService.deleteAllByFactoryID(idToDelete);
+        }).start();
+        for (PlacedModel m: allPlacedModelsOfFactory) {
+            placedModelService.removeModelFromFactory(m.getId());
+        }
+        f.getAuthor().removeFactoryFromCreatedFactories(f);
         factoryService.deleteFactoryById(idToDelete);
         return ResponseEntity.ok(true);
     }

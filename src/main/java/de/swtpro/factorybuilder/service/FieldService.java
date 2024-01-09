@@ -4,6 +4,7 @@ import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Field;
 import de.swtpro.factorybuilder.repository.FieldRepository;
 import de.swtpro.factorybuilder.utility.Position;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,10 @@ public class FieldService {
     }
     public Optional<Field> getFieldById(Long id) {
         return fieldRepository.findById(id);
+    }
+    @Transactional
+    public void deleteAllByFactoryID(Long id) {
+        fieldRepository.deleteAllByFactoryID(id);
     }
     public void initializeField(Factory factory) {
         List<Field> fields = new ArrayList<>();
