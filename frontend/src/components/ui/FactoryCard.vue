@@ -5,6 +5,8 @@ import {getFactoryImage} from '@/utils/backendComms/getRequests'
 import router from '@/router'
 import {backendUrl} from '@/utils/config/config'
 import type {IVector3} from "@/types/global";
+import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
+import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
 
 const props = defineProps({
   factory: {
@@ -17,21 +19,9 @@ const currentPicture = ref(
     'https://damassets.autodesk.net/content/dam/autodesk/www/industry/manufacturing/integrated-factory-modeling/what-is-integrated-factory-modeling-thumb-1172x660.jpg'
 )
 const isInputValid = ref(true)
-const setupInjections = () => {
-  const resultID = inject<{
-    factoryID: Ref<number>
-    updateFactoryID: (newID: number) => void
-  }>('factoryID')
-  if (resultID && typeof resultID === 'object') updateFactoryID = resultID.updateFactoryID
-  const resultSize = inject<{
-    factorySize: Ref<IVector3>,
-    updateFactorySize: (newSize: IVector3) => void
-  }>('factorySize')
-  if (resultSize && typeof resultSize === 'object') updateFactorySize = resultSize.updateFactorySize
-}
 const currentlyRotatedCard = ref<HTMLElement | null>(null)
-let updateFactorySize: (newSize: IVector3) => void
-let updateFactoryID: (newID: number) => void
+let updateFactorySize: (newSize: IVector3) => void = useFactorySize().updateFactorySize
+let updateFactoryID: (newID: number) => void = useFactoryID().updateFactoryID
 
 const rotateCard = (clickTarget: EventTarget | null) => {
   if (!clickTarget) return
@@ -74,7 +64,6 @@ const rotateCard = (clickTarget: EventTarget | null) => {
 }
 
 onMounted(() => {
-  setupInjections()
   getFactoryImage(props.factory?.id).then((dataURL) => {
     currentPicture.value = dataURL.toString()
   })
