@@ -22,13 +22,13 @@
         </li>
         <li class="menu-item">
           <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='scriptClicked'>
-            <a class="fa-solid fa-code" ></a>
+            <a class="fa-solid fa-code"></a>
             <p>Skripten</p>
           </div>
         </li>
         <li class="menu-item">
           <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='cloneClicked'>
-            <a class="fa-regular fa-clone" ></a>
+            <a class="fa-regular fa-clone"></a>
             <p>Klonen</p>
           </div>
         </li>
@@ -48,19 +48,24 @@ const emit = defineEmits<{
   changeEntity: [string];
 }>()
 const delClicked = () => {
-  emit('changeEntity', 'delete')
+  if (props.isButtonVisible)
+    emit('changeEntity', 'delete')
 }
 const rotateClicked = () => {
-  emit('changeEntity', 'rotate')
+  if (props.isButtonVisible)
+    emit('changeEntity', 'rotate')
 }
 const moveClicked = () => {
-  emit('changeEntity', 'move')
+  if (props.isButtonVisible)
+    emit('changeEntity', 'move')
 }
 const scriptClicked = () => {
-  emit('changeEntity', 'script')
+  if (props.isButtonVisible)
+    emit('changeEntity', 'script')
 }
 const cloneClicked = () => {
-  emit('changeEntity', 'clone')
+  if (props.isButtonVisible)
+    emit('changeEntity', 'clone')
 }
 const hoverEnabled = ref(false);
 
@@ -86,6 +91,7 @@ watch(() => props.isButtonVisible, (newValue) => {
 .visible .menu-item a {
   pointer-events: auto;
 }
+
 .visible .menu-item:nth-child(1) {
   transform: translate(-50%, -50%) rotate(18deg) translateX(-150px);
 }
@@ -105,6 +111,7 @@ watch(() => props.isButtonVisible, (newValue) => {
 .visible .menu-item:nth-child(5) {
   transform: translate(-50%, -50%) rotate(306deg) translateX(-150px);
 }
+
 .menu-item:nth-child(1) .menu-content {
   transform: rotate(-18deg);
 }
@@ -135,6 +142,7 @@ watch(() => props.isButtonVisible, (newValue) => {
   opacity: 0;
   transition: transform 0.5s, opacity 0.5s;
 }
+
 .menu-content {
   display: flex;
   flex-direction: column;
@@ -178,6 +186,7 @@ watch(() => props.isButtonVisible, (newValue) => {
   text-align: center;
   bottom: 0;
 }
+
 ul {
   list-style: none;
   padding: 0;
