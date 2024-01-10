@@ -339,14 +339,14 @@ public class PlacedModelService {
                 fieldService.setPlacedModelOnField(placedModel, f);
             }
             return true;
-        } else {
-            placedModel.getPlacedFields().clear();
-            placedModel.getInputs().clear();
-            placedModel.getOutputs().clear();
-
-            placedModel.setRootPos(fallbackRootPosition);
-            fillPlacedModelLists(placedModel);
-            return false;
         }
+        
+        // reset lists and root position
+        placedModel.getPlacedFields().clear();
+        placedModel.getInputs().clear();
+        placedModel.getOutputs().clear();
+        placedModel.setRootPos(fallbackRootPosition);
+        fillPlacedModelLists(placedModel);
+        return false;
     }
 }
