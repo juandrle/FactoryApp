@@ -262,8 +262,29 @@
         0
       ],
       "alphaMode": "OPAQUE",
-      "doubleSided": false
-    }
+      "doubleSided": true
+    },
+    {
+          "name": "Material.002",
+          "pbrMetallicRoughness": {
+            "baseColorFactor": [
+              0.8,
+              0.739672,
+              0.739672,
+              0.2
+            ],
+            "metallicFactor": 0,
+            "roughnessFactor": 0.3600000609999999
+          },
+          "emissiveFactor": [
+            0,
+            0,
+            0
+          ],
+          "alphaMode": "BLEND",
+          "doubleSided": false
+        }
+
   ],
   "meshes": [
     {
@@ -276,7 +297,7 @@
             "TEXCOORD_0": 2
           },
           "indices": 3,
-          "material": 0,
+          "material": 1,
           "mode": 4
         }
       ]
