@@ -84,7 +84,7 @@ public class EntityRestAPIController {
     @GetMapping("/getAll")
     public List<Model> getAll() {
         return modelService.getAllByTypes(ModelType.MACHINE, ModelType.OTHER,
-                ModelType.ITEM_PROCESSED, ModelType.ITEM_RESOURCE, ModelType.ITEM_PRODUCT);
+                ModelType.ITEM_PROCESSED, ModelType.ITEM_RESOURCE, ModelType.ITEM_PRODUCT, ModelType.TRANSPORT);
     }
 
 }
