@@ -28,7 +28,7 @@ public class ResourceLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
         getAllModelsByPathAndTypes("/static/models/mock", ModelType.MACHINE, ModelType.OTHER,
-                ModelType.ITEM_PRODUCT, ModelType.ITEM_RESOURCE, ModelType.ITEM_PROCESSED);
+                ModelType.ITEM_PRODUCT, ModelType.ITEM_RESOURCE, ModelType.ITEM_PROCESSED, ModelType.TRANSPORT);
 
     }
 
@@ -51,6 +51,9 @@ public class ResourceLoader implements CommandLineRunner {
                         break;
                     case ITEM_PROCESSED:
                         models.addAll(pathToModelListAndIconFileName(directoryPath, "/items/processed", ModelType.ITEM_PROCESSED, "other.png"));
+                        break;
+                    case TRANSPORT:
+                        models.addAll(pathToModelListAndIconFileName(directoryPath, "/transportation", ModelType.TRANSPORT, "transport.png"));
                         break;
                 }
             }

@@ -18,7 +18,7 @@ class CameraControlsManager {
     this.switchTo(mode)
   }
 
-  switchTo(newMode: CameraMode) {
+  switchTo(newMode: CameraMode, ref?: any) {
     switch (this.currentMode) {
       case CameraMode.ORBIT:
         this.orbitCameraInfos = ExtractCameraInfo(this.camera)
@@ -58,6 +58,9 @@ class CameraControlsManager {
         break
       }
     }
+
+    if(ref)
+      ref.value = this.currentMode;
   }
 
   update(deltaTime: number) {
@@ -66,11 +69,11 @@ class CameraControlsManager {
     }
   }
 
-  toggleMode() {
+  toggleMode(ref?: any) {
     if(this.currentMode == CameraMode.FREE)
-      this.switchTo(CameraMode.ORBIT)
+      this.switchTo(CameraMode.ORBIT, ref)
     else
-      this.switchTo(CameraMode.FREE)
+      this.switchTo(CameraMode.FREE, ref)
   }
 }
 

@@ -83,7 +83,7 @@ public class EntityRestAPIController {
     @CrossOrigin
     @GetMapping("/getAll")
     public List<Model> getAll() {
-        return modelService.getAllByTypes(ModelType.MACHINE, ModelType.OTHER,
+        return modelService.getAllByTypes(ModelType.MACHINE, ModelType.TRANSPORT, ModelType.OTHER,
                 ModelType.ITEM_PROCESSED, ModelType.ITEM_RESOURCE, ModelType.ITEM_PRODUCT);
     }
 

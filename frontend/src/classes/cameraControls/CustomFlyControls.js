@@ -48,10 +48,10 @@ class CustomFlyControls {
           this.movement.x = this.movementSpeed
           break
         case 'ShiftLeft':
-          this.movement.y = this.movementSpeed
+          this.movement.y = -this.movementSpeed
           break
         case 'Space':
-          this.movement.y = -this.movementSpeed
+          this.movement.y = this.movementSpeed
           break
       }
     }
