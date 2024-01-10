@@ -28,7 +28,7 @@ import { backendUrl } from '@/utils/config/config'
 const { category, isOpen, activeEntity } = defineProps(['category', 'isOpen', 'activeEntity'])
 </script>
 
-<style>
+<style scoped>
 .entity-name {
   font-size: 0.85em;
   display: none;
