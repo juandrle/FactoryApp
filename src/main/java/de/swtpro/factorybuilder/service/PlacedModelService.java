@@ -121,7 +121,7 @@ public class PlacedModelService {
 
         // TODO placedModel in fieldRepository speichern
         for(Field f:placedModel.getPlacedFields()){
-            fieldService.placeModelIntoField(placedModel, f);
+            fieldService.setPlacedModelOnField(placedModel, f);
         }
         return placedModelRepository.save(placedModel);
     }
@@ -210,12 +210,12 @@ public class PlacedModelService {
     }
     private boolean checkForPlacement(PlacedModel thisModel, Factory factory) {
         // check if fields are free
-        for (Field f : thisModel.getPlacedFields()) {
-            if (f.getPlacedModel() != null)
+        for (Field f: thisModel.getPlacedFields()) {
+            if (f.getPlacedModel() != null && thisModel.getId() != f.getPlacedModel().getId())
                 return false;
         }
 
-        for (Field f : thisModel.getPlacedFields()) {
+        for (Field f: thisModel.getPlacedFields()) {
             // check north
             if (!checkField(f, thisModel, "North", factory))
                 return false;
@@ -260,7 +260,7 @@ public class PlacedModelService {
                 removeModelFromField(f);
             }
             for (Field f : thisModel.getPlacedFields()) {
-                fieldService.placeModelIntoField(thisModel, f);
+                fieldService.setPlacedModelOnField(thisModel, f);
             }
             return true;
         }
@@ -304,13 +304,49 @@ public class PlacedModelService {
     public boolean moveModel(long modelID, Position newRootPosition) {
         PlacedModel placedModel = getPlacedModelById(modelID).orElse(null);
         if (placedModel == null) return false;
+        Factory factory = factoryService.getFactoryById(placedModel.getFactoryID()).orElseThrow();
+        
+        // fallback placedFields list
+        List<Field> fallbackPlacedList = new ArrayList<>();
         for (Field f: placedModel.getPlacedFields()) {
-            f.setPlacedModel(null);
+            fallbackPlacedList.add(f);
         }
-        // TODO: change position to new Position
-        // placeMachineToField(machine,newPos);
-        // Todo: which informations are needed for this operatino?
-        // Todo: switch fields and machine repos
-        return true;
+        /* for (Field f: fallbackPlacedList) {
+            LOGGER.info("FALLBACK POSITION x: " + f.getPosition().getX() + "/ y: " + f.getPosition().getY() + "/ z: " + f.getPosition().getZ());
+        } */
+        // fallback rootPosition
+        Position fallbackRootPosition = placedModel.getRootPos();
+
+        // empty all placedModel lists
+        placedModel.getPlacedFields().clear();
+        placedModel.getInputs().clear();
+        placedModel.getOutputs().clear();
+
+        // change root position and fill placedModel lists starting from new root position
+        placedModel.setRootPos(newRootPosition);
+        fillPlacedModelLists(placedModel);
+        /* for (Field f: placedModel.getPlacedFields()) {
+            LOGGER.info("NEW POSITION x: " + f.getPosition().getX() + "/ y: " + f.getPosition().getY() + "/ z: " + f.getPosition().getZ());
+        } */
+
+        if (checkForPlacement(placedModel, factory)) {
+            // set fields that placedModel used to be on to null
+            for (Field f: fallbackPlacedList) {
+                fieldService.deletePlacedModelOnField(f);
+            }
+            // place placedModel on fields based on new placedFields list
+            for (Field f: placedModel.getPlacedFields()){
+                fieldService.setPlacedModelOnField(placedModel, f);
+            }
+            return true;
+        } else {
+            placedModel.getPlacedFields().clear();
+            placedModel.getInputs().clear();
+            placedModel.getOutputs().clear();
+
+            placedModel.setRootPos(fallbackRootPosition);
+            fillPlacedModelLists(placedModel);
+            return false;
+        }
     }
 }

@@ -42,7 +42,11 @@ public class FieldService {
         fieldRepository.saveAll(fields);
     }
     @Transactional
-    public void placeModelIntoField(PlacedModel placedModel, Field field) {
+    public void setPlacedModelOnField(PlacedModel placedModel, Field field) {
         field.setPlacedModel(placedModel);
+    }
+    @Transactional
+    public void deletePlacedModelOnField(Field field) {
+        field.setPlacedModel(null);
     }
 }
