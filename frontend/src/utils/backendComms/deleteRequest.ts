@@ -17,7 +17,8 @@ export const entityDeleteRequest = async (entity: IEntityDelete): Promise<boolea
         return false
     }
 }
-export const factoryDeleteRequest = async (factory: IFactoryDelete) => {
+export const factoryDeleteRequest = async (factory?: IFactoryDelete) => {
+    if (!factory) return
     try {
         const url = 'api/factory/delete'
         const requestBody = JSON.stringify(factory.id)

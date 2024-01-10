@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import {computed, onMounted, type Ref, ref} from 'vue'
 import FactoryCard from '@/components/ui/FactoryCard.vue'
-import type {IFactory} from '@/types/backendTypes'
+import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
 import {getAllFactories, getAllUsers} from '@/utils/backendComms/getRequests'
 import router from "@/router";
-import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
+import DeletionPopup from "@/components/ui/DeletionPopup.vue";
+import {factoryDeleteRequest} from "@/utils/backendComms/deleteRequest";
 
 const sizes = ref([
   {label: 'All', value: ''},
@@ -13,8 +14,10 @@ const sizes = ref([
   {label: '90x150x16', value: '90x150x16'},
   {label: '120x200x20', value: '120x200x20'}
 ])
+const factoryToDel: Ref<IFactoryDelete | undefined> = ref(undefined)
+const factoryNameToDel: Ref<string> = ref('')
 const currSize = ref('')
-
+const showPopup = ref(false)
 const owner = ref([
   {label: 'All', value: ''}
 ])
@@ -46,7 +49,17 @@ const filteredFactories = computed(() => {
     return matchesSize && matchesOwner && matchesSearchTerm;
   });
 });
-
+const togglePopup = (payload?: {factoryDelete: IFactoryDelete, factoryName: string}) => {
+  if (payload !== undefined) {
+    factoryToDel.value = payload.factoryDelete
+    factoryNameToDel.value = payload.factoryName
+  }
+  showPopup.value = !showPopup.value
+}
+const onPopupClosed = (toDelete?: boolean) => {
+  if (toDelete) factoryDeleteRequest(factoryToDel.value)
+  togglePopup()
+}
 
 </script>
 
@@ -81,12 +94,14 @@ const filteredFactories = computed(() => {
               v-for="factory in filteredFactories"
               :key="factory.id"
               :factory="factory"
+              @deleteClicked="togglePopup"
           ></FactoryCard>
         </div>
       </div>
     </div>
     <div class="s-item"></div>
   </div>
+  <DeletionPopup :factory-name="factoryNameToDel" v-if="showPopup" @delete="onPopupClosed"></DeletionPopup>
 </template>
 
 <style scoped>
@@ -98,6 +113,7 @@ const filteredFactories = computed(() => {
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: right bottom;
+  user-select: none;
 }
 
 .container .s-item {
@@ -199,10 +215,11 @@ option {
 .factory-cards {
   display: flex;
   flex-wrap: wrap;
-  gap: 6%;
+  gap: 2%;
   justify-content: left;
 }
 .factory-cards > * {
+  cursor: pointer;
   margin-bottom: 3%; /* Vertical gap */
 }
 

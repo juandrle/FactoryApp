@@ -16,6 +16,9 @@ const props = defineProps({
     required: true
   }
 })
+const emit = defineEmits<{
+  deleteClicked: (payload: { factoryDelete: IFactoryDelete, factoryName: string }) => void
+}>()
 const factoryCardRef = ref(null)
 const factoryEnterPassword = ref('')
 const currentPicture = ref(
@@ -67,11 +70,11 @@ const rotateCard = (clickTarget: EventTarget | null) => {
   }
 }
 const deleteButtonClicked = () => {
-  const factoryDelete = {
-    id: props.factory?.id,
-    element: factoryCardRef.value
-  }  as IFactoryDelete
-  factoryDeleteRequest(factoryDelete)
+   const factoryDelete = {
+     id: props.factory?.id,
+     element: factoryCardRef.value
+   }  as IFactoryDelete
+  emit('deleteClicked', { factoryDelete: factoryDelete, factoryName: props.factory?.name })
 }
 
 onMounted(() => {
@@ -130,7 +133,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
           <input
               v-model="factoryEnterPassword"
               type="password"
-              placeholder="Passwort eingeben"
+              placeholder="enter password"
               class="password-input"
               @click="(e) => e.stopPropagation()"
               @input="isInputValid = true"
