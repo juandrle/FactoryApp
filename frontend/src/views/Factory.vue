@@ -30,7 +30,8 @@ import {
 import {
   highlightObjectWithColor,
   placeEntity,
-  replaceEntity
+  replaceEntity,
+  makeObjectTransparent
 } from '@/utils/threeJS/entityManipulation'
 import { rotateModel, rotateModelfromXtoY, turnLeft, turnRight } from '@/utils/rotation/rotate'
 import { useFactoryID } from '@/utils/stateCompFunction/useFactoryID'
@@ -56,6 +57,7 @@ const showDynamicDiv: Ref<Boolean> = ref(false)
 const highlightIsIntersectingWithObjects = ref(false)
 const factorySize: Ref<IVector3> = useFactorySize().factorySize
 const factoryID: Ref<number> = useFactoryID().factoryID
+const currentCameraMode: Ref<CameraMode | null> = ref(CameraMode.ORBIT)
 
 /**
  * Variables
@@ -139,6 +141,7 @@ const initalLoadHighlightModel = (modelUrl: string) => {
     }
   )
 }
+
 const captureScreenshot = () => {
   renderer.clear()
   renderer.render(scene, camera)
@@ -146,6 +149,7 @@ const captureScreenshot = () => {
   const canvas = renderer.domElement
   return canvas.toDataURL('image/png')
 }
+
 /**
  * Buttons
  */
@@ -163,7 +167,6 @@ const onChangeEntityClicked = (situation: string) => {
         factoryId: factoryID.value,
         id: allPlacedEntities[currentObjectSelected.uuid].id
       }).then((success) => {
-        console.log(success)
         if (success) {
           delete allPlacedEntities[currentObjectSelected.uuid]
 
@@ -274,7 +277,6 @@ const handleKeyDown = (event: KeyboardEvent) => {
                 pivot
               )
             }
-            console.log(success)
           })
       }
 
@@ -315,14 +317,12 @@ const handleKeyDown = (event: KeyboardEvent) => {
       break
 
     case 'Q':
-      ccm.toggleMode()
+      ccm.toggleMode(currentCameraMode)
       break
 
     default:
       break
   }
-
-  console.log(allPlacedEntities)
 }
 
 const handleMouseMove = (event: MouseEvent) => {
@@ -348,6 +348,9 @@ const handleMouseMove = (event: MouseEvent) => {
 }
 
 const handleClick = (event: any) => {
+  // in animation mode
+  if (ccm.currentMode === 0) return
+
   // close circle if is open
   if (showCircMenu.value) {
     showDynamicDiv.value = false
@@ -388,7 +391,6 @@ const handleClick = (event: any) => {
                     orientation: 'North',
                     modelId: activeEntity.value.name
                   }
-                console.log(allPlacedEntities)
               })
             }
           })
@@ -428,8 +430,6 @@ const handleContextMenu = (event: MouseEvent) => {
     if (worked) {
       currentObjectSelected = currObj
       originalOrientation = allPlacedEntities[currentObjectSelected.uuid].orientation
-      console.log(currentObjectSelected)
-      console.log(originalOrientation)
 
       lastObjectSelected = lastObj
       if (dynamicDiv) {
@@ -442,6 +442,16 @@ const handleContextMenu = (event: MouseEvent) => {
     }
   }
   if (currentObjectSelected) currObjSelectedOriginPos = currentObjectSelected.position
+}
+
+const handleMouseDown = (event: MouseEvent) => {
+  if((manipulationMode.value == ManipulationMode.SET || manipulationMode.value === ManipulationMode.MOVE) && CameraMode.ORBIT)
+    ccm.controls.enabled = false;
+}
+
+const handleMouseRelease = (event: MouseEvent) => {
+  if((manipulationMode.value == ManipulationMode.SET || manipulationMode.value === ManipulationMode.MOVE) && CameraMode.ORBIT)
+    ccm.controls.enabled = true;
 }
 
 /**
@@ -460,6 +470,16 @@ watch(activeEntity, () => {
   } else initalLoadHighlightModel('mock/.gltf/cube.gltf')
 })
 
+watch(currentCameraMode, () => {
+  if (currentCameraMode.value === CameraMode.FREE) {
+    makeObjectTransparent(true, highlight)
+  } else {
+    makeObjectTransparent(false, highlight)
+  }
+
+  console.log(highlight)
+})
+
 /**
  * Gamecycle
  **/
@@ -470,6 +490,8 @@ onMounted(() => {
   window.addEventListener('resize', handleResize)
   window.addEventListener('keydown', handleKeyDown)
   window.addEventListener('mousemove', handleMouseMove)
+  window.addEventListener('mousedown', handleMouseDown)
+  window.addEventListener('mouseup', handleMouseRelease)
   window.addEventListener('click', handleClick)
   window.addEventListener('contextmenu', handleContextMenu)
   target.value.appendChild(renderer.domElement)
@@ -477,7 +499,6 @@ onMounted(() => {
 
   // Renderer gets appended to target
   getAllEntities().then((json) => {
-    console.log(json)
     // Alle entittys sind nun zugänglich für uns
     allEntities.value = json
     // Active entity ändern
@@ -499,7 +520,6 @@ onMounted(() => {
           orientation: backendEntity.orientation,
           modelId: backendEntity.modelId
         }
-        console.log(allPlacedEntities)
       })
     })
   })
@@ -565,7 +585,7 @@ init()
     <div class="debug-bar"></div>
     <MenuBar
       id="ignore"
-      v-if="allEntities"
+      v-if="allEntities && currentCameraMode === 1"
       :entities="allEntities"
       :active-entity="activeEntity"
       @update-active-entity="
