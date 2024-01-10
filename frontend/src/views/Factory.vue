@@ -280,11 +280,19 @@ const handleKeyDown = (event: KeyboardEvent) => {
           })
       }
 
-      manipulationMode.value = ManipulationMode.IDLE
+      
       showDynamicDiv.value = false
       showCircMenu.value = false
       if (currentObjectSelected) highlightObjectWithColor(currentObjectSelected, false)
-      scene.remove(highlight)
+
+      if(manipulationMode.value === ManipulationMode.SET){
+        manipulationMode.value = ManipulationMode.IDLE
+        scene.remove(highlight)
+      } else {
+        manipulationMode.value = ManipulationMode.SET
+        scene.add(highlight)
+      }
+      
       break
 
     case 'ESCAPE':
@@ -444,14 +452,22 @@ const handleContextMenu = (event: MouseEvent) => {
   if (currentObjectSelected) currObjSelectedOriginPos = currentObjectSelected.position
 }
 
-const handleMouseDown = (event: MouseEvent) => {
-  if((manipulationMode.value == ManipulationMode.SET || manipulationMode.value === ManipulationMode.MOVE) && CameraMode.ORBIT)
-    ccm.controls.enabled = false;
+const handleMouseDown = () => {
+  if (
+    (manipulationMode.value == ManipulationMode.SET ||
+      manipulationMode.value === ManipulationMode.MOVE) &&
+    CameraMode.ORBIT
+  )
+    ccm.controls.enabled = false
 }
 
-const handleMouseRelease = (event: MouseEvent) => {
-  if((manipulationMode.value == ManipulationMode.SET || manipulationMode.value === ManipulationMode.MOVE) && CameraMode.ORBIT)
-    ccm.controls.enabled = true;
+const handleMouseRelease = () => {
+  if (
+    (manipulationMode.value == ManipulationMode.SET ||
+      manipulationMode.value === ManipulationMode.MOVE) &&
+    CameraMode.ORBIT
+  )
+    ccm.controls.enabled = true
 }
 
 /**
