@@ -30,11 +30,27 @@ public class PlacedModelService {
     private Position createNewPosition(int x, int y, int z){
         return new Position(x,y,z);
     }
+    private Processing createInOutput(String inOut, Field f, String orientation){
+        Processing processing;
+
+        if (inOut.equals("Input")) {
+            processing = new Input();
+        } else {
+            processing = new Output();
+        }
+        
+        processing.setOrientation(orientation);
+        processing.setPosition(f.getPosition());
+        
+        return processing;
+    }
     private void fillPlacedModelLists(PlacedModel placedModel){
         //TODO röhren hinzufügen
         //TODO in und output
         Position rootPos = placedModel.getRootPos();
         List<Field> placedFields = placedModel.getPlacedFields();
+        List<Input> placedInputs = placedModel.getInputs();
+        List<Output> placedOutputs = placedModel.getOutputs();
         switch(placedModel.getModel().getName()){
             //Maschine
             case "brennerofen", "schmelzofen":
@@ -52,6 +68,7 @@ public class PlacedModelService {
                 break;
             case "farbmischer", "schleifmaschine":
                 placedFields.add(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow());
+                placedInputs.add(null)
                 break;
             case "farbsprueher", "vulkanisierer":
                 for(int i = 0; i < 2;i++){
@@ -107,6 +124,63 @@ public class PlacedModelService {
                     placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY(), rootPos.getZ()+i), placedModel.getFactoryID()).orElseThrow());
                 break;
 
+        }
+        
+        switch(placedModel.getModel().getName()){
+            //Maschine
+            case "brennerofen", "schmelzofen", "schleifmaschine", "farbmischer":
+                for(int i = 0; i < 2;i++)
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY(), rootPos.getZ()+i), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "elektronikmaschine", "saegemuehle":
+                for(int i = 0; i < 2;i++)
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "erzreiniger", "planiermaschine":
+                for(int i = 0; i < 3;i++)
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY(), rootPos.getZ()+1), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "farbsprueher", "vulkanisierer":
+                for(int i = 0; i < 2;i++){
+                    for(int j = 0; j < 2;j++)
+                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                }
+                break;
+            case "montagemaschine_mittel", "montagemaschine_gross":
+                for(int i = 0; i < 3;i++){
+                    for(int j = 0; j < 3;j++){
+                        for(int k = 0; k < 2;k++)
+                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()+k), placedModel.getFactoryID()).orElseThrow());
+                    }
+                }
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+1, rootPos.getZ()+3), placedModel.getFactoryID()).orElseThrow());
+                break;
+            case "montagemaschine_klein":
+                for(int i = 0; i < 3;i++)
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()-1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()-1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY(), rootPos.getZ()+1), placedModel.getFactoryID()).orElseThrow());
+                break;
+
+            //start-/endpunkt
+            case "rohstoffannahme":
+                for(int i = 0; i < 3;i++){
+                    for(int j = 0; j < 3;j++){
+                        for(int k = 0; k < 3;k++)
+                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()+k), placedModel.getFactoryID()).orElseThrow());
+                    }
+                }
+                break;
+            case "warenausgabe":
+                for(int i = 0; i < 3;i++){
+                    for(int j = 0; j < 3;j++){
+                        for(int k = 0; k < 3;k++)
+                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()+k), placedModel.getFactoryID()).orElseThrow());
+                    }
+                }
+                break;
         }
     }
     public PlacedModel createPlacedModel(Model model, Position rootPosition, long factoryID) {
