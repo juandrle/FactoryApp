@@ -22,6 +22,7 @@ import {highlightObjectWithColor, placeEntity, replaceEntity} from '@/utils/thre
 import {rotateModel, rotateModelfromXtoY, turnLeft, turnRight} from "@/utils/rotation/rotate";
 import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
 import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
+import MenuBar from "@/components/ui/MenuBar.vue";
 
 /**
  * Config
@@ -355,7 +356,6 @@ const handleKeyDown = (event: KeyboardEvent) => {
 const handleMouseMove = (event: MouseEvent) => {
   // Get all intersections with mouse and world
   const intersections = getIntersectionsMouse(event, camera, scene)
-
   // Update the highlighter
   if (highlight && manipulationMode.value === ManipulationMode.SET) {
     // Object model wird asynchron geladen
@@ -531,11 +531,12 @@ init()
       ></CircularMenu>
     </div>
     <div class="debug-bar"></div>
-    <EntityBar
+    <MenuBar
         id="ignore"
+        v-if="allEntities"
         :entities="allEntities"
         :active-entity="activeEntity"
-        @update-active-entity="(id) => (activeEntity = allEntities[id])"
+        @update-active-entity="(name) => (activeEntity = allEntities.find((obj) => obj.name === name))"
     />
   </div>
 </template>

@@ -124,20 +124,21 @@ export const moveHighlight = (highlight: any, activeLayer: number, intersections
         // Set the highlight
         highlight.position.set(pos.x, pos.y, intersection.object.position.z)
 
-        const highlightBox = new THREE.Box3().setFromObject(highlight);
-        const contractionAmount = 0.3; // Adjust this value as needed
-        highlightBox.expandByScalar(-contractionAmount);
-        const sceneObjects = highlight.parent.children
-        let filteredSceneObjects = sceneObjects.filter((item: any) => (item.name.includes('entity')))
-        for (const obj of filteredSceneObjects) {
-            const objBox = new THREE.Box3().setFromObject(obj);
-            if (highlightBox.intersectsBox(objBox)) {
-                highlightObjectWithColor(highlight, true, 'red')
-                return true
-            } else {
-                highlightObjectWithColor(highlight, false)
-            }
-        }
+        // const highlightBox = new THREE.Box3().setFromObject(highlight);
+        // const contractionAmount = 0.3; // Adjust this value as needed
+        // highlightBox.expandByScalar(-contractionAmount);
+        // const sceneObjects = highlight.parent.children
+        // let filteredSceneObjects = sceneObjects.filter((item: any) => (item.name.includes('entity')))
+        // console.log(filteredSceneObjects)
+        // for (const obj of filteredSceneObjects) {
+        //     const objBox = new THREE.Box3().setFromObject(obj);
+        //     if (highlightBox.intersectsBox(objBox)) {
+        //         highlightObjectWithColor(highlight, true, 'red')
+        //         return true
+        //     } else {
+        //         highlightObjectWithColor(highlight, false)
+        //     }
+        // }
     }
     return false
 }
