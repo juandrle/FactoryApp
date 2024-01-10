@@ -105,7 +105,6 @@ const { category, isOpen, activeEntity } = defineProps(['category', 'isOpen', 'a
   gap: 20px;
   margin: 10px;
   padding: 10px 5px 10px 5px;
-  justify-content: space-between;
 }
 
 
