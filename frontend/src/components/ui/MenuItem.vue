@@ -30,6 +30,14 @@ const { category, isOpen, activeEntity } = defineProps(['category', 'isOpen', 'a
 </script>
 
 <style scoped>
+.menu-item a {
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
 .entity-name {
   font-size: 0.85em;
   display: none;
