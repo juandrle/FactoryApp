@@ -30,8 +30,8 @@ interface SubMenuState {
 
 const categoryInfos: { icon: string; name: string; type: string }[] = [
   { icon: '/icons/models/machine.png', name: 'Maschinen', type: 'MACHINE' },
-  { icon: '/icons/models/other.png', name: 'Andere', type: 'OTHER' },
-  {icon: '/icons/models/transport.png', name: 'Transport', type: 'TRANSPORT'}
+  {icon: '/icons/models/transport.png', name: 'Transport', type: 'TRANSPORT'},
+  { icon: '/icons/models/other.png', name: 'Andere', type: 'OTHER' }
 ]
 
 const props = defineProps<{
