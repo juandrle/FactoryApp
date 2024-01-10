@@ -1,22 +1,23 @@
 <template>
   <div class="menu-item menu-item2" id="ignore">
-    <a href="#">
-      <div class="dot" :class="{ active: activeEntity.type === category.type }" />
-      <img class="menu-item-img" :src="backendUrl + category.icon" alt="test" />
-      <div v-show="!isOpen" class="entity-name">{{ category.name }}</div>
+    <a href="#" id="ignore">
+      <div class="dot" id="ignore" :class="{ active: activeEntity.type === category.type }" />
+      <img class="menu-item-img" id="ignore" :src="backendUrl + category.icon" alt="test" />
+      <div v-show="!isOpen" id="ignore" class="entity-name">{{ category.name }}</div>
     </a>
-    <div class="sub-menu" v-if="isOpen">
-      <div class="triangle"></div>
+    <div class="sub-menu" id="ignore" v-if="isOpen">
+      <div class="triangle" id="ignore"></div>
       <div
         v-for="(item, i) in category.items"
         :key="i"
         class="menu-item"
+        id="ignore"
         :class="{ active: activeEntity.name === item.name }"
         @click="$emit('updateActiveEntity', item.name)"
       >
-        <div class="dot" :class="{ active: activeEntity.name === item.name }" />
-        <img :src="backendUrl + item.icon" alt="icon" />
-        <p class="item-name">{{ item.name.charAt(0).toUpperCase() + item.name.slice(1) }}</p>
+        <div class="dot" id="ignore" :class="{ active: activeEntity.name === item.name }" />
+        <img id="ignore" :src="backendUrl + item.icon" alt="icon" />
+        <p class="item-name" id="ignore">{{ item.name.charAt(0).toUpperCase() + item.name.slice(1) }}</p>
       </div>
     </div>
   </div>
