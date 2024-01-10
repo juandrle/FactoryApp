@@ -28,7 +28,7 @@ import { backendUrl } from '@/utils/config/config'
 const { category, isOpen, activeEntity } = defineProps(['category', 'isOpen', 'activeEntity'])
 </script>
 
-<style>
+<style scoped>
 .entity-name {
   font-size: 0.85em;
   display: none;
@@ -105,7 +105,6 @@ const { category, isOpen, activeEntity } = defineProps(['category', 'isOpen', 'a
   gap: 20px;
   margin: 10px;
   padding: 10px 5px 10px 5px;
-  justify-content: space-between;
 }
 
 
