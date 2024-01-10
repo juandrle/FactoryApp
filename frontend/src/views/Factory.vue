@@ -542,7 +542,7 @@ init()
   <FactoryMenu></FactoryMenu>
 </template>
 
-<style>
+<style scoped>
 
 .debug-bar {
   position: absolute;

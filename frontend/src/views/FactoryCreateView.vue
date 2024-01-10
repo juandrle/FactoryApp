@@ -65,7 +65,6 @@ function createFactory() {
 }
 
 </script>
-
 <template>
   <div class="container">
     <div class="s-item">
@@ -241,6 +240,7 @@ function createFactory() {
   border-radius: 30px;
   color: white;
 }
+
 
 .text-input:focus,
 input:focus {
