@@ -22,6 +22,7 @@ import {highlightObjectWithColor, placeEntity, replaceEntity} from '@/utils/thre
 import {rotateModel, rotateModelfromXtoY, turnLeft, turnRight} from "@/utils/rotation/rotate";
 import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
 import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
+import FactoryMenu from "@/components/ui/FactoryMenu.vue";
 
 /**
  * Config
@@ -538,6 +539,7 @@ init()
         @update-active-entity="(id) => (activeEntity = allEntities[id])"
     />
   </div>
+  <FactoryMenu></FactoryMenu>
 </template>
 
 <style>
