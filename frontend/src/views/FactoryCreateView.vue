@@ -30,6 +30,7 @@ computed((size) => {
   }
 });
 const isLoading: Ref<boolean> = ref(false)
+
 function createFactory() {
   if (selectedSize.value && factoryName.value) {
     isLoading.value = true;
@@ -67,20 +68,20 @@ function createFactory() {
 </script>
 <template>
   <div class="container">
-    <div class="s-item">
-      <div class="content-s-item">
-        <a @click="router.push('/')">
-          <img src="/icons8-fabric-96.png" alt=""/>
-          <p class="logo-title">Machine Deluxe 3000</p>
-        </a>
+      <div class="s-item">
+        <div class="content-s-item">
+          <a @click="router.push('/')">
+            <img src="/icons8-fabric-96.png" alt=""/>
+            <p class="logo-title">Machine Deluxe 3000</p>
+          </a>
       </div>
     </div>
     <div class="loading" v-if="isLoading">
-      initializing {{factoryName}}, please wait...
+      initializing {{ factoryName }}, please wait...
       <div class="loader"></div> <!-- Buffer animation element -->
     </div>
     <div class="m-item" v-else>
-      <h1 class="game-name">Fabrik erstellen</h1>
+      <h1 class="game-name">create factory</h1>
       <div class="factory-settings">
         <form @submit.prevent="createFactory">
           <div class="form">
@@ -105,15 +106,18 @@ function createFactory() {
   </div>
 </template>
 
-<style>
+<style scoped>
 .form {
-  display: block;
-  background-color: #342844;
-  padding: 1.875rem 1.125rem;
-  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: #342844;
+  padding: 3rem 1.125rem;
+  border-radius: 25px;
+  gap: 15px;
 }
+
 .v-form-button {
   border-color: transparent;
 }
@@ -122,30 +126,36 @@ function createFactory() {
   display: flex;
   min-width: 100vw;
   min-height: 100vh;
-  /*background-image: url('../assets/single_rectangles.svg');
+  background-image: url('../assets/rectangles.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-position: right bottom; */
+  background-position: right bottom;
 }
 
 .container .s-item {
   display: flex;
   flex: 1 1 25%;
   position: relative;
-  align-items: flex-end;
-  padding: 2rem;
+  align-items: flex-start;
+  padding-top: 1rem;
+  padding-bottom: 3rem;
 }
 
 .container .m-item {
   flex: 1 1 50%;
   display: flex;
+  max-width: 700px;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
+
 .content-s-item {
   display: flex;
   position: absolute;
   bottom: 90%;
   top: 2.5%;
+  margin-left: 64px;
   cursor: pointer;
 }
 
@@ -153,6 +163,7 @@ function createFactory() {
   width: 2.5rem;
   height: min-content;
 }
+
 .content-s-item a {
   display: flex;
   gap: 0.625rem;
@@ -163,8 +174,11 @@ function createFactory() {
 
 .game-name {
   position: absolute;
-  top: 10%;
+  top: 17%;
+  font: normal normal bold 70px/84px Overpass;
+  letter-spacing: 0;
   font-weight: 400;
+  margin-bottom: 0;
 }
 
 .radio-option {
@@ -175,9 +189,11 @@ function createFactory() {
   padding: 0.5rem;
   accent-color: #683ce4;
 }
+
 .radio-option label {
   margin-left: 0.5rem;
 }
+
 /* .radio-option:checked::before {
   color: green;
 } */
@@ -189,7 +205,6 @@ function createFactory() {
   align-items: center;
   max-width: 700px;
   justify-content: center;
-  transform: translateX(12%);
 }
 
 .button-create {
@@ -207,10 +222,17 @@ function createFactory() {
 .content-s-item {
   display: flex;
   position: absolute;
-  align-items: center;
-  gap: 0.625rem;
   bottom: 90%;
   top: 2.5%;
+  margin-left: 64px;
+  cursor: pointer;
+}
+
+.container .l-item {
+  display: flex;
+  flex: 1 1 25%;
+  position: relative;
+  align-items: flex-start;
 }
 
 .content-s-item img {
@@ -222,14 +244,17 @@ function createFactory() {
   position: relative;
   min-width: 100%;
   top: 4rem;
-  padding: 1.5rem 2.25rem;
+  padding: 2.5rem 2.25rem;
 }
 
 .factory-name {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 1.5rem;
   margin: 1rem 2.5rem 1rem 2.5rem;
+  width: 100%;
 }
 
 .factory-name input {
@@ -239,6 +264,7 @@ function createFactory() {
   border: 2px solid #683ce4;
   border-radius: 30px;
   color: white;
+  width: 75%;
 }
 
 
@@ -273,8 +299,12 @@ input:focus {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 

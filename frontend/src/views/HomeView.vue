@@ -16,9 +16,6 @@ const {sessUser, updateSessUser} = useSessUser()
 const showLogin = ref(false)
 
 
-
-
-
 const logout = async () => {
   switch (await logoutUser()) {
 
@@ -50,15 +47,17 @@ onUnmounted(() => {
 
 <template>
   <div class="container">
-    <div class="s-item">
-      <div class="content-s-item">
-        <a @click="router.push('/')">
-          <img src="/icons8-fabric-96.png" width="20px" height="auto" alt=""/>
-          <p class="logo-title">Machine Deluxe 3000</p>
-        </a>
-      </div>
-      <div class="button-container">
-        <Button v-for="item in buttonData" :text="item.text" :link="item.link"></Button>
+    <div class="l-item">
+      <div class="s-item">
+        <div class="content-s-item">
+          <a @click="router.push('/')">
+            <img src="/icons8-fabric-96.png" width="20px" height="auto" alt=""/>
+            <p class="logo-title">Machine Deluxe 3000</p>
+          </a>
+        </div>
+        <div class="button-container">
+          <Button v-for="item in buttonData" :text="item.text" :link="item.link"></Button>
+        </div>
       </div>
     </div>
     <div class="m-item">
@@ -79,7 +78,7 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .container {
   display: flex;
   min-width: 100vw;
@@ -95,7 +94,14 @@ onUnmounted(() => {
   flex: 1 1 25%;
   position: relative;
   align-items: flex-start;
+  justify-content: flex-end;
   padding: 2rem;
+}
+.container .l-item {
+  display: flex;
+  flex: 1 1 25%;
+  position: relative;
+  align-items: flex-start;
 }
 
 .header {
@@ -192,7 +198,7 @@ onUnmounted(() => {
   position: absolute;
   bottom: 90%;
   top: 2.5%;
-  margin-left: 32px;
+  margin-left: 64px;
   cursor: pointer;
 }
 

@@ -144,14 +144,9 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* Center vertically */
-  justify-content: center;
-  /* Center horizontally */
   flex-grow: 0;
   /* Take up all available space in the left half */
   /*margin-left: 120px;*/
-
-
 }
 
 .factory-name {

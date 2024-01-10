@@ -91,26 +91,30 @@ const filteredFactories = computed(() => {
 
 <style scoped>
 .container {
-  align-items: baseline;
+  display: flex;
+  min-width: 100vw;
+  min-height: 100vh;
+  background-image: url('../assets/rectangles.svg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: right bottom;
 }
 
 .container .s-item {
   display: flex;
   flex: 1 1 25%;
   position: relative;
-  align-items: flex-end;
+  align-items: flex-start;
   padding-top: 1rem;
   padding-bottom: 3rem;
-  transform: translateY(50px);
 }
 
 .container .m-item {
   flex: 1 1 50%;
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
-  transform: translateY(30px);
+  align-items: center;
 }
 
 .headline {
@@ -124,6 +128,7 @@ const filteredFactories = computed(() => {
   position: absolute;
   bottom: 90%;
   top: 2.5%;
+  margin-left: 64px;
   cursor: pointer;
 }
 
@@ -151,7 +156,7 @@ const filteredFactories = computed(() => {
 
 input {
   display: block;
-  width: 390px;
+  width: 50%;
   background-color: transparent;
   padding: 12px 20px;
   box-sizing: border-box;
@@ -173,7 +178,7 @@ input:focus {
 
 .custom-select {
   position: relative;
-  width: 200px;
+  width: 20%;
 }
 
 select {
@@ -192,9 +197,14 @@ option {
 }
 
 .factory-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 40px;
-  justify-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6%;
+  justify-content: left;
 }
+.factory-cards > * {
+  margin-bottom: 3%; /* Vertical gap */
+}
+
+
 </style>
