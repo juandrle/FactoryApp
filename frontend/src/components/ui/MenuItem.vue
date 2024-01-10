@@ -80,7 +80,6 @@ const { category, isOpen, activeEntity } = defineProps(['category', 'isOpen', 'a
   border-radius: 1em;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
 }
 
 .sub-menu {
