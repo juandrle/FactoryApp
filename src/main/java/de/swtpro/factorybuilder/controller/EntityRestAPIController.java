@@ -99,7 +99,8 @@ public class EntityRestAPIController {
         boolean moved = placedModelService.moveModel(moveRequestDTO.id, pos);
         LOGGER.info(moveRequestDTO.toString());
         LOGGER.info("move entity: " + String.valueOf(moveRequestDTO.id) + String.valueOf(moved));
-        return ResponseEntity.ok(true);
+        LOGGER.info("Moved: " + moved);
+        return ResponseEntity.ok(moved);
     }
 
     @CrossOrigin

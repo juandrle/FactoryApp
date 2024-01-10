@@ -138,33 +138,36 @@ public class PlacedModelService {
         int extraX = 0, extraY = 0;
         Input input = thisModel.getInputByPosition(f.getPosition());
         Output output = thisModel.getOutputByPosition(f.getPosition());
+        int height, width;
 
         switch (ori) {
             case "North":
-                if (f.getPosition().getY() > 0) {
+                height = -factory.getHeight()/2 +1;
+                if (f.getPosition().getY() > height) {
                     condition = true;
                     extraY = -1;
                 }
                 counterOri = "South";
                 break;
             case "South":
-                int height = factory.getHeight();
-                if (f.getPosition().getY() < height - 1) {
+                height = factory.getHeight();
+                if (f.getPosition().getY() < height/2- 1) {
                     condition = true;
                     extraY = 1;
                 }
                 counterOri = "North";
                 break;
             case "East":
-                int width = factory.getWidth();
-                if (f.getPosition().getX() < width - 1) {
+                width = factory.getWidth()/2 - 1;
+                if (f.getPosition().getX() < width) {
                     condition = true;
                     extraX = 1;
                 }
                 counterOri = "West";
                 break;
             case "West":
-                if (f.getPosition().getX() > 0) {
+                width = factory.getWidth()/2 + 1;
+                if (f.getPosition().getX() > width) {
                     condition = true;
                     extraX = -1;
                 }
@@ -174,35 +177,32 @@ public class PlacedModelService {
         if (condition) {
             Position tmpPosition = new Position(f.getPosition().getX() + extraX, f.getPosition().getY() + extraY,
                     f.getPosition().getZ());
-            // Wegen switch case kein Nullcheck nötig
-            // TODO: fieldservice rausbekommen?
             Field tmpField = fieldService.getFieldByPosition(tmpPosition, thisModel.getFactoryID()).orElse(null);
             assert tmpField != null;
-            // TODO: Null Check
             PlacedModel tmpPlacedModel = tmpField.getPlacedModel();
 
-            if (thisModel.getId() == tmpPlacedModel.getId())
+            if (tmpPlacedModel!= null && thisModel.getId() == tmpPlacedModel.getId())
                 return true;
 
             // zeigt mein input auf ein feld das kein output ist
             if (input != null && input.getOrientation().equals(ori)) {
-                if (!tmpPlacedModel.getOutputByPosition(tmpPosition).getOrientation().equals(counterOri))
-                    return false;
+                assert tmpPlacedModel != null;
+                return tmpPlacedModel.getOutputByPosition(tmpPosition).getOrientation().equals(counterOri);
 
             }
             // zeigt mein output auf ein feld das kein input ist
             else if (output != null && output.getOrientation().equals(ori)) {
-                if (!tmpPlacedModel.getInputByPosition(tmpPosition).getOrientation().equals(counterOri))
-                    return false;
+                assert tmpPlacedModel != null;
+                return tmpPlacedModel.getInputByPosition(tmpPosition).getOrientation().equals(counterOri);
 
             }
             // zeigt mein feld auf ein feld das einen in/output in richtugn meines feldes
             // hat
             else {
+                assert tmpPlacedModel != null;
                 if (tmpPlacedModel.getOutputByPosition(tmpPosition).getOrientation().equals(counterOri))
                     return false;
-                if (tmpPlacedModel.getInputByPosition(tmpPosition).getOrientation().equals(counterOri))
-                    return false;
+                return !tmpPlacedModel.getInputByPosition(tmpPosition).getOrientation().equals(counterOri);
 
             }
         }
