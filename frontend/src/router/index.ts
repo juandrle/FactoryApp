@@ -4,7 +4,7 @@ import Factory from "@/views/Factory.vue";
 import FactoryCreateView from "@/views/FactoryCreateView.vue";
 import FactoryEnterView from "@/views/FactoryEnterView.vue";
 import LoginView from "@/views/LoginView.vue";
-import FactoryMenu from "@/components/ui/FactoryMenu.vue";
+import FactoryMenu from "@/components/ui/SideBar.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),

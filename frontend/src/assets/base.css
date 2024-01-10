@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Overpass&display=swap');
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 :root {
   --color-text-light: #ffffff;

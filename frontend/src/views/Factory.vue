@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { Ref } from 'vue'
-import { onMounted, onUnmounted, provide, ref, watch } from 'vue'
-import type { IEntity, IVector3 } from '@/types/global'
-import type { IBackendEntity, IBackendEntityPreview } from '@/types/backendTypes'
+import type {Ref} from 'vue'
+import {onMounted, onUnmounted, provide, ref, watch} from 'vue'
+import type {IEntity, IVector3} from '@/types/global'
+import type {IBackendEntity, IBackendEntityPreview} from '@/types/backendTypes'
 import * as THREE from 'three'
-import { CameraControlsManager } from '@/classes/cameraControls/CameraControlsManager'
-import { getIntersectionsMouse } from '@/utils/threeJS/3d'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import {CameraControlsManager} from '@/classes/cameraControls/CameraControlsManager'
+import {getIntersectionsMouse} from '@/utils/threeJS/3d'
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
 import CircularMenu from '@/components/ui/CircularMenu.vue'
 import {
   factoryImageUpdate,
@@ -14,11 +14,11 @@ import {
   placeRequest,
   rotationRequest
 } from '@/utils/backendComms/postRequests'
-import { entityDeleteRequest } from '@/utils/backendComms/deleteRequest'
-import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backendComms/getRequests'
-import { backendUrl } from '@/utils/config/config'
-import { CameraMode } from '@/enum/CameraMode'
-import { ManipulationMode } from '@/enum/ManipulationMode'
+import {entityDeleteRequest} from '@/utils/backendComms/deleteRequest'
+import {getAllEntities, getAllEntitiesInFactory} from '@/utils/backendComms/getRequests'
+import {backendUrl} from '@/utils/config/config'
+import {CameraMode} from '@/enum/CameraMode'
+import {ManipulationMode} from '@/enum/ManipulationMode'
 
 import {
   createRoom,
@@ -33,10 +33,11 @@ import {
   replaceEntity,
   makeObjectTransparent
 } from '@/utils/threeJS/entityManipulation'
-import { rotateModel, rotateModelfromXtoY, turnLeft, turnRight } from '@/utils/rotation/rotate'
-import { useFactoryID } from '@/utils/stateCompFunction/useFactoryID'
-import { useFactorySize } from '@/utils/stateCompFunction/useFactorySize'
+import {rotateModel, rotateModelfromXtoY, turnLeft, turnRight} from '@/utils/rotation/rotate'
+import {useFactoryID} from '@/utils/stateCompFunction/useFactoryID'
+import {useFactorySize} from '@/utils/stateCompFunction/useFactorySize'
 import MenuBar from '@/components/ui/MenuBar.vue'
+import FactoryMenu from "@/components/ui/SideBar.vue";
 
 /**
  * Config
@@ -47,7 +48,7 @@ const ACTIVE_LAYER: number = 0
 /**
  * Variables -> ref
  **/
-
+const showSideMenu = ref(false)
 const target = ref()
 const manipulationMode: Ref<ManipulationMode> = ref<ManipulationMode>(ManipulationMode.IDLE)
 const allEntities: Ref<IBackendEntityPreview[] | undefined> = ref()
@@ -62,7 +63,7 @@ const currentCameraMode: Ref<CameraMode | null> = ref(CameraMode.ORBIT)
 /**
  * Variables
  **/
-let currObjSelectedOriginPos: IVector3 = { x: 0, y: 0, z: 0 }
+let currObjSelectedOriginPos: IVector3 = {x: 0, y: 0, z: 0}
 let dynamicDiv: HTMLElement | null
 let sizes: {
   width: number
@@ -128,17 +129,17 @@ const setupLoader = () => {
 
 const initalLoadHighlightModel = (modelUrl: string) => {
   loader.load(
-    modelUrl,
-    (gltf: any) => {
-      highlight = gltf.scene
-      highlight.position.set(0, 0, 0)
-      scene.add(highlight)
-      highlight.name = 'highlight'
-    },
-    undefined,
-    (error: Error) => {
-      console.error(error)
-    }
+      modelUrl,
+      (gltf: any) => {
+        highlight = gltf.scene
+        highlight.position.set(0, 0, 0)
+        scene.add(highlight)
+        highlight.name = 'highlight'
+      },
+      undefined,
+      (error: Error) => {
+        console.error(error)
+      }
   )
 }
 
@@ -156,6 +157,12 @@ const captureScreenshot = () => {
 
 const onToggleMenuVisibility = () => {
   showCircMenu.value = !showCircMenu.value
+}
+const onToggleSideMenuVisibility = (open: boolean) => {
+  if (open) showSideMenu.value = !showSideMenu.value
+  else setTimeout(() => {
+    showSideMenu.value = !showSideMenu.value;
+  }, 500)
 }
 
 const onChangeEntityClicked = (situation: string) => {
@@ -218,16 +225,16 @@ const onChangeEntityClicked = (situation: string) => {
       if (allEntities.value) {
         // Find highlight by name
         activeEntity.value = allEntities.value.find(
-          (obj) => obj.name === allPlacedEntities[currentObjectSelected.uuid].modelId
+            (obj) => obj.name === allPlacedEntities[currentObjectSelected.uuid].modelId
         )
 
         // If it was the same, update manually
         if (activeEntity.value)
           updateHighlightModel(
-            highlight,
-            backendUrl + activeEntity.value.modelFile,
-            scene,
-            loader
+              highlight,
+              backendUrl + activeEntity.value.modelFile,
+              scene,
+              loader
           ).then((newHighlight: THREE.Group) => {
             highlight = newHighlight
           })
@@ -244,7 +251,6 @@ const onChangeEntityClicked = (situation: string) => {
 /**
  * Handlers
  **/
-
 const handleResize = () => {
   // Variables
   sizes = {
@@ -268,31 +274,31 @@ const handleKeyDown = (event: KeyboardEvent) => {
           orientation: allPlacedEntities[currentObjectSelected.uuid].orientation,
           factoryId: factoryID.value
         })
-          .then((res) => res.json())
-          .then((success) => {
-            if (!success) {
-              rotateModelfromXtoY(
-                originalOrientation,
-                allPlacedEntities[currentObjectSelected.uuid].orientation,
-                pivot
-              )
-            }
-          })
+            .then((res) => res.json())
+            .then((success) => {
+              if (!success) {
+                rotateModelfromXtoY(
+                    originalOrientation,
+                    allPlacedEntities[currentObjectSelected.uuid].orientation,
+                    pivot
+                )
+              }
+            })
       }
 
-      
+
       showDynamicDiv.value = false
       showCircMenu.value = false
       if (currentObjectSelected) highlightObjectWithColor(currentObjectSelected, false)
 
-      if(manipulationMode.value === ManipulationMode.SET){
+      if (manipulationMode.value === ManipulationMode.SET) {
         manipulationMode.value = ManipulationMode.IDLE
         scene.remove(highlight)
       } else {
         manipulationMode.value = ManipulationMode.SET
         scene.add(highlight)
       }
-      
+
       break
 
     case 'ESCAPE':
@@ -301,6 +307,10 @@ const handleKeyDown = (event: KeyboardEvent) => {
           // Zurücksetzen
           replaceEntity(currObjSelectedOriginPos, currentObjectSelected, currentObjectSelected)
           manipulationMode.value = ManipulationMode.IDLE
+          break
+        default:
+          if (!showSideMenu.value) onToggleSideMenuVisibility(true)
+          break
       }
       break
 
@@ -309,7 +319,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
         case ManipulationMode.ROTATE:
           rotateModel('left', pivot)
           allPlacedEntities[currentObjectSelected.uuid].orientation = turnLeft(
-            allPlacedEntities[currentObjectSelected.uuid].orientation
+              allPlacedEntities[currentObjectSelected.uuid].orientation
           )
       }
       break
@@ -319,7 +329,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
         case ManipulationMode.ROTATE:
           rotateModel('right', pivot)
           allPlacedEntities[currentObjectSelected.uuid].orientation = turnRight(
-            allPlacedEntities[currentObjectSelected.uuid].orientation
+              allPlacedEntities[currentObjectSelected.uuid].orientation
           )
       }
       break
@@ -342,15 +352,15 @@ const handleMouseMove = (event: MouseEvent) => {
     highlightIsIntersectingWithObjects.value = moveHighlight(highlight, ACTIVE_LAYER, intersections)
   } else if (currentObjectSelected && manipulationMode.value === ManipulationMode.MOVE) {
     highlightIsIntersectingWithObjects.value = moveHighlight(
-      currentObjectSelected,
-      ACTIVE_LAYER,
-      intersections
+        currentObjectSelected,
+        ACTIVE_LAYER,
+        intersections
     )
   } else if (currentObjectSelected && manipulationMode.value === ManipulationMode.CLONE) {
     highlightIsIntersectingWithObjects.value = moveHighlight(
-      currentObjectSelected,
-      ACTIVE_LAYER,
-      intersections
+        currentObjectSelected,
+        ACTIVE_LAYER,
+        intersections
     )
   }
 }
@@ -382,27 +392,27 @@ const handleClick = (event: any) => {
           modelId: activeEntity.value.name,
           factoryID: factoryID.value
         })
-          .then((response) => response.json())
-          .then((id) => {
-            if (id === -1) return
-            if (activeEntity.value) {
-              placeEntity(
-                loader,
-                scene,
-                highlight.position,
-                backendUrl + activeEntity.value.modelFile
-              ).then((uuid) => {
-                if (activeEntity.value)
-                  // ...bruh
-                  allPlacedEntities[uuid] = {
-                    id: id,
-                    orientation: 'North',
-                    modelId: activeEntity.value.name
-                  }
-              })
-            }
-          })
-          .catch((error) => console.error('Es gab einen Fehler:', error))
+            .then((response) => response.json())
+            .then((id) => {
+              if (id === -1) return
+              if (activeEntity.value) {
+                placeEntity(
+                    loader,
+                    scene,
+                    highlight.position,
+                    backendUrl + activeEntity.value.modelFile
+                ).then((uuid) => {
+                  if (activeEntity.value)
+                      // ...bruh
+                    allPlacedEntities[uuid] = {
+                      id: id,
+                      orientation: 'North',
+                      modelId: activeEntity.value.name
+                    }
+                })
+              }
+            })
+            .catch((error) => console.error('Es gab einen Fehler:', error))
       }
       break
     case ManipulationMode.MOVE:
@@ -413,16 +423,16 @@ const handleClick = (event: any) => {
         id: allPlacedEntities[currentObjectSelected.uuid].id,
         factoryId: factoryID.value
       })
-        .then((response) => response.json())
-        .then((success: boolean) => {
-          if (success) {
-            console.log('moved')
-            replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
-            manipulationMode.value = ManipulationMode.IDLE
-          } else {
-            console.log('not moved')
-          }
-        })
+          .then((response) => response.json())
+          .then((success: boolean) => {
+            if (success) {
+              console.log('moved')
+              replaceEntity(currentObjectSelected.position, currentObjectSelected, lastObjectSelected)
+              manipulationMode.value = ManipulationMode.IDLE
+            } else {
+              console.log('not moved')
+            }
+          })
       break
   }
 }
@@ -434,7 +444,7 @@ const handleContextMenu = (event: MouseEvent) => {
   const intersections = getIntersectionsMouse(event, camera, scene)
   const result = selectionObject(currentObjectSelected, lastObjectSelected, intersections)
   if (result && typeof result === 'object') {
-    const { worked, currObj, lastObj } = result
+    const {worked, currObj, lastObj} = result
     if (worked) {
       currentObjectSelected = currObj
       originalOrientation = allPlacedEntities[currentObjectSelected.uuid].orientation
@@ -454,18 +464,18 @@ const handleContextMenu = (event: MouseEvent) => {
 
 const handleMouseDown = () => {
   if (
-    (manipulationMode.value == ManipulationMode.SET ||
-      manipulationMode.value === ManipulationMode.MOVE) &&
-    CameraMode.ORBIT
+      (manipulationMode.value == ManipulationMode.SET ||
+          manipulationMode.value === ManipulationMode.MOVE) &&
+      CameraMode.ORBIT
   )
     ccm.controls.enabled = false
 }
 
 const handleMouseRelease = () => {
   if (
-    (manipulationMode.value == ManipulationMode.SET ||
-      manipulationMode.value === ManipulationMode.MOVE) &&
-    CameraMode.ORBIT
+      (manipulationMode.value == ManipulationMode.SET ||
+          manipulationMode.value === ManipulationMode.MOVE) &&
+      CameraMode.ORBIT
   )
     ccm.controls.enabled = true
 }
@@ -479,9 +489,9 @@ watch(activeEntity, () => {
 
   if (activeEntity.value) {
     updateHighlightModel(highlight, backendUrl + activeEntity.value.modelFile, scene, loader).then(
-      (newHighlight: THREE.Group) => {
-        highlight = newHighlight
-      }
+        (newHighlight: THREE.Group) => {
+          highlight = newHighlight
+        }
     )
   } else initalLoadHighlightModel('mock/.gltf/cube.gltf')
 })
@@ -526,10 +536,10 @@ onMounted(() => {
     console.log('load all factorys ', factoryID.value)
     backendEntitys.forEach((backendEntity) => {
       placeEntity(
-        loader,
-        scene,
-        { x: backendEntity.x, y: backendEntity.y, z: backendEntity.z },
-        backendUrl + backendEntity.path
+          loader,
+          scene,
+          {x: backendEntity.x, y: backendEntity.y, z: backendEntity.z},
+          backendUrl + backendEntity.path
       ).then((uuid) => {
         allPlacedEntities[uuid] = {
           id: backendEntity.id,
@@ -593,22 +603,23 @@ init()
   <div class="target" ref="target">
     <div id="dynamicDiv" style="position: absolute">
       <CircularMenu
-        :is-button-visible="showCircMenu"
-        :toggleMenuVisibility="onToggleMenuVisibility"
-        @changeEntity="onChangeEntityClicked"
+          :is-button-visible="showCircMenu"
+          :toggleMenuVisibility="onToggleMenuVisibility"
+          @changeEntity="onChangeEntityClicked"
       ></CircularMenu>
     </div>
     <div class="debug-bar"></div>
     <MenuBar
-      id="ignore"
-      v-if="allEntities && currentCameraMode === 1"
-      :entities="allEntities"
-      :active-entity="activeEntity"
-      @update-active-entity="
+        id="ignore"
+        v-if="allEntities && currentCameraMode === 1"
+        :entities="allEntities"
+        :active-entity="activeEntity"
+        @update-active-entity="
         (name) => (activeEntity = allEntities.find((obj) => obj.name === name))
       "
     />
   </div>
+  <FactoryMenu v-if="showSideMenu" @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
 </template>
 
 <style>

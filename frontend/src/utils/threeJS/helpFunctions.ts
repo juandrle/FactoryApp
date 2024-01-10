@@ -129,7 +129,6 @@ export const moveHighlight = (highlight: any, activeLayer: number, intersections
         highlightBox.expandByScalar(-contractionAmount);
         const sceneObjects = highlight.parent.children
         let filteredSceneObjects = sceneObjects.filter((item: any) => (item.name.includes('entity')))
-        console.log(filteredSceneObjects)
         for (const obj of filteredSceneObjects) {
             const objBox = new THREE.Box3().setFromObject(obj);
             if (highlightBox.intersectsBox(objBox)) {
