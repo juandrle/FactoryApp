@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineProps, onMounted, ref} from 'vue'
+import {defineProps, defineEmits, onMounted, ref} from 'vue'
 import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
 import {getFactoryImage} from '@/utils/backendComms/getRequests'
 import router from '@/router'
@@ -76,7 +76,7 @@ const deleteButtonClicked = () => {
 
 onMounted(() => {
   getFactoryImage(props.factory?.id).then((dataURL) => {
-    currentPicture.value = dataURL.toString()
+    if (dataURL !== 'failed') currentPicture.value = dataURL.toString()
   })
 })
 

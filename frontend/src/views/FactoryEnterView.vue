@@ -77,7 +77,7 @@ const onPopupClosed = (toDelete?: boolean) => {
       <h1 class="headline">enter factory</h1>
       <div class="contentDiv">
         <div class="filter-div">
-          <input placeholder="Suche..." v-model="searchTerm"/>
+          <input placeholder="Search..." v-model="searchTerm"/>
           <div class="custom-select">
             <select v-model="currOwner">
               <option v-for="o in owner" :value="o.value">{{ o.label }}</option>
@@ -221,7 +221,7 @@ option {
 }
 .factory-cards > * {
   cursor: pointer;
-  margin-bottom: 3%; /* Vertical gap */
+  margin-bottom: 3%;
 }
 
 

@@ -4,7 +4,7 @@ import type {Ref} from 'vue'
 import Button from '../components/ui/Button.vue'
 import type {IVector3} from "@/types/global"
 import router from "@/router";
-import {factoryCreateRequest} from "@/utils/backendComms/postRequests"
+import {factoryCreateRequest, logoutUser} from "@/utils/backendComms/postRequests"
 import type {IFactoryCreate} from "@/types/backendTypes"
 import {useFactory} from "@/utils/stateCompFunction/useFactory"
 import {useSessUser} from "@/utils/stateCompFunction/useSessUser"
@@ -51,6 +51,11 @@ function createFactory() {
 
     factoryCreateRequest(factory)
         .then((newID: number) => {
+          // case it didnt work out log user out, because only possible way it fails to make new factory is if the user doesn't exist
+          if (newID === 0) {
+            logout()
+            return
+          }
           updateFactoryID(newID)
           updateFactoryName(factoryName.value)
           router.push('/factory')
@@ -65,7 +70,14 @@ function createFactory() {
     console.error("Please fill all fields before creating the factory.")
   }
 }
+const logout = async () => {
+  switch (await logoutUser()) {
 
+    case "logout successful":
+      useSessUser().updateSessUser('')
+      await router.push('/login')
+  }
+}
 </script>
 <template>
   <div class="container">

@@ -111,11 +111,12 @@ public class FactoryRestAPIController {
     public ResponseEntity<String> getImage(@PathVariable long factoryID) {
         try {
             Factory factory = factoryService.getFactoryById(factoryID).orElseThrow();
+            if (factory.getScreenshot() == null) throw new Exception("failed");
             String dataUrl = imgConverterService.byteArrayToDataUrl(factory.getScreenshot(), "image/png");
             return ResponseEntity.ok(dataUrl);
 
         } catch (Exception e) {
-            return ResponseEntity.ok("failed");
+            return ResponseEntity.ok(e.getMessage());
         }
     }
 
