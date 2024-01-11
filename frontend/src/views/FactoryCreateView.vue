@@ -6,9 +6,8 @@ import type {IVector3} from "@/types/global"
 import router from "@/router";
 import {factoryCreateRequest} from "@/utils/backendComms/postRequests"
 import type {IFactoryCreate} from "@/types/backendTypes"
-import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
-import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
-import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
+import {useFactory} from "@/utils/stateCompFunction/useFactory"
+import {useSessUser} from "@/utils/stateCompFunction/useSessUser"
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
@@ -19,8 +18,9 @@ const sizes = ref([
 const factoryName = ref('')
 const factoryPassword = ref('')
 const selectedSize = ref()
-const updateFactorySize: (newSize: IVector3) => void = useFactorySize().updateFactorySize
-const updateFactoryID: (newID: number) => void = useFactoryID().updateFactoryID
+const updateFactorySize: (newSize: IVector3) => void = useFactory().updateFactorySize
+const updateFactoryID: (newID: number) => void = useFactory().updateFactoryID
+const updateFactoryName: (newName: string) => void = useFactory().updateFactoryName
 const sessUser = useSessUser().sessUser
 computed((size) => {
   return {
@@ -51,17 +51,18 @@ function createFactory() {
 
     factoryCreateRequest(factory)
         .then((newID: number) => {
-          updateFactoryID(newID);
-          router.push('/factory');
+          updateFactoryID(newID)
+          updateFactoryName(factoryName.value)
+          router.push('/factory')
         })
         .catch((error) => {
-          console.error("Failed to create factory", error);
+          console.error("Failed to create factory", error)
         })
         .finally(() => {
-          isLoading.value = false;
+          isLoading.value = false
         });
   } else {
-    console.error("Please fill all fields before creating the factory.");
+    console.error("Please fill all fields before creating the factory.")
   }
 }
 

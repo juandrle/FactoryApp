@@ -1,21 +1,16 @@
 <script setup lang="ts">
-import {defineProps, inject, onMounted, type Ref, ref} from 'vue'
+import {defineProps, onMounted, ref} from 'vue'
 import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
 import {getFactoryImage} from '@/utils/backendComms/getRequests'
 import router from '@/router'
 import {backendUrl} from '@/utils/config/config'
 import type {IVector3} from "@/types/global";
-import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
-import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
+import {useFactory} from "@/utils/stateCompFunction/useFactory";
 import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
-import {factoryDeleteRequest} from "@/utils/backendComms/deleteRequest";
 
-const props = defineProps({
-  factory: {
-    type: Object as () => IFactory,
-    required: true
-  }
-})
+const props = defineProps<{
+  factory: IFactory
+}>()
 const emit = defineEmits<{
   deleteClicked: (payload: { factoryDelete: IFactoryDelete, factoryName: string }) => void
 }>()
@@ -26,8 +21,9 @@ const currentPicture = ref(
 )
 const isInputValid = ref(true)
 const currentlyRotatedCard = ref<HTMLElement | null>(null)
-let updateFactorySize: (newSize: IVector3) => void = useFactorySize().updateFactorySize
-let updateFactoryID: (newID: number) => void = useFactoryID().updateFactoryID
+let updateFactorySize: (newSize: IVector3) => void = useFactory().updateFactorySize
+let updateFactoryID: (newID: number) => void = useFactory().updateFactoryID
+let updateFactoryName = useFactory().updateFactoryName
 const sessUser = useSessUser().sessUser
 
 const rotateCard = (clickTarget: EventTarget | null) => {
@@ -40,6 +36,7 @@ const rotateCard = (clickTarget: EventTarget | null) => {
   } as IVector3
   updateFactoryID(props.factory?.id)
   updateFactorySize(newSize)
+  updateFactoryName(props.factory.name)
   if (!props.factory.hasPassword || props.factory?.author === sessUser.value) {
     router.push('/factory')
   } else {
@@ -74,7 +71,7 @@ const deleteButtonClicked = () => {
      id: props.factory?.id,
      element: factoryCardRef.value
    }  as IFactoryDelete
-  emit('deleteClicked', { factoryDelete: factoryDelete, factoryName: props.factory?.name })
+  emit('deleteClicked', { factoryDelete: factoryDelete, factoryName: props.factory.name })
 }
 
 onMounted(() => {

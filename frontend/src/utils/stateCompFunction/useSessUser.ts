@@ -1,15 +1,24 @@
-import { ref, readonly, type Ref } from 'vue';
+import { ref, readonly, computed } from 'vue';
 
-const sessUser: Ref<string> = ref('');
+const defaultSessUser = '';
+
+const sessUser = ref(localStorage.getItem('sessUser') || defaultSessUser);
 
 export function useSessUser() {
     const updateSessUser = (newUser: string) => {
         sessUser.value = newUser;
+        localStorage.setItem('sessUser', newUser);
         console.log('Updating sessUser', sessUser.value);
     };
 
+    const computedSessUser = computed(() => {
+        return sessUser.value === defaultSessUser
+            ? localStorage.getItem('sessUser') || defaultSessUser
+            : sessUser.value;
+    });
+
     return {
-        sessUser: readonly(sessUser),
+        sessUser: readonly(computedSessUser),
         updateSessUser,
     };
 }

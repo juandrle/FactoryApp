@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {Ref} from 'vue'
-import {onMounted, onUnmounted, provide, ref, watch} from 'vue'
+import {onBeforeUnmount, onMounted, onUnmounted, provide, ref, watch} from 'vue'
 import type {IEntity, IVector3} from '@/types/global'
 import type {IBackendEntity, IBackendEntityPreview} from '@/types/backendTypes'
 import * as THREE from 'three'
@@ -34,10 +34,10 @@ import {
   makeObjectTransparent
 } from '@/utils/threeJS/entityManipulation'
 import {rotateModel, rotateModelfromXtoY, turnLeft, turnRight} from '@/utils/rotation/rotate'
-import {useFactoryID} from '@/utils/stateCompFunction/useFactoryID'
-import {useFactorySize} from '@/utils/stateCompFunction/useFactorySize'
+import {useFactory} from '@/utils/stateCompFunction/useFactory'
 import MenuBar from '@/components/ui/MenuBar.vue'
 import FactoryMenu from "@/components/ui/SideBar.vue";
+import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
 
 /**
  * Config
@@ -56,8 +56,9 @@ const activeEntity: Ref<IBackendEntityPreview | undefined> = ref()
 const showCircMenu: Ref<Boolean> = ref(false)
 const showDynamicDiv: Ref<Boolean> = ref(false)
 const highlightIsIntersectingWithObjects = ref(false)
-const factorySize: Ref<IVector3> = useFactorySize().factorySize
-const factoryID: Ref<number> = useFactoryID().factoryID
+const factorySize: Ref<IVector3> = useFactory().factorySize
+const factoryID: Ref<number> = useFactory().factoryID
+const factoryName: Ref<string> = useFactory().factoryName
 const currentCameraMode: Ref<CameraMode | null> = ref(CameraMode.ORBIT)
 
 /**
@@ -553,14 +554,13 @@ onMounted(() => {
   // initial function calls
   animate(0)
 })
-
-onUnmounted(() => {
-  // remove eventListeners
+onBeforeUnmount(() => {
   factoryImageUpdate(factoryID.value, captureScreenshot()).then((success: boolean) => {
     if (success) console.log('successfully saved image')
     else console.log("didn't save image")
   })
-
+})
+onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
   window.removeEventListener('keydown', handleKeyDown)
   window.removeEventListener('mousemove', handleMouseMove)
@@ -619,7 +619,7 @@ init()
       "
     />
   </div>
-  <FactoryMenu v-if="showSideMenu" @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
+  <FactoryMenu :username="useSessUser().sessUser" :factory-name="factoryName" v-if="showSideMenu" @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
 </template>
 
 <style>
