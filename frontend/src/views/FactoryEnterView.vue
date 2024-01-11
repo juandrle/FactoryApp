@@ -114,6 +114,7 @@ const onPopupClosed = (toDelete?: boolean) => {
   background-attachment: fixed;
   background-position: right bottom;
   user-select: none;
+  align-items: baseline;
 }
 
 .container .s-item {
@@ -143,7 +144,7 @@ const onPopupClosed = (toDelete?: boolean) => {
   display: flex;
   position: absolute;
   bottom: 90%;
-  top: 2.5%;
+  top: 25px;
   margin-left: 64px;
   cursor: pointer;
 }
