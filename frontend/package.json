@@ -15,6 +15,9 @@
     "@headlessui/vue": "^1.7.17",
     "@heroicons/vue": "^2.1.1",
     "@stomp/stompjs": "^7.0.0",
+    "marked": "^11.1.1",
+    "monaco": "^1.201704190613.0",
+    "monaco-editor": "^0.45.0",
     "three": "^0.158.0",
     "vue": "^3.2.36",
     "vue-router": "^4.2.5"
