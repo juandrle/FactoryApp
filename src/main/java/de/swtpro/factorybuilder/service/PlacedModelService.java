@@ -156,7 +156,7 @@ public class PlacedModelService {
                     placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"South"));
                     placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"West"));
                     f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"South"));
+                    placedInputs.add(createInput(f,"West"));
                     f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
                     placedInputs.add(createInput(f,"North"));
     
@@ -186,7 +186,7 @@ public class PlacedModelService {
     
                     // output
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"South"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
                     placedOutputs.add(createOutput(f,"South"));
                     f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
                     placedOutputs.add(createOutput(f,"South"));
@@ -252,7 +252,7 @@ public class PlacedModelService {
         return placedModelRepository.findByFactory(factory);
     }
     private void removeModelFromField(Field field) {
-        field.setPlacedModel(null);
+        fieldService.deletePlacedModelOnField(field);
     }
     private boolean checkField(Field f, PlacedModel thisModel, String ori, Factory factory) {
         boolean condition = false;
@@ -408,19 +408,15 @@ public class PlacedModelService {
         };
     }
     public boolean removeModelFromFactory(long placedModelID) {
-        // TODO: placedModelID to String (UUID from frontend) NULL HANDLING
         PlacedModel placedModel = getPlacedModelById(placedModelID).orElse(null);
-        // Factory factory = getFactoryByID(placedModel.getFactoryID());
-        List<Field> fieldsOfPlacedModel = placedModel.getPlacedFields();
-        // TODO: delete placedmodel from grid, placedModel and factory repos
-        placedModelRepository.deleteById(placedModelID);
-        // what does a valid delete look like ?
-        // valid delete from repository? -> return true
-        for (Field f : fieldsOfPlacedModel) {
+        if (placedModel == null) return false;
+
+        for (Field f: placedModel.getPlacedFields()) {
             removeModelFromField(f);
         }
-        // non valid delete from repository -> reinitialize fields and return false
-        // hard coded for skeleton round-trip
+
+        placedModelRepository.deleteById(placedModelID);
+
         return true;
     }
     public boolean moveModel(long modelID, Position newRootPosition) {
