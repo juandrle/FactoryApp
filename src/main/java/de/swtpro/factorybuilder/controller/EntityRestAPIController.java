@@ -16,9 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException.Conflict;
 
 import java.util.List;
 
@@ -66,9 +68,15 @@ public class EntityRestAPIController {
         Model model = modelService.getByName(placeRequestDTO.modelId).orElseThrow();
         PlacedModel placedModel = placedModelService.createPlacedModel(model,pos,placeRequestDTO.factoryID);
 
-        LOGGER.info(placedModel.toString());
+        
+        if (placedModel == null) {
+            // TODO: handle conflict status in frontend?
+            // return conflict status (HTTP 409) when placedModel is null
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        
+        LOGGER.info("placed Model with placedModelID: " + placedModel.getId() + " and modelID: " + placedModel.getModelId() + ", called " + placedModel.getModel().getName());
 
-        // Entity wir in Datenbank erzeugt, und id wird gesendet
         return ResponseEntity.ok(placedModel.getId());
     }
 
