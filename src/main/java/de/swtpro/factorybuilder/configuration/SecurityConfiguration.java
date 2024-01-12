@@ -26,12 +26,17 @@ import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import de.swtpro.factorybuilder.controller.UserRestController;
+
+import java.security.PublicKey;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
     Logger logger = LoggerFactory.getLogger(SecurityConfiguration.class);
-    @Autowired
     HandlerMappingIntrospector introspector;
+    SecurityConfiguration(HandlerMappingIntrospector introspector){
+       this.introspector = introspector;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

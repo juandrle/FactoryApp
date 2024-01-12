@@ -38,6 +38,7 @@ import {useFactory} from '@/utils/stateCompFunction/useFactory'
 import MenuBar from '@/components/ui/MenuBar.vue'
 import FactoryMenu from "@/components/ui/SideBar.vue";
 import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
+import {useError} from "@/utils/stateCompFunction/useError";
 
 /**
  * Config
@@ -429,7 +430,11 @@ const handleClick = (event: any) => {
                 })
               }
             })
-            .catch((error) => console.error('Es gab einen Fehler:', error))
+            .catch((error) => {
+              useError().updateErrorMessage("Can't Place Entity", "factoryMissing")
+              if (!useError().showErrorMessage.value) useError().toggleShowErrorMessage()
+              console.error('Es gab einen Fehler:', error)
+            })
       }
       break
     case ManipulationMode.MOVE:
@@ -546,6 +551,8 @@ onMounted(() => {
     allEntities.value = json
     // Active entity ändern
     activeEntity.value = allEntities.value[0]
+  }).catch((error: Error) => {
+    console.error("An error occurred during fetching all Entities: ", error)
   })
 
   // Load all

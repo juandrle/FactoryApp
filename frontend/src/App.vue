@@ -1,25 +1,27 @@
 <script setup lang="ts">
 import {RouterView} from 'vue-router'
 import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
-import {ref, watch} from "vue";
-import LogoutAlert from "@/components/ui/LogoutAlert.vue";
+import {type Ref, ref, watch} from "vue";
+import LogoutAlert from "@/components/ui/alert/LogoutAlert.vue";
+import ErrorAlert from "@/components/ui/alert/ErrorAlert.vue";
+import {useError} from "@/utils/stateCompFunction/useError";
 
-const showLogoutPopup = ref(false)
+const showLogoutPopup: Ref<boolean> = ref(false)
+const showErrorMessage: Readonly<Ref<boolean>> = useError().showErrorMessage
 
 watch(useSessionUser().remainingTime, (newValue) => {
   if (newValue < 6000 * 5) showLogoutPopup.value = true
 })
 watch(showLogoutPopup, (newValue) => {
-  console.log(newValue)
   if (!newValue) useSessionUser().manageLogoutTimer()
 })
 </script>
 
 <template>
-  <div class="fixed inset-x-0 bottom-0 px-4 py-3 flex justify-center items-center z-50">
-    <LogoutAlert v-if="showLogoutPopup" :time-left-till-logout="useSessionUser().remainingTime" id="ignore"
-                 @click.stop="showLogoutPopup = false"></LogoutAlert>
-  </div>
+  <LogoutAlert v-if="showLogoutPopup" :time-left-till-logout="useSessionUser().remainingTime"
+               @click.stop="showLogoutPopup = false"></LogoutAlert>
+  <ErrorAlert v-if="showErrorMessage" :error-message="useError().errorMessage.value"
+              @click.stop="useError().toggleShowErrorMessage()"></ErrorAlert>
   <RouterView/>
 </template>
 

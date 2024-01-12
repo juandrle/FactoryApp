@@ -8,6 +8,7 @@ import {factoryCreateRequest, logoutUser} from "@/utils/backendComms/postRequest
 import type {IFactoryCreate} from "@/types/backendTypes"
 import {useFactory} from "@/utils/stateCompFunction/useFactory"
 import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser"
+import {useError} from "@/utils/stateCompFunction/useError";
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
@@ -25,53 +26,53 @@ const sessUser = useSessionUser().sessionUser
 const isLoading: Ref<boolean> = ref(false)
 
 function createFactory() {
-  if (selectedSize.value && factoryName.value) {
-    isLoading.value = true;
-    updateFactorySize({
-      x: selectedSize.value.x,
-      y: selectedSize.value.y,
-      z: selectedSize.value.z,
-    });
-
-    const factory: IFactoryCreate = {
-      name: factoryName.value,
-      password: factoryPassword.value,
-      width: selectedSize.value.x,
-      depth: selectedSize.value.y,
-      height: selectedSize.value.z,
-      author: sessUser.value
-    };
-
-    factoryCreateRequest(factory)
-        .then((newID: number) => {
-          // case it didnt work out log user out, because only possible way it fails to make new factory is if the user doesn't exist
-          if (newID === 0) {
-            useSessionUser().performLogout()
-            return
-          }
-          updateFactoryID(newID)
-          updateFactoryName(factoryName.value)
-          router.push('/factory')
-        })
-        .catch((error) => {
-          console.error("Failed to create factory", error)
-        })
-        .finally(() => {
-          isLoading.value = false
-        });
-  } else {
-    console.error("Please fill all fields before creating the factory.")
+  if (!selectedSize.value || !factoryName.value) {
+    useError().updateErrorMessage("Fill the form please")
+    return
   }
+  isLoading.value = true;
+  updateFactorySize({
+    x: selectedSize.value.x,
+    y: selectedSize.value.y,
+    z: selectedSize.value.z,
+  });
+
+  const factory: IFactoryCreate = {
+    name: factoryName.value,
+    password: factoryPassword.value,
+    width: selectedSize.value.x,
+    depth: selectedSize.value.y,
+    height: selectedSize.value.z,
+    author: sessUser.value
+  };
+
+  factoryCreateRequest(factory)
+      .then((newID: number) => {
+        // case it didnt work out log user out, because only possible way it fails to make new factory is if the user doesn't exist
+        if (newID === 0) {
+          useSessionUser().performLogout()
+          return
+        }
+        updateFactoryID(newID)
+        updateFactoryName(factoryName.value)
+        router.push('/factory')
+      })
+      .catch((error) => {
+        console.error("Failed to create factory", error)
+      })
+      .finally(() => {
+        isLoading.value = false
+      });
 }
 </script>
 <template>
   <div class="container">
-      <div class="s-item">
-        <div class="content-s-item">
-          <a @click="router.push('/')">
-            <img src="/icons8-fabric-96.png" alt=""/>
-            <p class="logo-title">Machine Deluxe 3000</p>
-          </a>
+    <div class="s-item">
+      <div class="content-s-item">
+        <a @click="router.push('/')">
+          <img src="/icons8-fabric-96.png" alt=""/>
+          <p class="logo-title">Machine Deluxe 3000</p>
+        </a>
       </div>
     </div>
     <div class="loading" v-if="isLoading">
@@ -95,7 +96,7 @@ function createFactory() {
             </div>
           </div>
           <div class="button-create">
-            <button class="v-button v-form-button" type="submit" link="">Fabrik erstellen</button>
+            <button class="v-button v-form-button" type="submit" link="">Create factory</button>
           </div>
         </form>
       </div>
