@@ -17,14 +17,6 @@ const open = ref(true)
 watch(open, () => {
   if (!open.value) emit('closeSideBar', false)
 })
-const logout = async () => {
-  switch (await logoutUser()) {
-
-    case "logout successful":
-      useSessUser().updateSessUser('')
-      await router.push('/login')
-  }
-}
 </script>
 
 <template>
@@ -74,7 +66,7 @@ const logout = async () => {
                   </div>
                   <div class="relative mb-11 align-bottom text-lg flex flex-col px-4 sm:px-6 gap-2.5" id="ignore">
                     <p>Logged in as user {{props.username}}</p>
-                    <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="logout">
+                    <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="useSessUser().logout()">
                       logout
                     </button>
                   </div>

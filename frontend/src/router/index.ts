@@ -4,8 +4,6 @@ import Factory from "@/views/Factory.vue";
 import FactoryCreateView from "@/views/FactoryCreateView.vue";
 import FactoryEnterView from "@/views/FactoryEnterView.vue";
 import LoginView from "@/views/LoginView.vue";
-import FactoryMenu from "@/components/ui/SideBar.vue";
-import DeletionPopup from "@/components/ui/DeletionPopup.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,7 +44,6 @@ const router = createRouter({
 
             }
         },
-
     ]
 })
 

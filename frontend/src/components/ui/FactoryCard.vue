@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineProps, defineEmits, onMounted, ref} from 'vue'
+import {onMounted, ref} from 'vue'
 import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
 import {getFactoryImage} from '@/utils/backendComms/getRequests'
 import router from '@/router'

@@ -15,16 +15,6 @@ const signUpClicked = ref(false)
 const {sessUser, updateSessUser} = useSessUser()
 const showLogin = ref(false)
 
-
-const logout = async () => {
-  switch (await logoutUser()) {
-
-    case "logout successful":
-      updateSessUser('')
-      await router.push('/login')
-  }
-}
-
 const redirectToLogin = async () => {
   await router.push('/login');
 }
@@ -68,7 +58,7 @@ onUnmounted(() => {
       <div class="header">
         <p v-if="!showLogin">logged in as {{ sessUser }}</p>
 
-        <form v-if="!showLogin" @submit.prevent="logout">
+        <form v-if="!showLogin" @submit.prevent="useSessUser().logout()">
           <button type="submit" link="">Logout</button>
         </form>
         <button class="signupbutton" v-if="sessUser === ''" @click="redirectToSignUp" link="">Sign Up</button>
