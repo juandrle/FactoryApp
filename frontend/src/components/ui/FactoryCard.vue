@@ -6,7 +6,7 @@ import router from '@/router'
 import {backendUrl} from '@/utils/config/config'
 import type {IVector3} from "@/types/global";
 import {useFactory} from "@/utils/stateCompFunction/useFactory";
-import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
+import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
 
 const props = defineProps<{
   factory: IFactory
@@ -24,7 +24,7 @@ const currentlyRotatedCard = ref<HTMLElement | null>(null)
 let updateFactorySize: (newSize: IVector3) => void = useFactory().updateFactorySize
 let updateFactoryID: (newID: number) => void = useFactory().updateFactoryID
 let updateFactoryName = useFactory().updateFactoryName
-const sessUser = useSessUser().sessUser
+const sessUser = useSessionUser().sessionUser
 
 const rotateCard = (clickTarget: EventTarget | null) => {
   if (!clickTarget) return

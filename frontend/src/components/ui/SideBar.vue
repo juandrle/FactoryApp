@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {Ref, ref, watch} from 'vue'
+import {type Ref, ref, watch} from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import router from "@/router";
 import Button from "@/components/ui/Button.vue";
 import {logoutUser} from "@/utils/backendComms/postRequests";
-import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
+import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
 const emit = defineEmits<{
   closeSideBar: [boolean];
 }>()
@@ -54,19 +54,19 @@ watch(open, () => {
                     </DialogTitle>
                   </div>
                   <div class="relative mt-6 flex-1 flex flex-col px-4 sm:px-6 gap-3" id="ignore">
-                    <button type="button" class="text-white bg-gradient-to-r from-ourPurple to-ourPurpleDarker hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="router.push('/')">
+                    <button type="button" class="text-white bg-gradient-to-r from-ourPurple to-ourPurpleDarker hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="router.push('/')" link="">
                       back to home
                     </button>
-                    <button type="button" class="text-white bg-gradient-to-r from-ourPurple to-ourPurpleDarker hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="router.push('/enter')">
+                    <button type="button" class="text-white bg-gradient-to-r from-ourPurple to-ourPurpleDarker hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="router.push('/enter')" link="">
                       back to enter factories
                     </button>
-                    <button type="button" class="text-white bg-gradient-to-r from-ourPurple to-ourPurpleDarker hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="router.push('/create')">
+                    <button type="button" class="text-white bg-gradient-to-r from-ourPurple to-ourPurpleDarker hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="router.push('/create')" link="">
                       back to create factories
                     </button>
                   </div>
                   <div class="relative mb-11 align-bottom text-lg flex flex-col px-4 sm:px-6 gap-2.5" id="ignore">
                     <p>Logged in as user {{props.username}}</p>
-                    <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="useSessUser().logout()">
+                    <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-bold rounded-3xl text-lg px-5 py-2.5 text-center me-2 mb-2" id="ignore" @click="useSessionUser().performLogout()" link="">
                       logout
                     </button>
                   </div>

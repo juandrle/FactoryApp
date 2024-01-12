@@ -1,7 +1,19 @@
 import type { IVector3 } from '@/types/global'
 import * as THREE from 'three'
 
-export const highlightObjectWithColor = (object: THREE.Group, isColor: boolean, color?: string) => {
+/**
+ * Highlights an object with a specified color or removes the highlight.
+ * If isColor is false, the object and its children will be unhighlighted.
+ * If isColor is true and a color is provided, the object and its children will be highlighted with the specified color.
+ * If isColor is true and no color is provided, the object and its children will be highlighted with a default color (green).
+ *
+ * @param {THREE.Object3D} object - The object to highlight.
+ * @param {boolean} isColor - Determines whether to highlight the object or remove the highlight.
+ * @param {string} [color] - The color to use for highlighting the object. Optional, defaults to green if not provided.
+ *
+ * @returns {void}
+ */
+export const highlightObjectWithColor = (object: THREE.Object3D, isColor: boolean, color?: string): void => {
   let currColor: { r: number; g: number; b: number }
   switch (color) {
     case 'green':
@@ -47,14 +59,23 @@ export const highlightObjectWithColor = (object: THREE.Group, isColor: boolean, 
 
 export const replaceEntity = (
   pos: IVector3,
-  currentObjectSelected: THREE.Group,
-  lastObjectSelected: THREE.Group
+  currentObjectSelected: THREE.Object3D,
+  lastObjectSelected: THREE.Object3D
 ) => {
   currentObjectSelected.position.set(pos.x, pos.y, pos.z)
   lastObjectSelected = currentObjectSelected
   highlightObjectWithColor(currentObjectSelected, false)
 }
 
+/**
+ * Loads and places an entity in a scene.
+ *
+ * @param {any} loader - The loader used to load the entity.
+ * @param {THREE.Scene} scene - The scene where the entity will be added.
+ * @param {IVector3} pos - The position of the entity in the scene.
+ * @param {string} path - The path to the entity's file.
+ * @returns {Promise<string>} A promise that resolves with the UUID of the placed entity, or rejects with an error.
+ */
 export const placeEntity = (
   loader: any,
   scene: THREE.Scene,
@@ -62,7 +83,7 @@ export const placeEntity = (
   path: string
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
-    var object: any
+    let object: THREE.Object3D
     loader.load(
       path,
       function (gltf: any) {
@@ -76,7 +97,7 @@ export const placeEntity = (
         resolve(object.uuid)
       },
       undefined,
-      function (error: any) {
+      function (error: undefined) {
         // Reject the promise with the error
         reject(error)
       }
@@ -84,7 +105,12 @@ export const placeEntity = (
   })
 }
 
-export const makeObjectTransparent = (makeTransparent: boolean, object: THREE.Group) => {
+/**
+ * Sets the transparency of an object and its child elements.
+ * @param {boolean} makeTransparent - Indicates whether to make the object transparent or not.
+ * @param {THREE.Object3D} object - The object to apply transparency to.
+ */
+export const makeObjectTransparent = (makeTransparent: boolean, object: THREE.Object3D) => {
   if (!makeTransparent)
     object.children.forEach((element: any) => {
       switch (element.type) {

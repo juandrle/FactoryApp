@@ -6,8 +6,11 @@ import {getAllFactories, getAllUsers} from '@/utils/backendComms/getRequests'
 import router from "@/router";
 import DeletionPopup from "@/components/ui/DeletionPopup.vue";
 import {factoryDeleteRequest} from "@/utils/backendComms/deleteRequest";
-
-const sizes = ref([
+interface IItem {
+  label: string,
+  value: string
+}
+const sizes: Ref<IItem[]> = ref([
   {label: 'All', value: ''},
   {label: '30x50x8', value: '30x50x8'},
   {label: '60x100x12', value: '60x100x12'},
@@ -16,12 +19,12 @@ const sizes = ref([
 ])
 const factoryToDel: Ref<IFactoryDelete | undefined> = ref(undefined)
 const factoryNameToDel: Ref<string> = ref('')
-const currSize = ref('')
-const showPopup = ref(false)
-const owner = ref([
+const currSize: Ref<string> = ref('')
+const showPopup: Ref<boolean> = ref(false)
+const owner: Ref<IItem[]> = ref([
   {label: 'All', value: ''}
 ])
-const currOwner = ref('')
+const currOwner: Ref<string> = ref('')
 
 //fetch all existing factories
 const existing_factories: Ref<IFactory[]> = ref([])
@@ -39,7 +42,7 @@ onMounted(() => {
 })
 
 // Nach Fabriknamen filtern
-const searchTerm = ref('')
+const searchTerm: Ref<string> = ref('')
 
 const filteredFactories = computed(() => {
   return existing_factories.value.filter((factory) => {

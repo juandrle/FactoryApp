@@ -5,31 +5,31 @@
         <li class="menu-item">
           <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='rotateClicked'>
             <a class="fa-solid fa-arrows-rotate"></a>
-            <p>Drehen</p>
+            <p>Rotate</p>
           </div>
         </li>
         <li class="menu-item">
           <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='moveClicked'>
             <a class="fa-solid fa-arrows-up-down-left-right"></a>
-            <p>Versetzen</p>
+            <p>Move</p>
           </div>
         </li>
         <li class="menu-item">
           <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='delClicked'>
             <a class="fa-solid fa-trash"></a>
-            <p>Löschen</p>
+            <p>Delete</p>
           </div>
         </li>
         <li class="menu-item">
           <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='scriptClicked'>
             <a class="fa-solid fa-code"></a>
-            <p>Skripten</p>
+            <p>Script</p>
           </div>
         </li>
         <li class="menu-item">
           <div class="menu-content" :class="{ 'hoverable': hoverEnabled }" @click='cloneClicked'>
             <a class="fa-regular fa-clone"></a>
-            <p>Klonen</p>
+            <p>Clone</p>
           </div>
         </li>
       </ul>

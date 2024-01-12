@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import {computed, inject, onMounted, onUnmounted, type Ref, ref} from 'vue';
+import { onMounted, onUnmounted, type Ref, ref} from 'vue';
 import Button from '../components/ui/Button.vue'
-import {logoutUser} from "@/utils/backendComms/postRequests";
 import router from "@/router";
-import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
+import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
 
 const buttonData = ref([
-  {text: 'Fabrik erstellen', link: "/create"},
-  {text: 'Fabrik beitreten', link: "/enter"},
-  //{text: 'Einstellungen', link:"/login"}
+  {text: 'Create factory', link: "/create"},
+  {text: 'Enter factory', link: "/enter"},
+  //{text: 'Settings', link:"/login"}
 ])
 
-const signUpClicked = ref(false)
-const {sessUser, updateSessUser} = useSessUser()
-const showLogin = ref(false)
+const signUpClicked: Ref<boolean> = ref(false)
+const sessUser: Ref<string> = useSessionUser().sessionUser
+const showLogin: Ref<boolean> = ref(false)
 
 const redirectToLogin = async () => {
   await router.push('/login');
@@ -41,7 +40,7 @@ onUnmounted(() => {
       <div class="s-item">
         <div class="content-s-item">
           <a @click="router.push('/')">
-            <img src="/icons8-fabric-96.png" width="20px" height="auto" alt=""/>
+            <img src="/icons8-fabric-96.png" alt=""/>
             <p class="logo-title">Machine Deluxe 3000</p>
           </a>
         </div>
@@ -52,13 +51,13 @@ onUnmounted(() => {
     </div>
     <div class="m-item">
       <h1 class="game-name">Machine Deluxe 3000</h1>
-      <h2 class="subtitle">create your own factory</h2>
+      <h2 class="subtitle">Create your own factory</h2>
     </div>
     <div class="r-item">
       <div class="header">
         <p v-if="!showLogin">logged in as {{ sessUser }}</p>
 
-        <form v-if="!showLogin" @submit.prevent="useSessUser().logout()">
+        <form v-if="!showLogin" @submit.prevent="useSessionUser().performLogout">
           <button type="submit" link="">Logout</button>
         </form>
         <button class="signupbutton" v-if="sessUser === ''" @click="redirectToSignUp" link="">Sign Up</button>

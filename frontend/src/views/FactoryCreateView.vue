@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, inject, onMounted, ref} from 'vue'
+import {ref} from 'vue'
 import type {Ref} from 'vue'
 import Button from '../components/ui/Button.vue'
 import type {IVector3} from "@/types/global"
@@ -7,7 +7,7 @@ import router from "@/router";
 import {factoryCreateRequest, logoutUser} from "@/utils/backendComms/postRequests"
 import type {IFactoryCreate} from "@/types/backendTypes"
 import {useFactory} from "@/utils/stateCompFunction/useFactory"
-import {useSessUser} from "@/utils/stateCompFunction/useSessUser"
+import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser"
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
@@ -21,14 +21,7 @@ const selectedSize = ref()
 const updateFactorySize: (newSize: IVector3) => void = useFactory().updateFactorySize
 const updateFactoryID: (newID: number) => void = useFactory().updateFactoryID
 const updateFactoryName: (newName: string) => void = useFactory().updateFactoryName
-const sessUser = useSessUser().sessUser
-computed((size) => {
-  return {
-    x: size.width as number,
-    y: size.length as number,
-    z: size.height as number
-  }
-});
+const sessUser = useSessionUser().sessionUser
 const isLoading: Ref<boolean> = ref(false)
 
 function createFactory() {
@@ -53,7 +46,7 @@ function createFactory() {
         .then((newID: number) => {
           // case it didnt work out log user out, because only possible way it fails to make new factory is if the user doesn't exist
           if (newID === 0) {
-            logout()
+            useSessionUser().performLogout()
             return
           }
           updateFactoryID(newID)
@@ -68,14 +61,6 @@ function createFactory() {
         });
   } else {
     console.error("Please fill all fields before creating the factory.")
-  }
-}
-const logout = async () => {
-  switch (await logoutUser()) {
-
-    case "logout successful":
-      useSessUser().updateSessUser('')
-      await router.push('/login')
   }
 }
 </script>
