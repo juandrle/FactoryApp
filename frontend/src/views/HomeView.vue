@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, type Ref, ref} from 'vue';
-import Button from '../components/ui/Button.vue'
+import Button from '@/components/button/Button.vue'
 import router from "@/router";
-import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
 
 const buttonData = ref([
   {text: 'Create factory', link: "/create"},

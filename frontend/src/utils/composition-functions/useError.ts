@@ -1,5 +1,5 @@
 import {readonly, type Ref, ref} from "vue";
-import {useFactory} from "@/utils/stateCompFunction/useFactory";
+import {useFactory} from "@/utils/composition-functions/useFactory";
 
 const errorMessage: Ref<string> = ref('')
 const showErrorMessage: Ref<boolean> = ref(false)

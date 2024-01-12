@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import type {Ref} from 'vue'
-import Button from '../components/ui/Button.vue'
+import Button from '@/components/button/Button.vue'
 import type {IVector3} from "@/types/global"
 import router from "@/router";
-import {factoryCreateRequest, logoutUser} from "@/utils/backendComms/postRequests"
+import {factoryCreateRequest, logoutUser} from "@/utils/backend-communication/postRequests"
 import type {IFactoryCreate} from "@/types/backendTypes"
-import {useFactory} from "@/utils/stateCompFunction/useFactory"
-import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser"
-import {useError} from "@/utils/stateCompFunction/useError";
+import {useFactory} from "@/utils/composition-functions/useFactory"
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser"
+import {useError} from "@/utils/composition-functions/useError";
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},

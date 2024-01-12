@@ -7,15 +7,15 @@ import * as THREE from 'three'
 import {CameraControlsManager} from '@/classes/cameraControls/CameraControlsManager'
 import {getIntersectionsMouse} from '@/utils/threeJS/3d'
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'
-import CircularMenu from '@/components/ui/CircularMenu.vue'
+import CircularMenu from '@/components/factory-ui/CircularMenu.vue'
 import {
   factoryImageUpdate,
   moveRequest,
   placeRequest,
   rotationRequest
-} from '@/utils/backendComms/postRequests'
-import {entityDeleteRequest} from '@/utils/backendComms/deleteRequest'
-import {getAllEntities, getAllEntitiesInFactory} from '@/utils/backendComms/getRequests'
+} from '@/utils/backend-communication/postRequests'
+import {entityDeleteRequest} from '@/utils/backend-communication/deleteRequest'
+import {getAllEntities, getAllEntitiesInFactory} from '@/utils/backend-communication/getRequests'
 import {backendUrl} from '@/utils/config/config'
 import {CameraMode} from '@/enum/CameraMode'
 import {ManipulationMode} from '@/enum/ManipulationMode'
@@ -33,12 +33,12 @@ import {
   replaceEntity,
   makeObjectTransparent
 } from '@/utils/threeJS/entityManipulation'
-import {rotateModel, rotateModelfromXtoY, turnLeft, turnRight} from '@/utils/rotation/rotate'
-import {useFactory} from '@/utils/stateCompFunction/useFactory'
-import MenuBar from '@/components/ui/MenuBar.vue'
-import FactoryMenu from "@/components/ui/SideBar.vue";
-import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
-import {useError} from "@/utils/stateCompFunction/useError";
+import {rotateModel, rotateModelFromXtoY, turnLeft, turnRight} from '@/utils/rotation/rotate'
+import {useFactory} from '@/utils/composition-functions/useFactory'
+import MenuBar from '@/components/factory-ui/MenuBar.vue'
+import FactoryMenu from "@/components/factory-ui/SideBar.vue";
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
+import {useError} from "@/utils/composition-functions/useError";
 
 /**
  * Config
@@ -295,7 +295,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
             .then((res) => res.json())
             .then((success) => {
               if (!success) {
-                rotateModelfromXtoY(
+                rotateModelFromXtoY(
                     originalOrientation,
                     allPlacedEntities[currentObjectSelected.uuid].orientation,
                     pivot

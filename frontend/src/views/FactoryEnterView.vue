@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {computed, onMounted, type Ref, ref} from 'vue'
-import FactoryCard from '@/components/ui/FactoryCard.vue'
+import FactoryCard from '@/components/FactoryCard.vue'
 import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
-import {getAllFactories, getAllUsers} from '@/utils/backendComms/getRequests'
+import {getAllFactories, getAllUsers} from '@/utils/backend-communication/getRequests'
 import router from "@/router";
-import DeletionPopup from "@/components/ui/DeletionPopup.vue";
-import {factoryDeleteRequest} from "@/utils/backendComms/deleteRequest";
+import DeletionPopup from "@/components/popup/DeletionPopup.vue";
+import {factoryDeleteRequest} from "@/utils/backend-communication/deleteRequest";
 interface IItem {
   label: string,
   value: string

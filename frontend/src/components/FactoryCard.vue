@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue'
 import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
-import {getFactoryImage} from '@/utils/backendComms/getRequests'
+import {getFactoryImage} from '@/utils/backend-communication/getRequests'
 import router from '@/router'
 import {backendUrl} from '@/utils/config/config'
 import type {IVector3} from "@/types/global";
-import {useFactory} from "@/utils/stateCompFunction/useFactory";
-import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
+import {useFactory} from "@/utils/composition-functions/useFactory";
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
 
 const props = defineProps<{
   factory: IFactory
@@ -117,7 +117,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
           <p v-else>your factory</p>
         </div>
         <button v-if="props.factory?.author === sessUser" class="dustbin-btn" @click.stop="deleteButtonClicked">
-          <img class="dustbin" src="../../assets/icons8-mülleimer-48.png" alt="Papierkorb"/>
+          <img class="dustbin" src="../assets/icons8-mülleimer-48.png" alt="Papierkorb"/>
         </button>
       </div>
     </div>

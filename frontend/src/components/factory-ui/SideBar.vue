@@ -3,9 +3,9 @@ import {type Ref, ref, watch} from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import router from "@/router";
-import Button from "@/components/ui/Button.vue";
-import {logoutUser} from "@/utils/backendComms/postRequests";
-import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
+import Button from "@/components/button/Button.vue";
+import {logoutUser} from "@/utils/backend-communication/postRequests";
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
 const emit = defineEmits<{
   closeSideBar: [boolean];
 }>()

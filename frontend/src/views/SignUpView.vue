@@ -2,8 +2,8 @@
 import { ref, type Ref, onMounted} from 'vue'
 import router from "@/router"
 import type {IUserForm} from "@/types/backendTypes"
-import {signupUser} from "@/utils/backendComms/postRequests"
-import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
+import {signupUser} from "@/utils/backend-communication/postRequests"
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
 
 const sessUser: Readonly<Ref<string>> = useSessionUser().sessionUser
 const updateSessUser: (newUser: string) => void = useSessionUser().updateSessionUser

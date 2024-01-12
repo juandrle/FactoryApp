@@ -1,5 +1,5 @@
 import {ref, readonly, computed, onMounted, type Ref} from 'vue';
-import {logoutUser} from "@/utils/backendComms/postRequests";
+import {logoutUser} from "@/utils/backend-communication/postRequests";
 import router from "@/router";
 
 const defaultSessionUser = ''

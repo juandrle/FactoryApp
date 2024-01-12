@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type {ILoginForm} from '@/types/backendTypes';
-import {loginUser} from "@/utils/backendComms/postRequests"
+import {loginUser} from "@/utils/backend-communication/postRequests"
 import { ref, type Ref, onMounted} from 'vue';
 import router from "@/router"
-import {useSessionUser} from "@/utils/stateCompFunction/useSessionUser";
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
 
 const sessUser: Readonly<Ref<string>> = useSessionUser().sessionUser
 const updateSessUser: (newUser: string) => void = useSessionUser().updateSessionUser
