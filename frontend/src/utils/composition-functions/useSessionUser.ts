@@ -1,6 +1,7 @@
 import {ref, readonly, computed, onMounted, type Ref} from 'vue';
 import {logoutUser} from "@/utils/backend-communication/postRequests";
 import router from "@/router";
+import { useError } from '@/utils/composition-functions/useError'
 
 const defaultSessionUser = ''
 const logoutDelay: number = 60000 * 35 // 35 minutes
@@ -34,7 +35,6 @@ export function useSessionUser() {
     }
 
     const updateSessionUser = (newUser: string) => {
-        console.log("called")
         sessionUser.value = newUser
         localStorage.setItem('sessionUser', newUser)
         if (newUser !== defaultSessionUser) manageLogoutTimer()
@@ -46,16 +46,16 @@ export function useSessionUser() {
             : sessionUser.value
     })
 
-    // onMounted(() => {
-    //     const lastActivityTime = parseInt(localStorage.getItem('currentTime') || '0', 10);
-    //     const currentTime = Date.now();
-    //     const elapsedTime = currentTime - lastActivityTime;
-    //     if (elapsedTime < logoutDelay) {
-    //         performLogout().then(() => {
-    //             localStorage.setItem('currentTime', Date.now().toString())
-    //         })
-    //     }
-    // })
+    onMounted(() => {
+        const lastActivityTime = parseInt(localStorage.getItem('currentTime') || '0', 10);
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - lastActivityTime;
+        if (elapsedTime > logoutDelay) {
+            performLogout().then(() => {
+                localStorage.setItem('currentTime', Date.now().toString())
+            })
+        }
+    })
 
     const performLogout = async () => {
         switch (await logoutUser()) {
