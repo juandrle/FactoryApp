@@ -2,7 +2,7 @@
 import type {Ref} from 'vue'
 import {onBeforeUnmount, onMounted, onUnmounted, provide, ref, watch} from 'vue'
 import type {IEntity, IVector3} from '@/types/global'
-import type {IBackendEntity, IBackendEntityPreview} from '@/types/backendTypes'
+import type {IBackendEntity, IBackendEntityPreview, IEntityDelete} from '@/types/backendTypes'
 import * as THREE from 'three'
 import {CameraControlsManager} from '@/classes/cameraControls/CameraControlsManager'
 import {getIntersectionsMouse} from '@/utils/threeJS/3d'
@@ -39,6 +39,7 @@ import MenuBar from '@/components/factory-ui/MenuBar.vue'
 import FactoryMenu from "@/components/factory-ui/SideBar.vue";
 import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
 import {useError} from "@/utils/composition-functions/useError";
+import StompClientBuilder from '@/classes/messaging/StompClientBuilder' 
 
 /**
  * Config
@@ -129,6 +130,14 @@ const setupLoader = (): void => {
   loader = new GLTFLoader()
 }
 
+
+
+// stomp message ding StompClientBuilder subscriben  // mach diese in onMounted
+const stompClientBuilder = new StompClientBuilder(factoryID.value);
+stompClientBuilder.activate();
+
+
+
 /**
  * Initialize and load the highlight model.
  *
@@ -196,6 +205,12 @@ const onChangeEntityClicked = (situation: string): void => {
           scene.remove(currentObjectSelected)
           //if (currentObjectSelected.parent.type !== 'Scene')
           //scene.remove(currentObjectSelected.parent)
+
+
+          // hier updaten also stomp bescheid sagen nicht hier sondern im BE
+
+
+
         }
       }).catch((error: Error) => {
         console.error("An error occurred during entity deletion:", error)
@@ -576,10 +591,14 @@ onMounted(() => {
 
   // initial function calls
   animate(0)
+  useFactory().toggleIsFactoryImageUpToDate()
 })
 onBeforeUnmount(() => {
   factoryImageUpdate(factoryID.value, captureScreenshot()).then((success: boolean) => {
-    if (success) console.log('successfully saved image')
+    if (success) useFactory().toggleIsFactoryImageUpToDate()
+    //demo   setTimeout(() => {
+    //   useFactory().toggleIsFactoryImageUpToDate()
+    // }, 5000)
     else console.log("didn't save image")
   })
 })

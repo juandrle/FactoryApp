@@ -18,6 +18,7 @@ public class FrontendMessageEvent {
         this.eventID = eventID;
         this.operationType = operationType;
     }
+    
     public MessageEventType getEventType() {
         return eventType;
     }

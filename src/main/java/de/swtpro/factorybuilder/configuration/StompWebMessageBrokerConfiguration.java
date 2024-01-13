@@ -13,10 +13,11 @@ public class StompWebMessageBrokerConfiguration implements WebSocketMessageBroke
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
         registry.enableSimpleBroker("/info");
+        registry.setApplicationDestinationPrefixes("/factory"); // hört auf alles was von da kommt(?)
     }
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/stompbroker").setAllowedOrigins("*");
+        registry.addEndpoint("/stompbroker").withSockJS(); // wenn browser socket nicht supported 
     }
 }
-

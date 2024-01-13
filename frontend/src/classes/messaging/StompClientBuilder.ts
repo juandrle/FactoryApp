@@ -26,7 +26,7 @@ class StompClientBuilder {
         });
     }
 
-    private subscribeToTopic(factoryID: number): void {
+    private subscribeToTopic(factoryID: number): void {      // war auf private eingentlich
         this.client.subscribe("/info/factory/" + factoryID, (message: IMessage) => {
             console.log('Received:', message.body);
         });
