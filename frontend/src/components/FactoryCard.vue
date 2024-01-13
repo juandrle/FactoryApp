@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import { onMounted, type Ref, ref, watch } from 'vue'
 import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
 import {getFactoryImage} from '@/utils/backend-communication/getRequests'
 import router from '@/router'
@@ -14,6 +14,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   deleteClicked: (payload: { factoryDelete: IFactoryDelete, factoryName: string }) => void
 }>()
+const isFactoryUpToDate: Ref<boolean> = useFactory().isFactoryImageUpToDate
 const factoryCardRef = ref(null)
 const factoryEnterPassword = ref('')
 const currentPicture = ref(
@@ -79,6 +80,13 @@ onMounted(() => {
     if (dataURL !== 'failed') currentPicture.value = dataURL.toString()
   })
 })
+watch(isFactoryUpToDate, (newValue) => {
+  if (newValue && useFactory().factoryID.value === props.factory.id)
+    getFactoryImage(props.factory?.id).then((dataURL) => {
+    console.log("fetching new Picture")
+    if (dataURL !== 'failed') currentPicture.value = dataURL.toString()
+  })
+})
 
 // Check password
 async function submitPassword(factoryId: number, factoryEnterPassword: string) {
@@ -109,6 +117,9 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   <div class="factorycard" ref="factoryCardRef" @click="(e) => rotateCard(e.currentTarget)">
     <div class="card-front">
       <img class="factory-image" :src="currentPicture" alt=""/>
+      <div class="loading" v-if="!isFactoryUpToDate && useFactory().factoryID.value === factory.id">
+        <div class="loader"></div>
+      </div>
       <div class="factorycard-content">
         <div style="width: max-content">
           <p>{{ factory.name }}</p>
@@ -159,7 +170,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
 }
 
 .card-front {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
@@ -222,12 +233,13 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
 }
 
 .factory-image {
-  /* position: absolute; */
+  position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
   border-radius: 30px;
+  z-index: 0;
 }
 
 .factorycard-content {
@@ -278,5 +290,40 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
 .arrow-button {
   border: none;
   background: transparent;
+}
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 67%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 1.5rem;
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+}
+
+.loader {
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid #683ce4;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin-top: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

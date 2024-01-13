@@ -13,13 +13,14 @@ function parseJSONWithDefault<T>(value: string | null, defaultValue: T): T {
     }
 }
 
-const defaultID: number = 0;
-const defaultName: string = '';
-const defaultSize: IVector3 = { x: 80, y: 120, z: 8 };
+const defaultID: number = 0
+const defaultName: string = ''
+const defaultSize: IVector3 = { x: 80, y: 120, z: 8 }
 
-const factoryID: Ref<number> = ref(parseWithDefault(localStorage.getItem('factoryID'), defaultID));
-const factoryName: Ref<string> = ref(localStorage.getItem('factoryName') || defaultName);
-const factorySize: Ref<IVector3> = ref(parseJSONWithDefault<IVector3>(localStorage.getItem('factorySize'), defaultSize));
+const factoryID: Ref<number> = ref(parseWithDefault(localStorage.getItem('factoryID'), defaultID))
+const factoryName: Ref<string> = ref(localStorage.getItem('factoryName') || defaultName)
+const factorySize: Ref<IVector3> = ref(parseJSONWithDefault<IVector3>(localStorage.getItem('factorySize'), defaultSize))
+const isFactoryImageUpToDate: Ref<boolean> = ref(true)
 
 /**
  * Returns an object with methods and computed properties to manage factory values and update them in localStorage.
@@ -36,7 +37,7 @@ export function useFactory() {
     const updateValueAndLocalStorage = (valueRef: Ref<any>, newValue: any, key: string) => {
         valueRef.value = newValue;
         localStorage.setItem(key, JSON.stringify(newValue));
-    };
+    }
 
     const computedValue = (valueRef: Ref<any>, defaultVal: any, key: string, parseFn: (value: string | null, defaultValue: any) => any) => {
         return computed(() => {
@@ -44,11 +45,16 @@ export function useFactory() {
                 ? parseFn(localStorage.getItem(key), defaultVal)
                 : valueRef.value;
         });
-    };
+    }
+    const toggleIsFactoryImageUpToDate = () => {
+        isFactoryImageUpToDate.value = !isFactoryImageUpToDate.value;
+    }
     return {
         factoryID: readonly(computedValue(factoryID, defaultID, 'factoryID', parseWithDefault)),
         factoryName: readonly(computedValue(factoryName, defaultName, 'factoryName', (val, defVal) => val || defVal)),
         factorySize: readonly(computedValue(factorySize, defaultSize, 'factorySize', parseJSONWithDefault)),
+        isFactoryImageUpToDate: readonly(isFactoryImageUpToDate),
+        toggleIsFactoryImageUpToDate,
         updateFactoryID: (newID: number) => updateValueAndLocalStorage(factoryID, newID, 'factoryID'),
         updateFactoryName: (newName: string) => updateValueAndLocalStorage(factoryName, newName, 'factoryName'),
         updateFactorySize: (newSize: IVector3) => updateValueAndLocalStorage(factorySize, newSize, 'factorySize')

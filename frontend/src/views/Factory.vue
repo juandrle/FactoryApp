@@ -576,10 +576,14 @@ onMounted(() => {
 
   // initial function calls
   animate(0)
+  useFactory().toggleIsFactoryImageUpToDate()
 })
 onBeforeUnmount(() => {
   factoryImageUpdate(factoryID.value, captureScreenshot()).then((success: boolean) => {
-    if (success) console.log('successfully saved image')
+    if (success) useFactory().toggleIsFactoryImageUpToDate()
+    //demo   setTimeout(() => {
+    //   useFactory().toggleIsFactoryImageUpToDate()
+    // }, 5000)
     else console.log("didn't save image")
   })
 })
