@@ -251,9 +251,7 @@ public class PlacedModelService {
     public List<PlacedModel> findAllByFactoryId(Factory factory) {
         return placedModelRepository.findByFactory(factory);
     }
-    private void removeModelFromField(Field field) {
-        fieldService.deletePlacedModelOnField(field);
-    }
+    
     private boolean checkField(Field f, PlacedModel thisModel, String ori, Factory factory) {
         boolean condition = false;
         String counterOri = "";
@@ -379,7 +377,7 @@ public class PlacedModelService {
 
         if (checkForPlacement(thisModel, factory)) {
             for (Field f : backupModel.getPlacedFields()) {
-                removeModelFromField(f);
+                fieldService.deletePlacedModelOnField(f);
             }
             for (Field f : thisModel.getPlacedFields()) {
                 fieldService.setPlacedModelOnField(thisModel, f);
@@ -412,7 +410,7 @@ public class PlacedModelService {
         if (placedModel == null) return false;
 
         for (Field f: placedModel.getPlacedFields()) {
-            removeModelFromField(f);
+            fieldService.deletePlacedModelOnField(f);
         }
 
         placedModelRepository.deleteById(placedModelID);
