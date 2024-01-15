@@ -33,7 +33,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="containerRef" style="width:800px;height:600px;border:1px solid grey"></div>
+  <div ref="containerRef" class="scriptDiv" style="width:800px;height:600px;border:1px solid grey"></div>
 </template>
 
 <style scoped>

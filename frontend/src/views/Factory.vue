@@ -38,7 +38,7 @@ import {useFactoryID} from '@/utils/stateCompFunction/useFactoryID'
 import {useFactorySize} from '@/utils/stateCompFunction/useFactorySize'
 import MenuBar from '@/components/ui/MenuBar.vue'
 import FactoryMenu from "@/components/ui/SideBar.vue";
-import Scripting from './Scripting.vue'
+import ScriptContainer from '@/components/ui/ScriptContainer.vue'
 
 /**
  * Config
@@ -622,12 +622,12 @@ init()
         (name) => (activeEntity = allEntities.find((obj) => obj.name === name))
       "
     />
-    <Scripting v-show="showScripting"></Scripting>
+    <ScriptContainer v-if="showScripting"/>
   </div>
   <FactoryMenu v-if="showSideMenu" @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
 </template>
 
-<style>
+<style scoped>
 .debug-bar {
   position: absolute;
   top: 60px;
