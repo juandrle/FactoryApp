@@ -33,7 +33,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="containerRef" class="scriptDiv" style="width:800px;height:600px;border:1px solid grey"></div>
+  <div ref="containerRef" class="scriptDiv" style="width:800px;height:600px;border:1px solid grey; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
 </template>
 
 <style scoped>
