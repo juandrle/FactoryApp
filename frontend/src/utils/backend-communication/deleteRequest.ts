@@ -1,7 +1,7 @@
 import type {IEntityDelete, IFactoryDelete} from "@/types/backendTypes";
 import {backendUrl} from "@/utils/config/config";
 
-export const entityDeleteRequest = async (entity: IEntityDelete): Promise<boolean> => {
+export const entityDeleteRequest = async (entity?: IEntityDelete): Promise<boolean> => {
     try {
         const url = backendUrl + '/api/entity/delete'
         const requestBody = JSON.stringify(entity)
