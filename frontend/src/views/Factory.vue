@@ -6,7 +6,6 @@ import type { IBackendEntity, IBackendEntityPreview } from '@/types/backendTypes
 import * as THREE from 'three'
 import { CameraControlsManager } from '@/classes/cameraControls/CameraControlsManager'
 import { PlacedEntities } from '@/classes/placedEntities/placedEntities'
-import type { IEntity } from '@/classes/placedEntities/placedEntities'
 import { getIntersectionsMouse } from '@/utils/threeJS/3d'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import CircularMenu from '@/components/factory-ui/CircularMenu.vue'
@@ -35,7 +34,7 @@ import {
   replaceEntity,
   makeObjectTransparent
 } from '@/utils/threeJS/entityManipulation'
-import { rotateModel, rotateModelFromXtoY, turnLeft, turnRight } from '@/utils/rotation/rotate'
+import { rotateModel, rotateModelFromXtoY } from '@/utils/rotation/rotate'
 import { useFactory } from '@/utils/composition-functions/useFactory'
 import MenuBar from '@/components/factory-ui/MenuBar.vue'
 import FactoryMenu from '@/components/factory-ui/SideBar.vue'
@@ -74,7 +73,6 @@ let sizes: {
   height: number
   ratio: number
 }
-let allPlacedEntities: { [uuid: string]: IEntity } = {}
 let originalOrientation = ''
 let placedEntities: PlacedEntities = new PlacedEntities()
 /**
@@ -186,14 +184,13 @@ const onToggleSideMenuVisibility = (open: boolean): void => {
  * @returns {void}
  */
 const onChangeEntityClicked = (situation: string): void => {
-  // When one circle option was clicked
-  let currentSelectedEntitieFrontend = placedEntities.getByUUID(currentObjectSelected.uuid)
+
   switch (situation) {
     case 'delete':
-      if (currentSelectedEntitieFrontend == undefined) return
+
       entityDeleteRequest({
         factoryId: factoryID.value,
-        id: currentSelectedEntitieFrontend.id
+        id: placedEntities.getByUUID(currentObjectSelected.uuid).id
       })
         .then((success) => {
           if (success) {
@@ -249,7 +246,7 @@ const onChangeEntityClicked = (situation: string): void => {
       if (allEntities.value) {
         // Find highlight by name
         activeEntity.value = allEntities.value.find(
-          (obj) => obj.name === allPlacedEntities[currentObjectSelected.uuid].modelId
+          (obj) => obj.name === placedEntities.getByUUID(currentObjectSelected.uuid).modelId
         )
 
         // If it was the same, update manually
@@ -292,8 +289,8 @@ const handleKeyDown = (event: KeyboardEvent) => {
     case 'V':
       if (manipulationMode.value === ManipulationMode.ROTATE) {
         rotationRequest({
-          id: allPlacedEntities[currentObjectSelected.uuid].id,
-          orientation: allPlacedEntities[currentObjectSelected.uuid].orientation,
+          id: placedEntities.getByUUID(currentObjectSelected.uuid).id,
+          orientation: placedEntities.getByUUID(currentObjectSelected.uuid).orientation,
           factoryId: factoryID.value
         })
           .then((res) => res.json())
@@ -301,7 +298,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
             if (!success) {
               rotateModelFromXtoY(
                 originalOrientation,
-                allPlacedEntities[currentObjectSelected.uuid].orientation,
+                placedEntities.getByUUID(currentObjectSelected.uuid).orientation,
                 pivot
               )
             }
@@ -339,9 +336,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
           rotateModel('left', pivot)
-          allPlacedEntities[currentObjectSelected.uuid].orientation = turnLeft(
-            allPlacedEntities[currentObjectSelected.uuid].orientation
-          )
+          placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, "left");
       }
       break
 
@@ -349,9 +344,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
           rotateModel('right', pivot)
-          allPlacedEntities[currentObjectSelected.uuid].orientation = turnRight(
-            allPlacedEntities[currentObjectSelected.uuid].orientation
-          )
+          placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, "right");
       }
       break
 
@@ -424,16 +417,6 @@ const handleClick = (event: any) => {
                 backendUrl + activeEntity.value.modelFile
               ).then((uuid) => {
                 if (activeEntity.value) {
-                  // ...bruh
-
-                  //OVERWRITTEN
-                  allPlacedEntities[uuid] = {
-                    id: id,
-                    orientation: 'North',
-                    modelId: activeEntity.value.name,
-                    uuid: uuid
-                  }
-
                   placedEntities.add({
                     id: id,
                     orientation: 'North',
@@ -456,7 +439,7 @@ const handleClick = (event: any) => {
         x: highlight.position.x,
         y: highlight.position.y,
         z: highlight.position.z,
-        id: allPlacedEntities[currentObjectSelected.uuid].id,
+        id: placedEntities.getByUUID(currentObjectSelected.uuid).id,
         factoryId: factoryID.value
       })
         .then((response) => response.json())
@@ -483,7 +466,7 @@ const handleContextMenu = (event: MouseEvent) => {
     const { worked, currObj, lastObj } = result
     if (worked) {
       currentObjectSelected = currObj
-      originalOrientation = allPlacedEntities[currentObjectSelected.uuid].orientation
+      originalOrientation = placedEntities.getByUUID(currentObjectSelected.uuid).orientation
 
       lastObjectSelected = lastObj
       if (dynamicDiv) {
@@ -578,14 +561,6 @@ onMounted(() => {
         { x: backendEntity.x, y: backendEntity.y, z: backendEntity.z },
         backendUrl + backendEntity.path
       ).then((uuid) => {
-        // OVERWRITTEN
-        allPlacedEntities[uuid] = {
-          id: backendEntity.id,
-          orientation: backendEntity.orientation,
-          modelId: backendEntity.modelId,
-          uuid: uuid
-        }
-
         placedEntities.add({
           id: backendEntity.id,
           orientation: backendEntity.orientation,
