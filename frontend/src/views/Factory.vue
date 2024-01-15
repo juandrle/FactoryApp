@@ -180,7 +180,7 @@ const onChangeEntityClicked = (situation: string) => {
       manipulationMode.value = ManipulationMode.ROTATE
 
       // set pivot point for future rotation
-      if (!pivot || currentObjectSelected !== pivot.children[0]) {
+if (!pivot || currentObjectSelected !== pivot.children[0]) {
         if (currentObjectSelected.parent.type === 'Object3D') {
           pivot = currentObjectSelected.parent
           return
@@ -335,7 +335,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     case 'ARROWLEFT':
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
-          rotateModel("left", pivot);
+          rotateModel("left", currentObjectSelected);
           allPlacedEntities[currentObjectSelected.uuid].orientation = turnLeft(allPlacedEntities[currentObjectSelected.uuid].orientation)
       }
       break
@@ -343,7 +343,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     case 'ARROWRIGHT':
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
-          rotateModel("right", pivot);
+          rotateModel("right", currentObjectSelected);
           allPlacedEntities[currentObjectSelected.uuid].orientation = turnRight(allPlacedEntities[currentObjectSelected.uuid].orientation)
       }
       break
