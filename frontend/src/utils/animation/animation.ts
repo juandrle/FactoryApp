@@ -16,11 +16,12 @@ const interpolateObject = (
 }
 
 export const animateObject = (
-  scene: THREE.Scene,
   from: THREE.Vector3,
   to: THREE.Vector3,
   object: THREE.Object3D,
   duration: number,
+  kill: boolean,
+  scene: THREE.Scene,
   onEnd?: () => void
 ) => {
   let startTime: number
@@ -49,30 +50,10 @@ export const animateObject = (
     if (progress < 1) {
       requestAnimationFrame(animate)
     } else if (onEnd) {
+      if (kill) scene.remove(object)
       onEnd()
     }
   }
 
   requestAnimationFrame(animate)
-}
-
-export const getStartAndEndPointFromPipe = (
-  pipe: IEntity
-): { startPoint: THREE.Vector3; endPoint: THREE.Vector3 } => {
-  const startPointLocal: THREE.Vector3 = new THREE.Vector3().copy(
-    pipe.threejsObject.children.find((mesh) => mesh.name === 'pipe_entrance')?.geometry
-      .boundingSphere.center
-  )
-  const endPointLocal: THREE.Vector3 = new THREE.Vector3().copy(
-    pipe.threejsObject.children.find((mesh) => mesh.name === 'pipe_exit')?.geometry.boundingSphere
-      .center
-  )
-  const pipePositionWorld: THREE.Vector3 = pipe.threejsObject.position
-  const startPoint = new THREE.Vector3().copy(pipePositionWorld).add(startPointLocal)
-  const endPoint = new THREE.Vector3().copy(pipePositionWorld).add(endPointLocal)
-
-  return {
-    startPoint: startPoint,
-    endPoint: endPoint
-  }
 }

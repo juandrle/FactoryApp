@@ -20,12 +20,11 @@ import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backend-communi
 import { backendUrl } from '@/utils/config/config'
 import { CameraMode } from '@/enum/CameraMode'
 import { ManipulationMode } from '@/enum/ManipulationMode'
-import { animateObject, getStartAndEndPointFromPipe } from '@/utils/animation/animation'
+import { animateObject } from '@/utils/animation/animation'
 
 import {
   createRoom,
-  drawBox,
-  drawLine,
+  deepCloneObject,
   moveHighlight,
   selectionObject,
   updateHighlightModel
@@ -270,19 +269,22 @@ const onChangeEntityClicked = (situation: string): void => {
 }
 
 const onTestAnimationClick = (event: any) => {
-  // Getting first pipe
-  const pipe = placedEntities.getAllStraightPipes()[0]
-
-  if (pipe === undefined) return
-
   // Loading a sample ore
   loadEntitie(loader, 'http://localhost:8080/models/mock/items/processed/kupfer_barren.gltf').then(
     (threeJsObject) => {
-      let { startPoint, endPoint } = getStartAndEndPointFromPipe(pipe)
-    
-      // Start Animation
-      animateObject(scene, startPoint, endPoint, threeJsObject, 1000, () => {
-        console.log('end')
+      placedEntities.getAllWholePipesPoints().forEach(({ startPoint, endPoint, pipeCount }) => {
+        // Start Animation
+        animateObject(
+          startPoint,
+          endPoint,
+          deepCloneObject(threeJsObject),
+          500 * pipeCount,
+          true,
+          scene,
+          () => {
+            console.log('end')
+          }
+        )
       })
     }
   )
