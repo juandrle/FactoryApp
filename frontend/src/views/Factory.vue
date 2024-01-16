@@ -279,21 +279,9 @@ const onTestAnimationClick = (event: any) => {
   loadEntitie(loader, 'http://localhost:8080/models/mock/items/processed/kupfer_barren.gltf').then(
     (threeJsObject) => {
       let { startPoint, endPoint } = getStartAndEndPointFromPipe(pipe)
-      let boundingBox = new THREE.Box3().setFromObject(threeJsObject)
-      
-      // Berechne die Größe der BoundingBox
-      let centerOfBoundingBox = new THREE.Vector3()
-      boundingBox.getCenter(centerOfBoundingBox)
-      startPoint.sub(centerOfBoundingBox.clone())
-      endPoint.sub(centerOfBoundingBox.clone())
-      
-      // Add to scene
-      threeJsObject.position.set(startPoint.x, startPoint.y, startPoint.z);
-
-      scene.add(threeJsObject)
-
+    
       // Start Animation
-      animateObject(startPoint, endPoint, threeJsObject, 1000, () => {
+      animateObject(scene, startPoint, endPoint, threeJsObject, 1000, () => {
         console.log('end')
       })
     }

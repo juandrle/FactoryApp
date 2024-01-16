@@ -16,13 +16,28 @@ const interpolateObject = (
 }
 
 export const animateObject = (
-  from: IVector3,
-  to: IVector3,
+  scene: THREE.Scene,
+  from: THREE.Vector3,
+  to: THREE.Vector3,
   object: THREE.Object3D,
   duration: number,
   onEnd?: () => void
 ) => {
   let startTime: number
+
+  // Berechne die Größe der BoundingBox und verschiebe
+  let boundingBox = new THREE.Box3().setFromObject(object)
+  let centerOfBoundingBox = new THREE.Vector3()
+  boundingBox.getCenter(centerOfBoundingBox)
+  from.sub(centerOfBoundingBox.clone())
+  to.sub(centerOfBoundingBox.clone())
+
+  // Setting start position
+  object.position.set(from.x, from.y, from.z)
+
+  // Add to scene
+  scene.add(object)
+
   const animate = (timestamp: number) => {
     if (!startTime) startTime = timestamp
 
@@ -45,10 +60,12 @@ export const getStartAndEndPointFromPipe = (
   pipe: IEntity
 ): { startPoint: THREE.Vector3; endPoint: THREE.Vector3 } => {
   const startPointLocal: THREE.Vector3 = new THREE.Vector3().copy(
-    pipe.threejsObject.children.find((mesh) => mesh.name === 'pipe_entrance')?.geometry.boundingSphere.center
+    pipe.threejsObject.children.find((mesh) => mesh.name === 'pipe_entrance')?.geometry
+      .boundingSphere.center
   )
   const endPointLocal: THREE.Vector3 = new THREE.Vector3().copy(
-    pipe.threejsObject.children.find((mesh) => mesh.name === 'pipe_exit')?.geometry.boundingSphere.center
+    pipe.threejsObject.children.find((mesh) => mesh.name === 'pipe_exit')?.geometry.boundingSphere
+      .center
   )
   const pipePositionWorld: THREE.Vector3 = pipe.threejsObject.position
   const startPoint = new THREE.Vector3().copy(pipePositionWorld).add(startPointLocal)
