@@ -184,10 +184,8 @@ const onToggleSideMenuVisibility = (open: boolean): void => {
  * @returns {void}
  */
 const onChangeEntityClicked = (situation: string): void => {
-
   switch (situation) {
     case 'delete':
-
       entityDeleteRequest({
         factoryId: factoryID.value,
         id: placedEntities.getByUUID(currentObjectSelected.uuid).id
@@ -267,6 +265,13 @@ const onChangeEntityClicked = (situation: string): void => {
   }
 }
 
+const onTestAnimationClick = (event: any) => {
+  console.log("terst")
+
+  console.log(placedEntities.getAllEntites())
+  console.log(activeEntity.value);
+}
+
 /**
  * Handlers
  **/
@@ -336,7 +341,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
           rotateModel('left', pivot)
-          placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, "left");
+          placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, 'left')
       }
       break
 
@@ -344,7 +349,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
           rotateModel('right', pivot)
-          placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, "right");
+          placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, 'right')
       }
       break
 
@@ -415,13 +420,14 @@ const handleClick = (event: any) => {
                 scene,
                 highlight.position,
                 backendUrl + activeEntity.value.modelFile
-              ).then((uuid) => {
+              ).then((threejsObject) => {
                 if (activeEntity.value) {
                   placedEntities.add({
                     id: id,
                     orientation: 'North',
                     modelId: activeEntity.value.name,
-                    uuid: uuid
+                    uuid: threejsObject.uuid,
+                    threejsObject: threejsObject
                   })
                 }
               })
@@ -499,6 +505,7 @@ const handleMouseRelease = () => {
     ccm.controls.enabled = true
 }
 
+
 /**
  * Watcher
  **/
@@ -560,12 +567,13 @@ onMounted(() => {
         scene,
         { x: backendEntity.x, y: backendEntity.y, z: backendEntity.z },
         backendUrl + backendEntity.path
-      ).then((uuid) => {
+      ).then((threejsObject) => {
         placedEntities.add({
           id: backendEntity.id,
           orientation: backendEntity.orientation,
           modelId: backendEntity.modelId,
-          uuid: uuid
+          threejsObject: threejsObject,
+          uuid: threejsObject.uuid
         })
       })
     })
@@ -635,7 +643,11 @@ init()
         @changeEntity="onChangeEntityClicked"
       ></CircularMenu>
     </div>
-    <div class="debug-bar"></div>
+
+    <button @click="onTestAnimationClick" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-10 left-10 cursor-pointer">
+      Test Animation
+    </button>
+
     <MenuBar
       id="ignore"
       v-if="allEntities && currentCameraMode === 1"
@@ -653,13 +665,3 @@ init()
     @closeSideBar="onToggleSideMenuVisibility"
   ></FactoryMenu>
 </template>
-
-<style>
-.debug-bar {
-  position: absolute;
-  top: 60px;
-  left: 60px;
-  color: #282b30;
-  font-size: 20px;
-}
-</style>

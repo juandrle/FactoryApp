@@ -1,3 +1,4 @@
+import * as THREE from "three"
 /**
  * Represents the collection of all current entities in the factory
  */
@@ -12,14 +13,15 @@ export class PlacedEntities {
         id: 0,
         modelId: "0",
         uuid: "0",
-        orientation: "0"
+        orientation: "0",
+        threejsObject: new THREE.Object3D()
     };
   }
 
   public rotateEntityByUUID = (uuid: string, dir: string) => {
     let entitie: IEntity = this.getByUUID(uuid);
     
-    if(dir ==="left") {
+    if(dir === "left") {
         entitie.orientation = turnLeft(entitie.orientation)
     } else {
         entitie.orientation = turnRight(entitie.orientation);
@@ -38,6 +40,7 @@ export type IEntity = {
   modelId: string // Modelname
   uuid: string // UUID vom threejs object
   orientation: string
+  threejsObject: THREE.Object3D
 }
 
 const turnLeft = (orientation: string): string => {

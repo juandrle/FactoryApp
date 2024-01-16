@@ -81,7 +81,7 @@ export const placeEntity = (
   scene: THREE.Scene,
   pos: IVector3,
   path: string
-): Promise<string> => {
+): Promise<THREE.Object3D> => {
   return new Promise((resolve, reject) => {
     let object: THREE.Object3D
     loader.load(
@@ -94,7 +94,7 @@ export const placeEntity = (
         scene.add(gltf.scene)
 
         // Resolve the promise with the UUID
-        resolve(object.uuid)
+        resolve(object)
       },
       undefined,
       function (error: undefined) {
