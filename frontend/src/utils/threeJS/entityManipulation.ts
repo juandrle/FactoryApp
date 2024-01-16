@@ -13,7 +13,11 @@ import * as THREE from 'three'
  *
  * @returns {void}
  */
-export const highlightObjectWithColor = (object: THREE.Object3D, isColor: boolean, color?: string): void => {
+export const highlightObjectWithColor = (
+  object: THREE.Object3D,
+  isColor: boolean,
+  color?: string
+): void => {
   let currColor: { r: number; g: number; b: number }
   switch (color) {
     case 'green':
@@ -95,6 +99,22 @@ export const placeEntity = (
 
         // Resolve the promise with the UUID
         resolve(object)
+      },
+      undefined,
+      function (error: undefined) {
+        // Reject the promise with the error
+        reject(error)
+      }
+    )
+  })
+}
+
+export const loadEntitie = (loader: any, path: string): Promise<THREE.Object3D> => {
+  return new Promise((resolve, reject) => {
+    loader.load(
+      path,
+      function (gltf: any) {
+        resolve(gltf.scene)
       },
       undefined,
       function (error: undefined) {

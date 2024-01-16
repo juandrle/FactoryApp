@@ -5,7 +5,7 @@ import type { IVector3 } from '@/types/global'
 import type { IBackendEntity, IBackendEntityPreview } from '@/types/backendTypes'
 import * as THREE from 'three'
 import { CameraControlsManager } from '@/classes/cameraControls/CameraControlsManager'
-import { PlacedEntities } from '@/classes/placedEntities/placedEntities'
+import { PlacedEntities, type IEntity } from '@/classes/placedEntities/placedEntities'
 import { getIntersectionsMouse } from '@/utils/threeJS/3d'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import CircularMenu from '@/components/factory-ui/CircularMenu.vue'
@@ -20,9 +20,12 @@ import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backend-communi
 import { backendUrl } from '@/utils/config/config'
 import { CameraMode } from '@/enum/CameraMode'
 import { ManipulationMode } from '@/enum/ManipulationMode'
+import { animateObject, getStartAndEndPointFromPipe } from '@/utils/animation/animation'
 
 import {
   createRoom,
+  drawBox,
+  drawLine,
   moveHighlight,
   selectionObject,
   updateHighlightModel
@@ -32,7 +35,8 @@ import {
   highlightObjectWithColor,
   placeEntity,
   replaceEntity,
-  makeObjectTransparent
+  makeObjectTransparent,
+  loadEntitie
 } from '@/utils/threeJS/entityManipulation'
 import { rotateModel, rotateModelFromXtoY } from '@/utils/rotation/rotate'
 import { useFactory } from '@/utils/composition-functions/useFactory'
@@ -266,10 +270,52 @@ const onChangeEntityClicked = (situation: string): void => {
 }
 
 const onTestAnimationClick = (event: any) => {
-  console.log("terst")
+  // Getting first pipe
+  const pipe = placedEntities.getAllStraightPipes()[0]
 
-  console.log(placedEntities.getAllEntites())
-  console.log(activeEntity.value);
+  if (pipe === undefined) return
+
+  // Loading a sample ore
+  loadEntitie(loader, 'http://localhost:8080/models/mock/items/processed/kupfer_barren.gltf').then(
+    (threeJsObject) => {
+      let { startPoint, endPoint } = getStartAndEndPointFromPipe(pipe)
+      let boundingBox = new THREE.Box3().setFromObject(threeJsObject)
+      
+      // Berechne die Größe der BoundingBox
+      let centerOfBoundingBox = new THREE.Vector3()
+      boundingBox.getCenter(centerOfBoundingBox)
+      startPoint.sub(centerOfBoundingBox.clone())
+      endPoint.sub(centerOfBoundingBox.clone())
+      
+      // Add to scene
+      threeJsObject.position.set(startPoint.x, startPoint.y, startPoint.z);
+
+      scene.add(threeJsObject)
+
+      // Start Animation
+      animateObject(startPoint, endPoint, threeJsObject, 1000, () => {
+        console.log('end')
+      })
+    }
+  )
+}
+
+const onClearAllClick = (event: any) => {
+  placedEntities.getAllEntites().forEach((entitie: IEntity) => {
+    entityDeleteRequest({
+      factoryId: factoryID.value,
+      id: entitie.id
+    })
+      .then((success) => {
+        if (success) {
+          placedEntities.deleteByUUID(entitie.uuid)
+          scene.remove(entitie.threejsObject)
+        }
+      })
+      .catch((error: Error) => {
+        console.error('An error occurred during entity deletion:', error)
+      })
+  })
 }
 
 /**
@@ -505,7 +551,6 @@ const handleMouseRelease = () => {
     ccm.controls.enabled = true
 }
 
-
 /**
  * Watcher
  **/
@@ -644,8 +689,20 @@ init()
       ></CircularMenu>
     </div>
 
-    <button @click="onTestAnimationClick" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-10 left-10 cursor-pointer">
+    <button
+      @click="onTestAnimationClick"
+      id="ignore"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-10 left-10 cursor-pointer"
+    >
       Test Animation
+    </button>
+
+    <button
+      @click="onClearAllClick"
+      id="ignore"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-20 left-10 cursor-pointer"
+    >
+      ClearAll
     </button>
 
     <MenuBar

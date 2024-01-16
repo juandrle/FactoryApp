@@ -33,6 +33,8 @@ export class PlacedEntities {
   }
 
   public getAllEntites = (): any => this.allEntities
+
+  public getAllStraightPipes = () => this.allEntities.filter(entitie => entitie.modelId === "pipe_straight")
 }
 
 export type IEntity = {
