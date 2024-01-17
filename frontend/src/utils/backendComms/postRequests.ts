@@ -165,3 +165,34 @@ export const logoutUser = async () => {
     }
 }
 
+
+export const sendScriptingToBackend = async (modelID: Number, scriptContent: string) : Promise<boolean> => {
+
+    try {
+        const url = backendUrl + '/api/entity/postScript'
+        const requestBody = JSON.stringify({
+            modelID: Number,
+            scriptContent: String
+        })
+        console.log(requestBody)
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: requestBody,
+        })
+        if (!response.ok) throw new Error(response.statusText)
+        return await response.json()
+    } catch (err) {
+        console.error(err)
+        return false
+    }
+}
+
+// oder so? :
+//   export const sendScriptingToBackend: any = async ( // siehe factory.vue z. 241f. 
+//     url: string,
+//     scene: THREE.Scene,
+//     loader: any,
+//     code: string
+// ) => {}
+

@@ -7,13 +7,13 @@ import { onMounted, onBeforeUnmount, ref, type Ref } from "vue";
 const containerRef = ref(null);
 let editor: monaco.editor.IStandaloneCodeEditor;
 
-const props = defineProps({
+const props = defineProps({ // brauchen wir das noch?
   model: {
     type: Object as () => IModelScripting,
     required: true
   }
 })
-const codeString = ref("#Here u put in the machine to script as an object")
+const scriptContent = ref("#Here u put in the machine to script as an object")
 const systemProperties: Ref<ISystemProperty[]> = ref([])
 const userProperties: Ref<IUserProperty[]> = ref([])
 
@@ -29,15 +29,15 @@ onMounted(() => {
     console.log(json)
   })
 
-  // fetch get file from BE Folder/File.txt
+  // fetch get scriftContent from BE Folder/File.txt
   getScriptingContent(props.model?.id).then((scriptingContent) => {
-    codeString.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
+    scriptContent.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
   })
   
 
   if (containerRef.value) {
     editor = monaco.editor.create(containerRef.value, {
-      value: codeString.value,
+      value: scriptContent.value,
       language: "python",
       lineNumbers: "off",
       roundedSelection: false,
@@ -60,8 +60,6 @@ onBeforeUnmount(() => {
   }
 });
 
-const code = ref('') // editor.IStandaloneEditorConstructionOptions.value?: string (das muss warscheinlich benutzt werden)
-
 </script>
 
 <template>
@@ -69,12 +67,24 @@ const code = ref('') // editor.IStandaloneEditorConstructionOptions.value?: stri
     <div style="background-color:#1e1e1e;width:800px;height:600px;position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);border:1.5px solid grey;">
       <div ref="containerRef" class="scriptDiv" style="width:800px;height:600px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border:1.5px solid grey;"></div>
       <div class="saveBtn" style="width:800px;height:50px;position: fixed; border-left:1.5px solid grey; border-right:1.5px solid grey; background-color:#1e1e1e; top: 95.75%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: space-between;">
-        <button @click="$emit('closeScript')" style="justify-content: flex-end; background-color:rgb(255, 73, 73); text-decoration: none; width: 6em; margin: 7px; border-radius: 0.5em; font-size: 1em;">Cancel</button>
-        <button @click="$emit('saveAndClose', code)" style="justify-content: flex-end; background-color:rgb(75, 187, 75); text-decoration: none; width: 6em; margin: 7px; border-radius: 0.5em; font-size: 1em;">Save</button>
-      </div> <!-- variable code/ value vom editor muss dann noch richtig verwendet werden in Factory -->
+        <button @click="$emit('saveAndClose', scriptContent)" style="justify-content: flex-end; background-color:rgb(75, 187, 75); text-decoration: none; width: 6em; margin: 7px; border-radius: 0.5em; font-size: 1em;">Script absetzen</button>
+        <button @click="$emit('closeScript')" style="justify-content: flex-end; background-color:rgb(255, 73, 73); text-decoration: none; width: 6em; margin: 7px; border-radius: 0.5em; font-size: 1em;">Abbrechen</button>
+      </div> 
   </div>
   </div>
 </template>
 
 <style scoped>
 </style>
+
+
+
+
+<!--was noch fehlt (u.a.)
+
+- userProperties und systemProperties beim oeffnen des components befuellen mit Werten die vom backend kommen  (wenigstens mit default werden aus richtiger BE methode)
+- zugriff auf entity selbst im code
+- in EntityRestAPIController methoden fuer getAllSystemProperties und getAllUserProperties siehe getRequests.ts
+- Component Design so aendern wie auf wireframe von vincent
+
+--> 

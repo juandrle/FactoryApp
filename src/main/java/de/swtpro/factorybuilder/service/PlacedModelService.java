@@ -237,17 +237,21 @@ public class PlacedModelService {
         return true;
     }
 
-    // get scripting file path as String
+
+
+    
+    // get scripting file path as String (wahrscheinlich lieber nicht weil unnötig -> einfach aus ordner wo textfiles drin sind holen/ fragen ob gibt)
     // public String getScriptingFileName(long modelID) {
     //     PlacedModel placedModel = getPlacedModelById(modelID).orElse(null);
     //     return placedModel.getScripting_file(); 
     // }
 
-    // safe path to scripting file in DB
-    public boolean safeScriptingFile(PlacedModel placedModel, String filename){
-        placedModel.setScripting_file(filename);
-        placedModelRepository.save(placedModel);
-        return true; 
-    }
+
+    // safe path to scripting file in DB (same reason wie methode getScriptingFile)
+    // public boolean safeScriptingFile(PlacedModel placedModel, String filename){
+    //     placedModel.setScripting_file(filename);
+    //     placedModelRepository.save(placedModel);
+    //     return true; 
+    // }
 
 }

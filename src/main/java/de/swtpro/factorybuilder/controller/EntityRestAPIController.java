@@ -4,6 +4,7 @@ package de.swtpro.factorybuilder.controller;
 import de.swtpro.factorybuilder.DTO.entity.MoveRequestDTO;
 import de.swtpro.factorybuilder.DTO.entity.PlaceRequestDTO;
 import de.swtpro.factorybuilder.DTO.entity.RotateRequestDTO;
+import de.swtpro.factorybuilder.DTO.entity.saveScriptDTO;
 import de.swtpro.factorybuilder.DTO.factory.DeleteRequestDTO;
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.PlacedModel;
@@ -88,17 +89,27 @@ public class EntityRestAPIController {
     }
 
     @CrossOrigin
-    @GetMapping("/getScript")
+    @GetMapping("/getScript/")  // + modelId oder requestbody siehe getRequests.ts
     public String getScriptingContent() {
-        return "hat funktioniert alter ey :)) ";
+
+        // if file in ordner(resources/scripting) : file oeffnen und inhalt als string zurueckgeben, 
+        // else : leeren string zurueckgeben      
+        // (ohne datenbank zugriff)
+
+        return "hat funktioniert alter ey :)) "; // default zum testen
     }
 
     
-    // @CrossOrigin
-    // @PostMapping("/scripting")
-    // public ResponseEntity<Boolean>{
+    @CrossOrigin
+    @PostMapping("/postScript") 
+    public void postScriptingContent(@RequestBody saveScriptDTO saveScriptRequest){ // statt modelID in url mitgeben: body in postrequest mit modelID und scriptContent, siehe postRequests.ts
 
-    // }
+        LOGGER.info(saveScriptRequest.toString()); // test
+
+        // if file in ordner(resources/scripting) : file überschreiben, 
+        // else : file anlegen und string von frontend rein   PS: file name einfach immer modelId oder modelName + modelID, damit beim GET wieder finden koennen     
+        // (ohne datenbank zugriff)
+    }
 
 
 }

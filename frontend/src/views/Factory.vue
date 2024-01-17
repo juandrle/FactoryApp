@@ -12,7 +12,8 @@ import {
   factoryImageUpdate,
   moveRequest,
   placeRequest,
-  rotationRequest
+  rotationRequest,
+sendScriptingToBackend
 } from '@/utils/backendComms/postRequests'
 import {entityDeleteRequest} from '@/utils/backendComms/deleteRequest'
 import {getAllEntities, getAllEntitiesInFactory} from '@/utils/backendComms/getRequests'
@@ -604,7 +605,7 @@ const animate = (timestamp: any) => {
 }
 init()
 
-const saveAndCloseScript = (code: string) => {
+const saveAndCloseScript = (scriptContent: string) => {
   showScripting.value = !showScripting.value
   showMenuBar.value = true
 
@@ -613,14 +614,10 @@ const saveAndCloseScript = (code: string) => {
   console.log("id vom objekt: ", allPlacedEntities[currentObjectSelected.uuid].id,
     "objekt: " ,allPlacedEntities[currentObjectSelected.uuid], "alle objekte: ", allPlacedEntities)
 
-  // sendScriptingToBackend(allPlacedEntities[currentObjectSelected.uuid].id, code) 
 
-//   export const sendScriptingToBackend: any = async ( // siehe z. 241f. 
-//     url: string,
-//     scene: THREE.Scene,
-//     loader: any,
-//     code: string
-// ) => {}
+    // schicke den string mit den kompletten script an das backend
+
+    sendScriptingToBackend(allPlacedEntities[currentObjectSelected.uuid].id, scriptContent);
 }
 
 const closeScript = () => {
@@ -649,7 +646,7 @@ const closeScript = () => {
           (name) => (activeEntity = allEntities.find((obj) => obj.name === name))
         "
       />
-      <ScriptContainer v-if="showScripting" @saveAndClose="saveAndCloseScript('test, das ist der code')" @closeScript="closeScript()"/>
+      <ScriptContainer v-if="showScripting" @saveAndClose="saveAndCloseScript('test, das ist der code')" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
     </div>
     <FactoryMenu v-if="showSideMenu" @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
 </template>
