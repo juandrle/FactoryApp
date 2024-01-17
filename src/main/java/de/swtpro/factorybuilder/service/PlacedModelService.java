@@ -224,6 +224,7 @@ public class PlacedModelService {
         return true;
     }
     public boolean moveModel(long modelID, Position newRootPosition) {
+
         PlacedModel placedModel = getPlacedModelById(modelID).orElse(null);
         if (placedModel == null) return false;
         for (Field f: placedModel.getPlacedFields()) {
@@ -235,4 +236,18 @@ public class PlacedModelService {
         // Todo: switch fields and machine repos
         return true;
     }
+
+    // get scripting file path as String
+    // public String getScriptingFileName(long modelID) {
+    //     PlacedModel placedModel = getPlacedModelById(modelID).orElse(null);
+    //     return placedModel.getScripting_file(); 
+    // }
+
+    // safe path to scripting file in DB
+    public boolean safeScriptingFile(PlacedModel placedModel, String filename){
+        placedModel.setScripting_file(filename);
+        placedModelRepository.save(placedModel);
+        return true; 
+    }
+
 }

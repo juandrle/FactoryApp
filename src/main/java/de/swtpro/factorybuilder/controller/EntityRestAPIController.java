@@ -87,4 +87,18 @@ public class EntityRestAPIController {
                 ModelType.ITEM_PROCESSED, ModelType.ITEM_RESOURCE, ModelType.ITEM_PRODUCT);
     }
 
+    @CrossOrigin
+    @GetMapping("/getScript")
+    public String getScriptingContent() {
+        return "hat funktioniert alter ey :)) ";
+    }
+
+    
+    // @CrossOrigin
+    // @PostMapping("/scripting")
+    // public ResponseEntity<Boolean>{
+
+    // }
+
+
 }

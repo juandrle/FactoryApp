@@ -1,0 +1,1 @@
+hier wird der inhalt des scripting files abgelegt, welcher dann immer wieder neu überschrieben wird, wenn das script gespeichert wird

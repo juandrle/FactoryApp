@@ -43,6 +43,8 @@ public class PlacedModel implements Serializable{
     // how many items are needed / can be stored in a machine
     private int capacity;
 
+    private String scripting_file; 
+
     @ManyToOne
     @JoinColumn(name = "modelId", referencedColumnName = "id")
     private Model model;
@@ -65,6 +67,15 @@ public class PlacedModel implements Serializable{
 
     public long getFactoryID() {
         return factory != null ? factory.getFactoryID() : null;
+    }
+
+    public String getScripting_file(){
+        return scripting_file; 
+    }
+
+    // TODO: hier muss das File geupdated werden, das wir vom FE bekommen 
+    public void setScripting_file(String scripting_file){
+        this.scripting_file = scripting_file; 
     }
 
     public void setFactory(Factory factory) {
