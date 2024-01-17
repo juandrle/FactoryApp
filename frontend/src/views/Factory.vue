@@ -612,6 +612,15 @@ const saveAndCloseScript = (code: string) => {
   id: allPlacedEntities[currentObjectSelected.uuid].id
   console.log("id vom objekt: ", allPlacedEntities[currentObjectSelected.uuid].id,
     "objekt: " ,allPlacedEntities[currentObjectSelected.uuid], "alle objekte: ", allPlacedEntities)
+
+  // sendScriptingToBackend(allPlacedEntities[currentObjectSelected.uuid].id, code) 
+
+//   export const sendScriptingToBackend: any = async ( // siehe z. 241f. 
+//     url: string,
+//     scene: THREE.Scene,
+//     loader: any,
+//     code: string
+// ) => {}
 }
 
 const closeScript = () => {

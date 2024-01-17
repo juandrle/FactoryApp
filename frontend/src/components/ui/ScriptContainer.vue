@@ -1,14 +1,30 @@
 <script setup lang="ts">
+import type { ISystemProperty, IUserProperty } from '@/types/backendTypes';
+import { getAllSystemProperties, getAllUserProperties } from '@/utils/backendComms/getRequests';
 import * as monaco from 'monaco-editor';
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref, type Ref } from "vue";
 
 const containerRef = ref(null);
 let editor: monaco.editor.IStandaloneCodeEditor;
 
+const systemProperties: Ref<ISystemProperty[]> = ref([])
+const userProperties: Ref<IUserProperty[]> = ref([])
+
 onMounted(() => {
+
+  getAllSystemProperties().then((json: ISystemProperty[]) => {
+    userProperties.value = json
+    console.log(json)
+  })
+
+  getAllUserProperties().then((json: IUserProperty[]) => {
+    systemProperties.value = json
+    console.log(json)
+  })
+
   if (containerRef.value) {
     editor = monaco.editor.create(containerRef.value, {
-      value: "#Here u put in the machine to script as an object",
+      value: ref("#Here u put in the machine to script as an object").value,
       language: "python",
       lineNumbers: "off",
       roundedSelection: false,

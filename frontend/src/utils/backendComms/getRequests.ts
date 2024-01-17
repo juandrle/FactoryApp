@@ -1,4 +1,4 @@
-import type { IBackendEntity, IBackendEntityPreview } from '@/types/backendTypes'
+import type { IBackendEntity, IBackendEntityPreview, ISystemProperty, IUserProperty } from '@/types/backendTypes'
 import { backendUrl } from '@/utils/config/config'
 
 export const getAllEntities: () => Promise<IBackendEntityPreview[]> = async () => {
@@ -11,11 +11,20 @@ export const getAllEntitiesInFactory: (factoryId: number) => Promise<IBackendEnt
 export const getAllFactories = async () => {
   return fetch(backendUrl + '/api/factory/getAll').then((res) => res.json())
 }
-
 export const getFactoryImage: (factoryId: number) => Promise<String> = async (factoryId: number) => {
   return fetch(backendUrl + '/api/factory/getImage/' + factoryId).then((res) => res.text())
 }
 export const getAllUsers: () => Promise<{ username: string }[]> = async () => {
   return fetch(backendUrl + '/api/users/getAll').then((res) => res.json())
+}
+
+// Scripting Request
+
+export const getAllSystemProperties = async () => {
+  return fetch(backendUrl + '/api/systemProperties/getAll').then((res) => res.json())
+}
+
+export const getAllUserProperties = async () => {
+  return fetch(backendUrl + '/api/userProperties/getAll').then((res) => res.json())
 }
 

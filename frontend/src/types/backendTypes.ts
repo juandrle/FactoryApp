@@ -99,3 +99,13 @@ export interface ILoginForm{
     username: string;
     password: string;
 }
+
+export interface ISystemProperty{
+    property: string;
+    value: string;
+}
+
+export interface IUserProperty{
+    property: string;
+    value: string;
+}
