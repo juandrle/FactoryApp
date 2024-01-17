@@ -291,7 +291,7 @@ const onTestAnimationClick = (event: any) => {
 }
 
 const onClearAllClick = (event: any) => {
-  placedEntities.getAllEntites().forEach((entitie: IEntity) => {
+  placedEntities.getAllEntities().forEach((entitie: IEntity) => {
     entityDeleteRequest({
       factoryId: factoryID.value,
       id: entitie.id
