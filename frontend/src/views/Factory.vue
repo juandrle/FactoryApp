@@ -607,15 +607,17 @@ init()
 const saveAndCloseScript = (code: string) => {
   showScripting.value = !showScripting.value
   showMenuBar.value = true
+
   // hier diese Code zur Maschine speichern
+  id: allPlacedEntities[currentObjectSelected.uuid].id
+  console.log("id vom objekt: ", allPlacedEntities[currentObjectSelected.uuid].id,
+    "objekt: " ,allPlacedEntities[currentObjectSelected.uuid], "alle objekte: ", allPlacedEntities)
 }
 
 const closeScript = () => {
   showScripting.value = !showScripting.value
   showMenuBar.value = true
 }
-
-
 
 </script>
 
