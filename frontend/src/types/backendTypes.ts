@@ -80,6 +80,12 @@ export interface IEntityMove {
     y: number;
     z: number;
 }
+
+// Model scripting
+export interface IModelScripting {
+    id: number;
+}
+ 
 export interface IFactory {
     id: number;
     name: string;

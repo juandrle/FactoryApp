@@ -1,30 +1,43 @@
 <script setup lang="ts">
-import type { ISystemProperty, IUserProperty } from '@/types/backendTypes';
-import { getAllSystemProperties, getAllUserProperties } from '@/utils/backendComms/getRequests';
+import type { IModelScripting, ISystemProperty, IUserProperty } from '@/types/backendTypes';
+import { getAllSystemProperties, getAllUserProperties, getScriptingContent } from '@/utils/backendComms/getRequests';
 import * as monaco from 'monaco-editor';
 import { onMounted, onBeforeUnmount, ref, type Ref } from "vue";
 
 const containerRef = ref(null);
 let editor: monaco.editor.IStandaloneCodeEditor;
 
+const props = defineProps({
+  model: {
+    type: Object as () => IModelScripting,
+    required: true
+  }
+})
+const codeString = ref("#Here u put in the machine to script as an object")
 const systemProperties: Ref<ISystemProperty[]> = ref([])
 const userProperties: Ref<IUserProperty[]> = ref([])
 
 onMounted(() => {
-
+  // fetch to get all existing system-props for this model from DB 
   getAllSystemProperties().then((json: ISystemProperty[]) => {
-    userProperties.value = json
-    console.log(json)
-  })
-
-  getAllUserProperties().then((json: IUserProperty[]) => {
     systemProperties.value = json
     console.log(json)
   })
 
+  getAllUserProperties().then((json: IUserProperty[]) => {
+    userProperties.value = json
+    console.log(json)
+  })
+
+  // fetch get file from BE Folder/File.txt
+  getScriptingContent(props.model?.id).then((scriptingContent) => {
+    codeString.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
+  })
+  
+
   if (containerRef.value) {
     editor = monaco.editor.create(containerRef.value, {
-      value: ref("#Here u put in the machine to script as an object").value,
+      value: codeString.value,
       language: "python",
       lineNumbers: "off",
       roundedSelection: false,
