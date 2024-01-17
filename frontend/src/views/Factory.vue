@@ -90,6 +90,7 @@ let currentMode: CameraMode | null
 let pivot: THREE.Object3D
 
 let showScripting = ref(false)
+let showMenuBar = ref(true)
 
 /**
  * Setup
@@ -223,6 +224,7 @@ const onChangeEntityClicked = (situation: string) => {
     case 'script':
       console.log('scripting Entity')
       showScripting.value = !showScripting.value
+      showMenuBar.value = false
       break
 
     case 'clone':
@@ -604,11 +606,13 @@ init()
 
 const saveAndCloseScript = (code: string) => {
   showScripting.value = !showScripting.value
+  showMenuBar.value = true
   // hier diese Code zur Maschine speichern
 }
 
 const closeScript = () => {
   showScripting.value = !showScripting.value
+  showMenuBar.value = true
 }
 
 
@@ -627,7 +631,7 @@ const closeScript = () => {
       <div class="debug-bar"></div>
       <MenuBar
           id="ignore"
-          v-if="allEntities && currentCameraMode === 1"
+          v-if="allEntities && currentCameraMode === 1 && showMenuBar"
           :entities="allEntities"
           :active-entity="activeEntity"
           @update-active-entity="
