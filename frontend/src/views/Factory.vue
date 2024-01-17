@@ -9,6 +9,7 @@ import { PlacedEntities, type IEntity } from '@/classes/placedEntities/placedEnt
 import { getIntersectionsMouse } from '@/utils/threeJS/3d'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import CircularMenu from '@/components/factory-ui/CircularMenu.vue'
+import { AnimationManager } from "@/classes/animation/animationManager";
 import {
   factoryImageUpdate,
   moveRequest,
@@ -20,11 +21,9 @@ import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backend-communi
 import { backendUrl } from '@/utils/config/config'
 import { CameraMode } from '@/enum/CameraMode'
 import { ManipulationMode } from '@/enum/ManipulationMode'
-import { animateObject } from '@/utils/animation/animation'
 
 import {
   createRoom,
-  deepCloneObject,
   moveHighlight,
   selectionObject,
   updateHighlightModel
@@ -34,8 +33,7 @@ import {
   highlightObjectWithColor,
   placeEntity,
   replaceEntity,
-  makeObjectTransparent,
-  loadEntitie
+  makeObjectTransparent
 } from '@/utils/threeJS/entityManipulation'
 import { rotateModel, rotateModelFromXtoY } from '@/utils/rotation/rotate'
 import { useFactory } from '@/utils/composition-functions/useFactory'
@@ -77,7 +75,8 @@ let sizes: {
   ratio: number
 }
 let originalOrientation = ''
-let placedEntities: PlacedEntities = new PlacedEntities()
+let placedEntities: PlacedEntities;
+let animationManager: AnimationManager;
 /**
  * THREE.JS Specific
  */
@@ -124,13 +123,15 @@ const setupLights = (): void => {
   scene.add(directionalLight)
 }
 
-const setupControls = (): void => {
-  ccm = new CameraControlsManager(camera, renderer.domElement, CameraMode.ORBIT)
-  currentMode = ccm.currentMode
-}
-
 const setupLoader = (): void => {
   loader = new GLTFLoader()
+}
+
+const setupManager = ():void => {
+  placedEntities = new PlacedEntities();
+  animationManager = new AnimationManager(placedEntities, scene, loader);
+  ccm = new CameraControlsManager(camera, renderer.domElement, CameraMode.ORBIT)
+  currentMode = ccm.currentMode
 }
 
 /**
@@ -268,26 +269,8 @@ const onChangeEntityClicked = (situation: string): void => {
   }
 }
 
-const onTestAnimationClick = (event: any) => {
-  // Loading a sample ore
-  loadEntitie(loader, 'http://localhost:8080/models/mock/items/processed/kupfer_barren.gltf').then(
-    (threeJsObject) => {
-      placedEntities.getAllWholePipesPoints().forEach(({ startPoint, endPoint, pipeCount }) => {
-        // Start Animation
-        animateObject(
-          startPoint,
-          endPoint,
-          deepCloneObject(threeJsObject),
-          500 * pipeCount,
-          true,
-          scene,
-          () => {
-            console.log('end')
-          }
-        )
-      })
-    }
-  )
+const onAnimationStart = (event: any) => {
+  animationManager.startAnimation()
 }
 
 const onClearAllClick = (event: any) => {
@@ -649,9 +632,9 @@ const init = () => {
   setupRenderer()
   setupCamera()
   setupLights()
-  setupControls()
   setupLoader()
   createRoom(factorySize.value.x, factorySize.value.y, factorySize.value.z, scene)
+  setupManager()
 }
 
 const animate = (timestamp: any) => {
@@ -680,11 +663,11 @@ init()
     </div>
 
     <button
-      @click="onTestAnimationClick"
+      @click="onAnimationStart"
       id="ignore"
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-10 left-10 cursor-pointer"
     >
-      Test Animation
+      Start Animation
     </button>
 
     <button
