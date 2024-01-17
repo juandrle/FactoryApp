@@ -76,16 +76,45 @@ export class PlacedEntities {
       let currentEndPoint = this.getPointsFromStraightSinglePipe(currentPipe).endPoint.clone()
       let isPartOfBiggerPipe = false
 
-      out.forEach((toCheckPipe) => {
-        // Endpoints werden geupdatet
-        if (currentStartPoint.clone().round().equals(toCheckPipe.endPoint.clone().round())) {
-          toCheckPipe.endPoint = currentEndPoint
-          toCheckPipe.pipeCount++
+      out.forEach((wholePipe) => {
+        if (currentStartPoint.clone().round().equals(wholePipe.endPoint.clone().round())) {
+          // Nachbar rechts gefunden
+          wholePipe.endPoint = currentEndPoint
+          wholePipe.pipeCount++
           isPartOfBiggerPipe = true
-        } else if (currentEndPoint.clone().round().equals(toCheckPipe.startPoint.clone().round())) {
-          toCheckPipe.startPoint = currentStartPoint
-          toCheckPipe.pipeCount++
+
+          let potentialOtherRight = out.find(({ startPoint }) =>
+            currentEndPoint.clone().round().equals(startPoint.clone().round())
+          )
+
+          // Potentieller nachbar für rechts suchen
+          if (potentialOtherRight) {
+            // Deleting other
+            out = out.filter((pipe) => pipe != potentialOtherRight)
+
+            // Extending
+            wholePipe.endPoint = potentialOtherRight.endPoint
+            wholePipe.pipeCount += potentialOtherRight.pipeCount
+
+          }
+        } else if (currentEndPoint.clone().round().equals(wholePipe.startPoint.clone().round())) {
+          // Nachbar links gefunden
+          wholePipe.startPoint = currentStartPoint
+          wholePipe.pipeCount++
           isPartOfBiggerPipe = true
+
+          let potentialOtherLeft = out.find(({ endPoint }) =>
+            currentStartPoint.clone().round().equals(endPoint.clone().round())
+          )
+
+          if (potentialOtherLeft) {
+            // Deleting other
+            out = out.filter((pipe) => pipe != potentialOtherLeft)
+
+            // Extending
+            wholePipe.startPoint = potentialOtherLeft.startPoint
+            wholePipe.pipeCount += potentialOtherLeft.pipeCount
+          }
         }
       })
 
