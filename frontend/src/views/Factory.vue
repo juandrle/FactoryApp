@@ -601,30 +601,42 @@ const animate = (timestamp: any) => {
   renderer.render(scene, camera)
 }
 init()
+
+const saveAndCloseScript = (code: string) => {
+  showScripting.value = !showScripting.value
+  // hier diese Code zur Maschine speichern
+}
+
+const closeScript = () => {
+  showScripting.value = !showScripting.value
+}
+
+
+
 </script>
 
 <template>
-  <div class="target" ref="target">
-    <div id="dynamicDiv" style="position: absolute">
-      <CircularMenu
-          :is-button-visible="showCircMenu"
-          :toggleMenuVisibility="onToggleMenuVisibility"
-          @changeEntity="onChangeEntityClicked"
-      ></CircularMenu>
+    <div class="target" ref="target">
+      <div id="dynamicDiv" style="position: absolute">
+        <CircularMenu
+            :is-button-visible="showCircMenu"
+            :toggleMenuVisibility="onToggleMenuVisibility"
+            @changeEntity="onChangeEntityClicked"
+        ></CircularMenu>
+      </div>
+      <div class="debug-bar"></div>
+      <MenuBar
+          id="ignore"
+          v-if="allEntities && currentCameraMode === 1"
+          :entities="allEntities"
+          :active-entity="activeEntity"
+          @update-active-entity="
+          (name) => (activeEntity = allEntities.find((obj) => obj.name === name))
+        "
+      />
+      <ScriptContainer v-if="showScripting" @saveAndClose="saveAndCloseScript('test, das ist der code')" @closeScript="closeScript()"/>
     </div>
-    <div class="debug-bar"></div>
-    <MenuBar
-        id="ignore"
-        v-if="allEntities && currentCameraMode === 1"
-        :entities="allEntities"
-        :active-entity="activeEntity"
-        @update-active-entity="
-        (name) => (activeEntity = allEntities.find((obj) => obj.name === name))
-      "
-    />
-    <ScriptContainer v-if="showScripting"/>
-  </div>
-  <FactoryMenu v-if="showSideMenu" @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
+    <FactoryMenu v-if="showSideMenu" @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
 </template>
 
 <style scoped>
