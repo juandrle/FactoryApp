@@ -146,6 +146,7 @@ public class EntityRestAPIController {
                                                                                      // und scriptContent, siehe
                                                                                      // postRequests.ts
 
+        LOGGER.info("postScriptingContent() (RestAPI) erreicht. Script, das gespeichert werden soll: ", saveScriptRequest.scriptContent().toString());                                                                        
         LOGGER.info(saveScriptRequest.toString()); // test
 
         // if file in ordner(resources/scripting) : file überschreiben,

@@ -181,10 +181,14 @@ export const sendScriptingToBackend = async (modelId: number, scriptContent: str
             body: requestBody,
         })
 
-        console.log("sendCriptingToBackend(): ", response);
+        console.log("sendCriptingToBackend() response: ", response);
 
         if (!response.ok) throw new Error(response.statusText)
-        return await response.json()
+        // return await response.json()
+        const res = await response.text()
+
+        console.log(res)
+        return res
     
     } catch (err) {
         console.error(err)
