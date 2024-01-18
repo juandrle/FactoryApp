@@ -30,5 +30,5 @@ export const getAllUserProperties = async () => {
 
 // get scripting file to display in FE View "ScriptContainer"
 export const getScriptingContent: (modelId: number) => Promise<String> = async (modelId: number) => {
-  return fetch(backendUrl + '/api/entity/getScript/' + modelId).then((res) => res.text())
+  return fetch(backendUrl + '/api/entity/getScriptContent/' + modelId).then((res) => res.text())
 }
