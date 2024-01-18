@@ -21,14 +21,17 @@ export const getAllUsers: () => Promise<{ username: string }[]> = async () => {
 // Scripting Request
 
 export const getAllSystemProperties = async () => {
+  console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllSystemProperties aufgerufen")
   return fetch(backendUrl + '/api/systemProperties/getAll').then((res) => res.json())
 }
 
 export const getAllUserProperties = async () => {
+  console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllUserProperties aufgerufen")
   return fetch(backendUrl + '/api/userProperties/getAll').then((res) => res.json())
 }
 
 // get scripting file to display in FE View "ScriptContainer"
 export const getScriptingContent: (modelId: number) => Promise<String> = async (modelId: number) => {
+  console.log("AYWAAAAAAA!!!!!! im FE Anfrage Scripting aufgerufen")
   return fetch(backendUrl + '/api/entity/getScriptContent/' + modelId).then((res) => res.text())
 }
