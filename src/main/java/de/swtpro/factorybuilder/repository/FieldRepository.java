@@ -8,7 +8,9 @@ import java.util.Optional;
 
 public interface FieldRepository extends JpaRepository<Field, Long> {
 
-    Optional<Field>findByPosAndFactoryID(Position position, long factoryID);
+    Optional<Field> findByPosAndFactoryID(Position position, long factoryID);
+
+    Long countByPosAndFactoryID(Position position, long factoryID);
 
 
 }

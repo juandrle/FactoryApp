@@ -3,6 +3,7 @@ package de.swtpro.factorybuilder.service;
 import de.swtpro.factorybuilder.entity.*;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.utility.Position;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -229,6 +230,7 @@ public class PlacedModelService {
         }
 
     }
+    @Transactional
     public PlacedModel createPlacedModel(Model model, Position rootPosition, long factoryID) {
         if (model != null && rootPosition != null) {
             Factory factory = factoryService.getFactoryById(factoryID).orElseThrow();
@@ -236,7 +238,7 @@ public class PlacedModelService {
     
             // fill placedModel lists (placedFields, input and output)
             if (fillPlacedModelLists(placedModel)) {
-                if (checkForPlacement(placedModel, factory)) {
+                if (checkForPlacement(placedModel)) {
                     for(Field f:placedModel.getPlacedFields()){
                         fieldService.setPlacedModelOnField(placedModel, f);
                     }
@@ -252,17 +254,17 @@ public class PlacedModelService {
         return placedModelRepository.findByFactory(factory);
     }
     
-    private boolean checkField(Field f, PlacedModel thisModel, String ori, Factory factory) {
+    private boolean checkField(Field f, PlacedModel thisModel, String ori) {
         boolean condition = false;
         String counterOri = "";
         int extraX = 0, extraY = 0;
         Input input = thisModel.getInputByPosition(f.getPosition());
         Output output = thisModel.getOutputByPosition(f.getPosition());
-        int height, width;
+        int height = 0, width = 0;
 
         switch (ori) {
             case "North":
-                height = -factory.getHeight()/2 +1;
+                //height = -factory.getHeight()/2 +1;
                 if (f.getPosition().getY() > height) {
                     condition = true;
                     extraY = -1;
@@ -270,7 +272,7 @@ public class PlacedModelService {
                 counterOri = "South";
                 break;
             case "South":
-                height = factory.getHeight();
+                //height = factory.getHeight();
                 if (f.getPosition().getY() < height/2- 1) {
                     condition = true;
                     extraY = 1;
@@ -278,7 +280,7 @@ public class PlacedModelService {
                 counterOri = "North";
                 break;
             case "East":
-                width = factory.getWidth()/2 - 1;
+                //width = factory.getWidth()/2 - 1;
                 if (f.getPosition().getX() < width) {
                     condition = true;
                     extraX = 1;
@@ -286,7 +288,7 @@ public class PlacedModelService {
                 counterOri = "West";
                 break;
             case "West":
-                width = factory.getWidth()/2 + 1;
+                //width = factory.getWidth()/2 + 1;
                 if (f.getPosition().getX() > width) {
                     condition = true;
                     extraX = -1;
@@ -328,53 +330,111 @@ public class PlacedModelService {
         }
         return true;
     }
-    private boolean checkForPlacement(PlacedModel thisModel, Factory factory) {
+    private boolean checkForPlacement(PlacedModel thisModel) {
         // check if fields are free
         for (Field f: thisModel.getPlacedFields()) {
             if (f.getPlacedModel() != null && thisModel.getId() != f.getPlacedModel().getId())
                 return false;
-        }
-
-        for (Field f: thisModel.getPlacedFields()) {
             // check north
-            if (!checkField(f, thisModel, "North", factory))
+            if (!checkField(f, thisModel, "North"))
                 return false;
             // check north
-            if (!checkField(f, thisModel, "South", factory))
+            if (!checkField(f, thisModel, "South"))
                 return false;
             // check north
-            if (!checkField(f, thisModel, "East", factory))
+            if (!checkField(f, thisModel, "East"))
                 return false;
             // check north
-            if (!checkField(f, thisModel, "West", factory))
+            if (!checkField(f, thisModel, "West"))
                 return false;
         }
         // if everything is ok return true;
         return true;
     }
+    @Transactional
+    public boolean rotateModel(long thisModelID, String newOrientation) {
+        PlacedModel thisModel = getPlacedModelById(thisModelID).orElse(null);
+        if(thisModel == null) return false;
 
-    public boolean rotateModel(long thisModelID, Position newPosition, Factory factory) {
-        PlacedModel thisModel = getPlacedModelById(thisModelID).orElseThrow();
+        long factoryID = thisModel.getFactoryID();
+        Factory factory = factoryService.getFactoryById(factoryID).orElse(null);
+        if(factory == null) return false;
+
         List<Field> newPosList = new ArrayList<>();
-        PlacedModel backupModel = thisModel;
-        // check field if height or width still fits
-        assert thisModel != null;
-        for (Field f : thisModel.getPlacedFields())
-            newPosList.add(fieldService.getFieldByPosition(adjustPosition(thisModel, newPosition, f.getPosition()),
-                    thisModel.getFactoryID()).orElse(null));
+        List<Field> oldPosList = new ArrayList<>(thisModel.getPlacedFields());
+        Position backupRootPos = createNewPosition(thisModel.getRootPos().getX(),thisModel.getRootPos().getY(),thisModel.getRootPos().getZ());
+        final String backupOrientation = thisModel.getOrientation();
+        String oldOrientation = thisModel.getOrientation();
+        String tmpOrientation = thisModel.getOrientation();
 
-        for (Output o : thisModel.getOutputs()) {
-            newPosList.add(fieldService.getFieldByPosition(adjustPosition(thisModel, newPosition, o.getPosition()),
-                    thisModel.getFactoryID()).orElse(null));
-            o.setOrientation(rotateOrientation(o.getOrientation()));
-        }
-        for (Input i : thisModel.getInputs()) {
-            newPosList.add(fieldService.getFieldByPosition(adjustPosition(thisModel, newPosition, i.getPosition()),
-                    thisModel.getFactoryID()).orElse(null));
-            i.setOrientation(rotateOrientation(i.getOrientation()));
-        }
-        thisModel.setOrientation(rotateOrientation(thisModel.getOrientation()));
+        while(!tmpOrientation.equals(newOrientation)){
+            tmpOrientation = rotateOrientation(tmpOrientation);
+            //LOGGER.info("OLD ORIENTATION: " + oldOrientation + ", NEW ORIENTATION: " + tmpOrientation);
+            thisModel.setOrientation(tmpOrientation);
 
+            try {// adjusting every field where model is placed on
+
+                // remove root position from placedFields list
+                thisModel.getPlacedFields().remove(fieldService.getFieldByPosition(thisModel.getRootPos(), thisModel.getFactoryID()).orElseThrow());
+
+                //LOGGER.info("old rootpos: " + thisModel.getRootPos().getX() +"/"+thisModel.getRootPos().getY() +"/"+thisModel.getRootPos().getZ());
+
+                // adjust only the root position
+                thisModel.setRootPos(adjustPosition(oldOrientation,tmpOrientation,thisModel.getRootPos(), true,null));
+
+                //LOGGER.info("new rootpos: " + thisModel.getRootPos().getX() +"/"+thisModel.getRootPos().getY() +"/"+thisModel.getRootPos().getZ());
+
+                for (Field f : thisModel.getPlacedFields()){
+                    // new position, so we don't mess up the field position
+                    Position position = createNewPosition(f.getPosition().getX(),f.getPosition().getY(),f.getPosition().getZ());
+                    Position pos = adjustPosition(oldOrientation, tmpOrientation, position, false, backupRootPos);
+                    var fld = fieldService.getFieldByPosition(pos, factoryID);
+                    if(fld.isEmpty()){
+                        LOGGER.error("fehler fld");
+                    }
+                    newPosList.add(fld.orElseThrow());
+
+                }
+
+
+                // add root position back to placedFields list
+                newPosList.add(fieldService.getFieldByPosition(thisModel.getRootPos(), thisModel.getFactoryID()).orElseThrow());
+
+                //clear old list and fill with the new data
+                thisModel.getPlacedFields().clear();
+                thisModel.getPlacedFields().addAll(newPosList);
+                newPosList.clear();
+
+
+                for (Input i : thisModel.getInputs()) {
+                    // new position, so we don't mess up the field position
+                    Position outPosition = createNewPosition(i.getPosition().getX(),i.getPosition().getY(),i.getPosition().getZ());
+                    i.setPosition(adjustPosition(oldOrientation,tmpOrientation, outPosition, false, backupRootPos));
+                    i.setOrientation(rotateOrientation(i.getOrientation()));
+                }
+
+
+                for (Output o : thisModel.getOutputs()) {
+                    // new position, so we don't mess up the field position
+                    Position outPosition = createNewPosition(o.getPosition().getX(),o.getPosition().getY(),o.getPosition().getZ());
+                    o.setPosition(adjustPosition(oldOrientation,tmpOrientation, outPosition, false, backupRootPos));
+                    o.setOrientation(rotateOrientation(o.getOrientation()));
+                }
+
+
+                oldOrientation = tmpOrientation;
+                backupRootPos = createNewPosition(thisModel.getRootPos().getX(), thisModel.getRootPos().getY(), thisModel.getRootPos().getZ());
+            }
+            catch (Exception e) {
+                LOGGER.error("Ein Fehler im System: " + e,e);
+                return false;
+            }
+
+
+        }
+
+        // START check
+        /*
         if (checkForPlacement(thisModel, factory)) {
             for (Field f : backupModel.getPlacedFields()) {
                 fieldService.deletePlacedModelOnField(f);
@@ -385,25 +445,82 @@ public class PlacedModelService {
             return true;
         }
 
-        //TODO pruefe ob die gedrehte version an die stelle passt ansonsten passe dies an (mit vince klären)
         return false;
+        */
+        // END check
+
+
+        //fallback to old position and orientation
+        if(!checkForPlacement(thisModel)){
+            rotateModel(thisModelID,backupOrientation);
+            return false;
+        }
+
+
+        try {
+            //set field that placedModel used to be on to null
+            for(Field f: oldPosList)
+                fieldService.deletePlacedModelOnField(f);
+
+
+            //place placedModel on new fields
+            for(Field f: thisModel.getPlacedFields())
+                fieldService.setPlacedModelOnField(thisModel,f);
+        } catch (Exception e) {
+            LOGGER.error("Ein Fehler im System: " + e,e);
+            return false;
+        }
+
+        return true;
     }
-    private Position adjustPosition(PlacedModel thisModel, Position newPosition, Position tmpPos) {
-        int tmpValue = tmpPos.getX() - thisModel.getRootPos().getX();
-        tmpPos.setX(tmpPos.getY() - thisModel.getRootPos().getY() + newPosition.getX());
-        tmpPos.setY(tmpValue + newPosition.getY());
-        tmpPos.setZ(tmpPos.getZ() - thisModel.getRootPos().getZ() + newPosition.getZ());
+
+    private Position adjustPosition(String oldOri, String newOri, Position tmpPos, boolean isRootPos, Position oldRootPos) {
+        int absX = 0, absY = 0;
+        if(!isRootPos) {
+            absX = Math.abs(tmpPos.getX() - oldRootPos.getX());
+            absY = Math.abs(tmpPos.getY() - oldRootPos.getY());
+        }
+        switch(oldOri){
+            case "North":
+                if(newOri.equals("East")) {
+                    tmpPos.setX(tmpPos.getX() + absY - 1 -absX);
+                    tmpPos.setY(tmpPos.getY() + absX + absY);
+                }
+                break;
+            case "East":
+                if(newOri.equals("South")) {
+                    tmpPos.setX(tmpPos.getX() - absY + absX);
+                    tmpPos.setY(tmpPos.getY() + absX - 1 - absY);
+                }
+                break;
+            case "South":
+                if(newOri.equals("West")) {
+                    tmpPos.setX(tmpPos.getX() - absY + 1 +absX);
+                    tmpPos.setY(tmpPos.getY() - absX + absY);
+                }
+                break;
+            case "West":
+                if(newOri.equals("North")) {
+                    tmpPos.setX(tmpPos.getX() + absY -absX);
+                    tmpPos.setY(tmpPos.getY() - absX + 1 +absY);
+                }
+                break;
+            }
+
         return tmpPos;
     }
 
     private String rotateOrientation(String orientation) {
-        return switch (orientation) {
-            case "North" -> "East";
-            case "East" -> "South";
-            case "South" -> "West";
-            case "West" -> "North";
-            default -> "";
-        };
+            return switch (orientation) {
+                case "North" -> "East";
+                case "East" -> "South";
+                case "South" -> "West";
+                case "West" -> "North";
+                default -> "";
+            };
+
+
+
     }
     public boolean removeModelFromFactory(long placedModelID) {
         PlacedModel placedModel = getPlacedModelById(placedModelID).orElse(null);
@@ -417,6 +534,7 @@ public class PlacedModelService {
 
         return true;
     }
+    @Transactional
     public boolean moveModel(long modelID, Position newRootPosition) {
         PlacedModel placedModel = getPlacedModelById(modelID).orElse(null);
         if (placedModel == null) return false;
@@ -438,7 +556,7 @@ public class PlacedModelService {
         // change root position and fill placedModel lists starting from new root position
         placedModel.setRootPos(newRootPosition);
         if (fillPlacedModelLists(placedModel)) {
-            if (checkForPlacement(placedModel, factory)) {
+            if (checkForPlacement(placedModel)) {
                 // set fields that placedModel used to be on to null
                 for (Field f: fallbackPlacedList) {
                     fieldService.deletePlacedModelOnField(f);

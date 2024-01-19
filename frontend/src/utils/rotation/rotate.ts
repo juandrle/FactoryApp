@@ -29,10 +29,11 @@ export const turnRight = (orientation: string): string => {
 };
 
 export const rotateModel = (dir: string, object: any)=> {
+    // adjusted rotation for usability (right key to rotate clockwise)
     if(dir === "left") {
-        object.rotation.z -= Math.PI / 2
-    } else {
         object.rotation.z += Math.PI / 2
+    } else {
+        object.rotation.z -= Math.PI / 2
     } //lul
 }
 

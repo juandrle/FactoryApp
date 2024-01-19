@@ -90,14 +90,11 @@ public class EntityRestAPIController {
     @CrossOrigin
     @PostMapping("/rotate")
     public ResponseEntity<Boolean> rotate(@RequestBody RotateRequestDTO rotateRequestDTO) {
-        //Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
+        boolean rotated = placedModelService.rotateModel(rotateRequestDTO.id, rotateRequestDTO.orientation);
 
-        //boolean rotated = placedModelService.rotateModel(idToRotate, pos, factoryService.getFactoryById(placeRequestDTO.factoryID).orElseThrow());
+        LOGGER.info("rotate entity: " + String.valueOf(rotateRequestDTO.id) + " is " + String.valueOf(rotated));
 
-        //LOGGER.info("rotate entity: " + String.valueOf(idToRotate) + String.valueOf(rotated));
-
-        LOGGER.info(rotateRequestDTO.toString());
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(rotated);
     }
 
     @CrossOrigin
@@ -105,8 +102,8 @@ public class EntityRestAPIController {
     public ResponseEntity<Boolean> move(@RequestBody MoveRequestDTO moveRequestDTO) {
         Position pos = new Position(moveRequestDTO.x, moveRequestDTO.y, moveRequestDTO.z);
         boolean moved = placedModelService.moveModel(moveRequestDTO.id, pos);
-        LOGGER.info(moveRequestDTO.toString());
-        LOGGER.info("move entity: " + String.valueOf(moveRequestDTO.id) + String.valueOf(moved));
+        //LOGGER.info(moveRequestDTO.toString());
+        //LOGGER.info("move entity: " + String.valueOf(moveRequestDTO.id) + String.valueOf(moved));
         LOGGER.info("Moved: " + moved);
         return ResponseEntity.ok(moved);
     }
