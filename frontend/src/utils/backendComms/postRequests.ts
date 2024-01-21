@@ -76,7 +76,7 @@ export const factoryImageUpdate = async (factoryID: number, screenshot: string) 
             factoryID: factoryID,
             screenshot: screenshot
         })
-        console.log(requestBody)
+        // console.log(requestBody)
         const response = await fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},

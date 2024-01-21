@@ -106,8 +106,9 @@ public class EntityRestAPIController {
     }
 
     @CrossOrigin
-    @GetMapping("/getScriptContent/{modelId}") // + modelId oder requestbody siehe getRequests.ts
-    public ResponseEntity<String> getScriptingContent(@PathVariable long modelId) {
+    @GetMapping("/getScriptContent/{modelId}") 
+    public String getScriptingContent(@PathVariable long modelId) {
+        LOGGER.info("ModelId: ", modelId);
         try {
             Resource resource = resourceLoader.getResource("classpath:scripting/test.txt");
             InputStream input = resource.getInputStream();
@@ -124,12 +125,13 @@ public class EntityRestAPIController {
 
                 String fileContent = content.toString();
                 LOGGER.info(fileContent);
-                return ResponseEntity.ok(fileContent);
+                // return ResponseEntity.ok(fileContent);
+                return "aus apicontroller, aber nicht aus file diese";
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed reading content of script");
+            return "Failed reading content of script";
         }
 
         // if file in ordner(resources/scripting) : file oeffnen und inhalt als string
@@ -139,20 +141,30 @@ public class EntityRestAPIController {
 
     }
 
-    @CrossOrigin
-    @PostMapping("/postScript")
-    public void postScriptingContent(@RequestBody saveScriptDTO saveScriptRequest) { // statt modelID in url mitgeben:
-                                                                                     // body in postrequest mit modelID
-                                                                                     // und scriptContent, siehe
-                                                                                     // postRequests.ts
 
-        LOGGER.info("postScriptingContent() (RestAPI) erreicht. Script, das gespeichert werden soll: ", saveScriptRequest.scriptContent().toString());                                                                        
-        LOGGER.info(saveScriptRequest.toString()); // test
+    // @CrossOrigin
+    // @GetMapping("/systemProperties/getAll/{modelId}") // + modelId oder requestbody siehe getRequests.ts
+    // public ResponseEntity<String> getSystemProperties(@PathVariable long modelId) {
+        
+    //     LOGGER.info("BE Funktion getSystemProperties wurde aufgerufen LULE");
+    //     return ResponseEntity.ok("getSystemProperties hat geklappt");
+    // }
+    
+
+    // @CrossOrigin
+    // @PostMapping("/postScript/{modelId}")
+    // public void postScriptingContent(@RequestBody saveScriptDTO saveScriptRequest) { // statt modelID in url mitgeben:
+    //                                                                                  // body in postrequest mit modelID
+    //                                                                                  // und scriptContent, siehe
+    //                                                                                  // postRequests.ts
+
+    //     LOGGER.info("postScriptingContent() (RestAPI) erreicht. Script, das gespeichert werden soll: ", saveScriptRequest.scriptContent().toString());                                                                        
+    //     LOGGER.info(saveScriptRequest.toString()); // test
 
         // if file in ordner(resources/scripting) : file überschreiben,
         // else : file anlegen und string von frontend rein PS: file name einfach immer
         // modelId oder modelName + modelID, damit beim GET wieder finden koennen
         // (ohne datenbank zugriff)
-    }
+    // }
 
 }

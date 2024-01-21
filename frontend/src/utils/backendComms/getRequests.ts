@@ -20,18 +20,18 @@ export const getAllUsers: () => Promise<{ username: string }[]> = async () => {
 
 // Scripting Request
 
-export const getAllSystemProperties = async () => {
-  console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllSystemProperties aufgerufen")
-  return fetch(backendUrl + '/api/systemProperties/getAll').then((res) => res.json())
-}
+// export const getAllSystemProperties : (modelId: number) => Promise<ISystemProperty[]>= async (modelId: number) => {
+//   console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllSystemProperties aufgerufen")
+//   return fetch(backendUrl + '/api/entity/systemProperties/getAll/' + modelId, { credentials: 'include'}).then((res) => res.json())
+// }
 
-export const getAllUserProperties = async () => {
-  console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllUserProperties aufgerufen")
-  return fetch(backendUrl + '/api/userProperties/getAll').then((res) => res.json())
-}
+// export const getAllUserProperties : (modelId: number) => Promise<IUserProperty[]>= async (modelId: number) => {
+//   console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllUserProperties aufgerufen")
+//   return fetch(backendUrl + '/api/entity/userProperties/getAll/'+ modelId, { credentials: 'include'}).then((res) => res.json())
+// }
 
 // get scripting file to display in FE View "ScriptContainer"
-export const getScriptingContent: (modelId: number) => Promise<String> = async (modelId: number) => {
+export const getScriptingContent = async (modelId: number): Promise<String> => {
   console.log("AYWAAAAAAA!!!!!! im FE Anfrage Scripting aufgerufen")
-  return fetch(backendUrl + '/api/entity/getScriptContent/' + modelId).then((res) => res.text())
+  return fetch(backendUrl + '/api/entity/getScriptContent/' + modelId, { credentials: 'include'}).then((res) => res.text())
 }

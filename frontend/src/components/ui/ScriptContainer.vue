@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { IModelScripting, ISystemProperty, IUserProperty } from '@/types/backendTypes';
-import { getAllSystemProperties, getAllUserProperties, getScriptingContent } from '@/utils/backendComms/getRequests';
+import { getScriptingContent } from '@/utils/backendComms/getRequests';
 import * as monaco from 'monaco-editor';
 import { onMounted, onBeforeUnmount, ref, type Ref } from "vue";
 
@@ -17,22 +17,38 @@ const scriptContent = ref("#Here u put in the machine to script as an object")
 const systemProperties: Ref<ISystemProperty[]> = ref([])
 const userProperties: Ref<IUserProperty[]> = ref([])
 
+
+// const onMonacoInit = () => {       // komischer vorschlag von chat wegen monacoeditor zeug
+//   if (containerRef.value) {
+//     editor = monaco.editor.create(containerRef.value, {
+//       // ... (dein bestehender Code)
+//     });
+
+//     setTimeout(() => {
+//       editor.updateOptions({
+//         lineNumbers: 'on',
+//       });
+//     }, 2000);
+//   }
+// };
+
 onMounted(() => {
-  // fetch get scriftContent from BE Folder/File.txt
+
+  // fetch get scriptContent from BE Folder/File.txt
   getScriptingContent(props.model?.id).then((scriptingContent) => {
     scriptContent.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
   })
   
   // fetch to get all existing system-props for this model from DB 
-  getAllSystemProperties().then((json: ISystemProperty[]) => {
-    systemProperties.value = json
-    console.log(json)
-  })
+  // getAllSystemProperties(props.model?.id).then((json) => {
+  //   systemProperties.value = json
+  //   console.log(json)
+  // })
 
-  getAllUserProperties().then((json: IUserProperty[]) => {
-    userProperties.value = json
-    console.log(json)
-  })
+  // getAllUserProperties(props.model?.id).then((json) => {
+  //   userProperties.value = json
+  //   console.log(json)
+  // })
 
 
   if (containerRef.value) {
@@ -52,6 +68,10 @@ onMounted(() => {
       });
     }, 2000);
   }
+
+  // monaco.editor.getModels()[0].onWillDispose(() => {    
+  //   onMonacoInit();
+  // });
 });
 
 onBeforeUnmount(() => {
