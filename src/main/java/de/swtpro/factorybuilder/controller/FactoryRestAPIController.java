@@ -3,6 +3,7 @@ package de.swtpro.factorybuilder.controller;
 import de.swtpro.factorybuilder.DTO.factory.FactoryCreateDTO;
 import de.swtpro.factorybuilder.DTO.factory.FactoryEnterDTO;
 import de.swtpro.factorybuilder.DTO.factory.FactoryPasswordCheckDTO;
+import de.swtpro.factorybuilder.DTO.factory.FactoryUserDTO;
 import de.swtpro.factorybuilder.DTO.factory.UpdateImageFactoryDTO;
 import de.swtpro.factorybuilder.DTO.entity.PlacedModelDTO;
 import de.swtpro.factorybuilder.entity.Factory;
@@ -131,6 +132,63 @@ public class FactoryRestAPIController {
         } catch (Exception e) {
             return ResponseEntity.ok(false);
         }
+    }
+
+    @CrossOrigin
+    @PostMapping("/enter")
+    public ResponseEntity<Boolean> enter(@RequestBody FactoryUserDTO factoryUserDTO){
+        LOGGER.info("LULE ENTER HAT GEKLAPPT");
+        LOGGER.info("Received FactoryUserDTO: " + factoryUserDTO);
+        try {
+            long factoryId = factoryUserDTO.factoryId();
+            String username = factoryUserDTO.username();
+
+            LOGGER.info("Factory ID: " + factoryId + ", Username: " + username);
+
+            // Factory factory = factoryService.getFactoryById(factoryId).orElseThrow();
+            User user = userService.getUserByName(username).orElseThrow();
+
+            List<User> currentUsers = factoryService.getCurrentUsersInFactory(factoryId);
+            LOGGER.info("DAS IST UNSERE LISTE" + currentUsers);
+            if(currentUsers.contains(user)){
+                return ResponseEntity.ok(false);
+            }else {
+                factoryService.addUserToFactory(factoryId, user);
+                return ResponseEntity.ok(true);
+            }
+           
+            
+        }catch (Exception e){
+            LOGGER.error("Exception in enter method", e);
+            return ResponseEntity.ok(false);
+        }
+        
+    }
+
+    @CrossOrigin
+    @PostMapping("/leave")
+    public ResponseEntity<Boolean> leave(@RequestBody FactoryUserDTO factoryUserDTO){
+        try {
+            long factoryId = factoryUserDTO.factoryId();
+            String username = factoryUserDTO.username();
+
+            Factory factory = factoryService.getFactoryById(factoryId).orElseThrow();
+            User user = userService.getUserByName(username).orElseThrow();
+
+            List<User> currentUsers = factoryService.getCurrentUsersInFactory(factoryId);
+
+            if(currentUsers.contains(user)){
+                factoryService.removeUserFromFactory(factoryId, user);
+                return ResponseEntity.ok(true);
+            }else {
+                
+                return ResponseEntity.ok(false);
+            }
+            
+        }catch (Exception e){
+            return ResponseEntity.ok(false);
+        }
+        
     }
 
     public List<PlacedModelDTO> getEntitiesFromFactory(Factory factory) {
