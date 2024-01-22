@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { IModelScripting, ISystemProperty, IUserProperty } from '@/types/backendTypes';
-import { getScriptingContent } from '@/utils/backendComms/getRequests';
+import { getScriptingContent } from '@/utils/backend-communication/getRequests';
 import * as monaco from 'monaco-editor';
 import { onMounted, onBeforeUnmount, ref, type Ref } from "vue";
 

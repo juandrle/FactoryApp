@@ -40,7 +40,7 @@ import MenuBar from '@/components/factory-ui/MenuBar.vue'
 import FactoryMenu from "@/components/factory-ui/SideBar.vue";
 import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
 import {useError} from "@/utils/composition-functions/useError";
-import ScriptContainer from '@/components/ui/ScriptContainer.vue'
+import ScriptContainer from '@/components/factory-ui/ScriptContainer.vue'
 
 /**
  * Config
