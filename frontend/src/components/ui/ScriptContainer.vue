@@ -35,7 +35,8 @@ const userProperties: Ref<IUserProperty[]> = ref([])
 onMounted(() => {
 
   // fetch get scriptContent from BE Folder/File.txt
-  getScriptingContent(props.model?.id).then((scriptingContent) => {
+  console.log(props.model)
+  getScriptingContent(props.model!!.id).then((scriptingContent) => {
     scriptContent.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
   })
   

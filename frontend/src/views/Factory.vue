@@ -646,7 +646,7 @@ const closeScript = () => {
           (name) => (activeEntity = allEntities.find((obj) => obj.name === name))
         "
       />
-      <ScriptContainer v-if="showScripting" @saveAndClose="saveAndCloseScript('test, das ist der code')" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
+      <ScriptContainer v-if="showScripting" :model="allPlacedEntities[currentObjectSelected.uuid]" @saveAndClose="saveAndCloseScript('test, das ist der code')" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
     </div>
     <FactoryMenu v-if="showSideMenu" @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
 </template>
