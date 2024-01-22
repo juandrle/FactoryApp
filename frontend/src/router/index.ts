@@ -4,7 +4,6 @@ import Factory from "@/views/Factory.vue";
 import FactoryCreateView from "@/views/FactoryCreateView.vue";
 import FactoryEnterView from "@/views/FactoryEnterView.vue";
 import LoginView from "@/views/LoginView.vue";
-import ScriptContainer from "@/components/ui/ScriptContainer.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,15 +41,8 @@ const router = createRouter({
             beforeEnter: (to, from, next) => {
 
                 next();
-
             }
-        },
-        {
-            path: '/test',
-            name: 'test',
-            component: ScriptContainer,
         }
-
     ]
 })
 

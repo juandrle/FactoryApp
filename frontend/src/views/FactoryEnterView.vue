@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import {computed, onMounted, type Ref, ref} from 'vue'
-import FactoryCard from '@/components/ui/FactoryCard.vue'
+import FactoryCard from '@/components/FactoryCard.vue'
 import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
-import {getAllFactories, getAllUsers} from '@/utils/backendComms/getRequests'
+import {getAllFactories, getAllUsers} from '@/utils/backend-communication/getRequests'
 import router from "@/router";
-import DeletionPopup from "@/components/ui/DeletionPopup.vue";
-import {factoryDeleteRequest} from "@/utils/backendComms/deleteRequest";
-
-const sizes = ref([
+import DeletionPopup from "@/components/popup/DeletionPopup.vue";
+import {factoryDeleteRequest} from "@/utils/backend-communication/deleteRequest";
+interface IItem {
+  label: string,
+  value: string
+}
+const sizes: Ref<IItem[]> = ref([
   {label: 'All', value: ''},
   {label: '30x50x8', value: '30x50x8'},
   {label: '60x100x12', value: '60x100x12'},
@@ -16,12 +19,12 @@ const sizes = ref([
 ])
 const factoryToDel: Ref<IFactoryDelete | undefined> = ref(undefined)
 const factoryNameToDel: Ref<string> = ref('')
-const currSize = ref('')
-const showPopup = ref(false)
-const owner = ref([
+const currSize: Ref<string> = ref('')
+const showPopup: Ref<boolean> = ref(false)
+const owner: Ref<IItem[]> = ref([
   {label: 'All', value: ''}
 ])
-const currOwner = ref('')
+const currOwner: Ref<string> = ref('')
 
 //fetch all existing factories
 const existing_factories: Ref<IFactory[]> = ref([])
@@ -39,7 +42,7 @@ onMounted(() => {
 })
 
 // Nach Fabriknamen filtern
-const searchTerm = ref('')
+const searchTerm: Ref<string> = ref('')
 
 const filteredFactories = computed(() => {
   return existing_factories.value.filter((factory) => {
@@ -77,7 +80,7 @@ const onPopupClosed = (toDelete?: boolean) => {
       <h1 class="headline">enter factory</h1>
       <div class="contentDiv">
         <div class="filter-div">
-          <input placeholder="Suche..." v-model="searchTerm"/>
+          <input placeholder="Search..." v-model="searchTerm"/>
           <div class="custom-select">
             <select v-model="currOwner">
               <option v-for="o in owner" :value="o.value">{{ o.label }}</option>
@@ -221,7 +224,7 @@ option {
 }
 .factory-cards > * {
   cursor: pointer;
-  margin-bottom: 3%; /* Vertical gap */
+  margin-bottom: 3%;
 }
 
 

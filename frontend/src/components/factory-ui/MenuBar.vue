@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import MenuItem from '@/components/ui/MenuItem.vue'
+import MenuItem from '@/components/factory-ui/MenuItem.vue'
 import type { IBackendEntityPreview } from '@/types/backendTypes'
 import { onMounted, ref } from 'vue'
 

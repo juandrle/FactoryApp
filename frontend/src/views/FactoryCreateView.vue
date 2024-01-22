@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {computed, inject, onMounted, ref} from 'vue'
+import {ref} from 'vue'
 import type {Ref} from 'vue'
-import Button from '../components/ui/Button.vue'
+import Button from '@/components/button/Button.vue'
 import type {IVector3} from "@/types/global"
 import router from "@/router";
-import {factoryCreateRequest} from "@/utils/backendComms/postRequests"
+import {factoryCreateRequest, logoutUser} from "@/utils/backend-communication/postRequests"
 import type {IFactoryCreate} from "@/types/backendTypes"
-import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
-import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
-import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
+import {useFactory} from "@/utils/composition-functions/useFactory"
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser"
+import {useError} from "@/utils/composition-functions/useError";
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
@@ -19,61 +19,60 @@ const sizes = ref([
 const factoryName = ref('')
 const factoryPassword = ref('')
 const selectedSize = ref()
-const updateFactorySize: (newSize: IVector3) => void = useFactorySize().updateFactorySize
-const updateFactoryID: (newID: number) => void = useFactoryID().updateFactoryID
-const sessUser = useSessUser().sessUser
-computed((size) => {
-  return {
-    x: size.width as number,
-    y: size.length as number,
-    z: size.height as number
-  }
-});
+const updateFactorySize: (newSize: IVector3) => void = useFactory().updateFactorySize
+const updateFactoryID: (newID: number) => void = useFactory().updateFactoryID
+const updateFactoryName: (newName: string) => void = useFactory().updateFactoryName
+const sessUser = useSessionUser().sessionUser
 const isLoading: Ref<boolean> = ref(false)
 
 function createFactory() {
-  if (selectedSize.value && factoryName.value) {
-    isLoading.value = true;
-    updateFactorySize({
-      x: selectedSize.value.x,
-      y: selectedSize.value.y,
-      z: selectedSize.value.z,
-    });
-
-    const factory: IFactoryCreate = {
-      name: factoryName.value,
-      password: factoryPassword.value,
-      width: selectedSize.value.x,
-      depth: selectedSize.value.y,
-      height: selectedSize.value.z,
-      author: sessUser.value
-    };
-
-    factoryCreateRequest(factory)
-        .then((newID: number) => {
-          updateFactoryID(newID);
-          router.push('/factory');
-        })
-        .catch((error) => {
-          console.error("Failed to create factory", error);
-        })
-        .finally(() => {
-          isLoading.value = false;
-        });
-  } else {
-    console.error("Please fill all fields before creating the factory.");
+  if (!selectedSize.value || !factoryName.value) {
+    useError().updateErrorMessage("Fill the form please")
+    return
   }
-}
+  isLoading.value = true;
+  updateFactorySize({
+    x: selectedSize.value.x,
+    y: selectedSize.value.y,
+    z: selectedSize.value.z,
+  });
 
+  const factory: IFactoryCreate = {
+    name: factoryName.value,
+    password: factoryPassword.value,
+    width: selectedSize.value.x,
+    depth: selectedSize.value.y,
+    height: selectedSize.value.z,
+    author: sessUser.value
+  };
+
+  factoryCreateRequest(factory)
+      .then((newID: number) => {
+        // case it didnt work out log user out, because only possible way it fails to make new factory is if the user doesn't exist
+        if (newID === 0) {
+          useSessionUser().performLogout()
+          return
+        }
+        updateFactoryID(newID)
+        updateFactoryName(factoryName.value)
+        router.push('/factory')
+      })
+      .catch((error) => {
+        console.error("Failed to create factory", error)
+      })
+      .finally(() => {
+        isLoading.value = false
+      });
+}
 </script>
 <template>
   <div class="container">
-      <div class="s-item">
-        <div class="content-s-item">
-          <a @click="router.push('/')">
-            <img src="/icons8-fabric-96.png" alt=""/>
-            <p class="logo-title">Machine Deluxe 3000</p>
-          </a>
+    <div class="s-item">
+      <div class="content-s-item">
+        <a @click="router.push('/')">
+          <img src="/icons8-fabric-96.png" alt=""/>
+          <p class="logo-title">Machine Deluxe 3000</p>
+        </a>
       </div>
     </div>
     <div class="loading" v-if="isLoading">
@@ -97,7 +96,7 @@ function createFactory() {
             </div>
           </div>
           <div class="button-create">
-            <button class="v-button v-form-button" type="submit" link="">Fabrik erstellen</button>
+            <button class="v-button v-form-button" type="submit" link="">Create factory</button>
           </div>
         </form>
       </div>

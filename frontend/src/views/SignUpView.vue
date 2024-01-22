@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {VueElement, ref, type Ref, inject, onMounted, watch} from 'vue'
+import { ref, type Ref, onMounted} from 'vue'
 import router from "@/router"
 import type {IUserForm} from "@/types/backendTypes"
-import {signupUser} from "@/utils/backendComms/postRequests"
-import {useRoute} from "vue-router";
-import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
+import {signupUser} from "@/utils/backend-communication/postRequests"
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
 
-const {sessUser, updateSessUser} = useSessUser()
+const sessUser: Readonly<Ref<string>> = useSessionUser().sessionUser
+const updateSessUser: (newUser: string) => void = useSessionUser().updateSessionUser
 
 const userForm: Ref<IUserForm> = ref({
   username: '',
@@ -43,6 +43,7 @@ const signUp = async () => {
         usernameTaken.value = false
         passwordNotEqual.value = false
       }
+      console.log("weird shit is happening")
       updateSessUser(username.value)
       await router.push('/')
       break
@@ -63,7 +64,7 @@ onMounted(() => {
     <div class="container-left">
       <div class="content-s-item">
       <a @click="router.push('/')">
-        <img src="/icons8-fabric-96.png" width="20px" height="auto"/>
+        <img src="/icons8-fabric-96.png" alt=""/>
         <p class="logo-title">Machine Deluxe 3000</p>
       </a>
       </div>
@@ -134,9 +135,9 @@ onMounted(() => {
 .title {
   margin-top: 200px;
   font: normal normal bold 70px/84px Overpass;
-  letter-spacing: 0px;
+  letter-spacing: 0;
   font-weight: 400;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .subtitle {
@@ -149,14 +150,7 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* Center vertically */
-  justify-content: center;
-  /* Center horizontally */
   flex-grow: 0;
-  /* Take up all available space in the left half */
-  /*margin-left: 120px;*/
-
-
 }
 
 .factory-name {
@@ -182,15 +176,13 @@ onMounted(() => {
   margin-top: 1.5rem;
   font-size: 14px;
   margin-right: 10px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .b-container2 a {
   margin-left: 10px;
-  margin-left: 10px;
   color: #10E5B2;
-  font-size: 16px; /* Adjust the font size as needed */
-  /* Add bold styling */
+  font-size: 16px;
   text-decoration: none;
   transition: color 0.4s ease;
 }
@@ -260,7 +252,7 @@ form {
 
 .logo-title {
   font: normal normal bold 0.938rem/1.25rem Overpass;
-  letter-spacing: 0px;
+  letter-spacing: 0;
 }
 
 .content-s-item {

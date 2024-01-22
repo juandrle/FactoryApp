@@ -28,7 +28,7 @@ export const turnRight = (orientation: string): string => {
     }
 };
 
-export const rotateModel = (dir: string, object: any)=> {
+export const rotateModel = (dir: string, object: THREE.Object3D)=> {
     if(dir === "left") {
         object.rotation.z -= Math.PI / 2
     } else {
@@ -36,7 +36,7 @@ export const rotateModel = (dir: string, object: any)=> {
     } //lul
 }
 
-export const rotateModelfromXtoY = (from: string, to: string, object: any) => {
+export const rotateModelFromXtoY = (from: string, to: string, object: THREE.Object3D) => {
     let directions = ["North", "East", "South", "West"];
     let toIndex = directions.indexOf(to);
     let fromIndex = directions.indexOf(from);

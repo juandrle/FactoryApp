@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import {defineProps, inject, onMounted, type Ref, ref} from 'vue'
+import { onMounted, type Ref, ref, watch } from 'vue'
 import type {IFactory, IFactoryDelete} from '@/types/backendTypes'
-import {getFactoryImage} from '@/utils/backendComms/getRequests'
+import {getFactoryImage} from '@/utils/backend-communication/getRequests'
 import router from '@/router'
 import {backendUrl} from '@/utils/config/config'
 import type {IVector3} from "@/types/global";
-import {useFactoryID} from "@/utils/stateCompFunction/useFactoryID";
-import {useFactorySize} from "@/utils/stateCompFunction/useFactorySize";
-import {useSessUser} from "@/utils/stateCompFunction/useSessUser";
-import {factoryDeleteRequest} from "@/utils/backendComms/deleteRequest";
+import {useFactory} from "@/utils/composition-functions/useFactory";
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
 
-const props = defineProps({
-  factory: {
-    type: Object as () => IFactory,
-    required: true
-  }
-})
+const props = defineProps<{
+  factory: IFactory
+}>()
 const emit = defineEmits<{
   deleteClicked: (payload: { factoryDelete: IFactoryDelete, factoryName: string }) => void
 }>()
+const isFactoryUpToDate: Ref<boolean> = useFactory().isFactoryImageUpToDate
 const factoryCardRef = ref(null)
 const factoryEnterPassword = ref('')
 const currentPicture = ref(
@@ -26,9 +22,10 @@ const currentPicture = ref(
 )
 const isInputValid = ref(true)
 const currentlyRotatedCard = ref<HTMLElement | null>(null)
-let updateFactorySize: (newSize: IVector3) => void = useFactorySize().updateFactorySize
-let updateFactoryID: (newID: number) => void = useFactoryID().updateFactoryID
-const sessUser = useSessUser().sessUser
+let updateFactorySize: (newSize: IVector3) => void = useFactory().updateFactorySize
+let updateFactoryID: (newID: number) => void = useFactory().updateFactoryID
+let updateFactoryName = useFactory().updateFactoryName
+const sessUser = useSessionUser().sessionUser
 
 const rotateCard = (clickTarget: EventTarget | null) => {
   if (!clickTarget) return
@@ -40,6 +37,7 @@ const rotateCard = (clickTarget: EventTarget | null) => {
   } as IVector3
   updateFactoryID(props.factory?.id)
   updateFactorySize(newSize)
+  updateFactoryName(props.factory.name)
   if (!props.factory.hasPassword || props.factory?.author === sessUser.value) {
     router.push('/factory')
   } else {
@@ -74,12 +72,19 @@ const deleteButtonClicked = () => {
      id: props.factory?.id,
      element: factoryCardRef.value
    }  as IFactoryDelete
-  emit('deleteClicked', { factoryDelete: factoryDelete, factoryName: props.factory?.name })
+  emit('deleteClicked', { factoryDelete: factoryDelete, factoryName: props.factory.name })
 }
 
 onMounted(() => {
   getFactoryImage(props.factory?.id).then((dataURL) => {
-    currentPicture.value = dataURL.toString()
+    if (dataURL !== 'failed') currentPicture.value = dataURL.toString()
+  })
+})
+watch(isFactoryUpToDate, (newValue) => {
+  if (newValue && useFactory().factoryID.value === props.factory.id)
+    getFactoryImage(props.factory?.id).then((dataURL) => {
+    console.log("fetching new Picture")
+    if (dataURL !== 'failed') currentPicture.value = dataURL.toString()
   })
 })
 
@@ -112,6 +117,9 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
   <div class="factorycard" ref="factoryCardRef" @click="(e) => rotateCard(e.currentTarget)">
     <div class="card-front">
       <img class="factory-image" :src="currentPicture" alt=""/>
+      <div class="loading" v-if="!isFactoryUpToDate && useFactory().factoryID.value === factory.id">
+        <div class="loader"></div>
+      </div>
       <div class="factorycard-content">
         <div style="width: max-content">
           <p>{{ factory.name }}</p>
@@ -120,7 +128,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
           <p v-else>your factory</p>
         </div>
         <button v-if="props.factory?.author === sessUser" class="dustbin-btn" @click.stop="deleteButtonClicked">
-          <img class="dustbin" src="../../assets/icons8-mülleimer-48.png" alt="Papierkorb"/>
+          <img class="dustbin" src="../assets/icons8-mülleimer-48.png" alt="Papierkorb"/>
         </button>
       </div>
     </div>
@@ -162,7 +170,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
 }
 
 .card-front {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
@@ -225,12 +233,13 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
 }
 
 .factory-image {
-  /* position: absolute; */
+  position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
   border-radius: 30px;
+  z-index: 0;
 }
 
 .factorycard-content {
@@ -281,5 +290,40 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
 .arrow-button {
   border: none;
   background: transparent;
+}
+.loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 67%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 1.5rem;
+  position: absolute;
+  z-index: 100;
+  text-align: center;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+}
+
+.loader {
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid #683ce4;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin-top: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

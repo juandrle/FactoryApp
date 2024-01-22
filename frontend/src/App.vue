@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import {RouterView, useRoute} from 'vue-router'
-import {provide, readonly, ref, type Ref, watch} from "vue";
-import type {IVector3} from "@/types/global";
-const route = useRoute();
+import {RouterView} from 'vue-router'
+import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
+import {type Ref, ref, watch} from "vue";
+import LogoutAlert from "@/components/alert/LogoutAlert.vue";
+import ErrorAlert from "@/components/alert/ErrorAlert.vue";
+import {useError} from "@/utils/composition-functions/useError";
 
-watch(() => route.path, (newPath, oldPath) => {
-  console.log('Route changed from', oldPath, 'to', newPath);
-  // You can add your logic here to react to the route change
-});
+const showLogoutPopup: Ref<boolean> = ref(false)
+const showErrorMessage: Readonly<Ref<boolean>> = useError().showErrorMessage
+
+watch(useSessionUser().remainingTime, (newValue) => {
+  if (newValue < 6000 * 5) showLogoutPopup.value = true
+})
+watch(showLogoutPopup, (newValue) => {
+  if (!newValue) useSessionUser().manageLogoutTimer()
+})
 </script>
 
 <template>
+  <LogoutAlert v-if="showLogoutPopup" :time-left-till-logout="useSessionUser().remainingTime"
+               @click.stop="showLogoutPopup = false"></LogoutAlert>
+  <ErrorAlert v-if="showErrorMessage" :error-message="useError().errorMessage.value"
+              @click.stop="useError().toggleShowErrorMessage()"></ErrorAlert>
   <RouterView/>
 </template>
 

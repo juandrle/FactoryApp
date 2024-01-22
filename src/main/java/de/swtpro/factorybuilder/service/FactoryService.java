@@ -31,7 +31,7 @@ public class FactoryService {
     // return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     // }
     public Factory saveFactory(Factory factory) {
-        factory.setPassword(passwordEncoder.encode(factory.getPassword()));
+        if (!factory.getPassword().isEmpty())factory.setPassword(passwordEncoder.encode(factory.getPassword()));
         return factoryRepository.save(factory);
     }
 
