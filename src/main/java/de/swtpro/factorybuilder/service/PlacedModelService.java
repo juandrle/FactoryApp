@@ -493,8 +493,6 @@ public class PlacedModelService {
                 if(newOri.equals("East")) {
                     /* tmpPos.setX(tmpPos.getX() + absY - 1 -absX);
                     tmpPos.setY(tmpPos.getY() + absX + absY); */
-                    /* tmpPos.setX(tmpPos.getX() + absY + absX);
-                    tmpPos.setY(tmpPos.getY() + absX - 1 - absY); */
                     tmpPos.setX(tmpPos.getX() + absY - absX);
                     tmpPos.setY(tmpPos.getY() - absX - 1 - absY);
                 }
