@@ -149,7 +149,7 @@ public class PlacedModel implements Serializable{
     }
 
     public String getScript() {
-        return script != null ? this.getScript() : "";    // oder leiber null returnen, mal gucken
+        return script != null ? this.script : "";    // oder leiber null returnen, mal gucken
     }
 
     public void setScript(String script) {  // wird eventuell noch zu file-byte-array geändert

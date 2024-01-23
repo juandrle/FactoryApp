@@ -118,11 +118,17 @@ public class EntityRestAPIController {
         LOGGER.info("BE Funktion getScriptContent wurde aufgerufen LULE");
 
         PlacedModel placedModel = null;
+        String scriptContent = "";
 
         try {
             placedModel = placedModelService.getPlacedModelById(modelId).orElseThrow();
-            String scriptContent = placedModel.getScript(); 
-            LOGGER.info("Script wurde in DB gefunden.");
+            if (placedModel.getScript() != null) {
+                scriptContent = placedModel.getScript(); 
+                LOGGER.info("Script wurde in DB gefunden: ", scriptContent);
+            } else {
+                LOGGER.info("Script ist null (in DB).");
+            }
+            
             return ResponseEntity.ok(scriptContent);
             //return scriptContent;
 
@@ -136,7 +142,7 @@ public class EntityRestAPIController {
     
     @CrossOrigin
     @PostMapping("/postScript/{modelId}")
-    public void postScriptingContent(@RequestBody saveScriptDTO saveScriptRequest) { 
+    public void postScriptingContent(@RequestBody saveScriptDTO saveScriptRequest, @PathVariable long modelId) { 
 
         LOGGER.info("postScriptingContent() (RestAPI) erreicht. Script, das gespeichert werden soll: ", saveScriptRequest.scriptContent().toString());                                                                        
         LOGGER.info(saveScriptRequest.toString());
@@ -144,8 +150,10 @@ public class EntityRestAPIController {
         PlacedModel placedModel = null;
 
         try {
-            placedModel = placedModelService.getPlacedModelById(saveScriptRequest.modelID()).orElseThrow();
+            placedModel = placedModelService.getPlacedModelById(modelId).orElseThrow();
             placedModel.setScript(saveScriptRequest.scriptContent());
+            placedModelService.savePlacedModelWithNewScript(placedModel);
+            
             LOGGER.info("Script wurde erfolgreich in DB gespeichert.");
         } catch (NoSuchElementException e) {
             LOGGER.info("ModelId wurde in DB nicht gefunden -> Script kann nicht gespeichert werden.", e.getCause());

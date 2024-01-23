@@ -20,10 +20,10 @@ const userProperties: Ref<IUserProperty[]> = ref([])
 
 onMounted(() => {
 
-  // fetch get scriptContent from BE Folder/File.txt
   console.log("modelId, die get-Methode übergeben wird: ", props.model)
   getScriptingContent(props.model!!.id).then((scriptingContent) => {
-    if(scriptingContent.toString() != "") {
+    console.log("ScriptingContent: ", scriptingContent);
+    if(scriptingContent != "") {
       scriptContent.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
     } else {
       // test:
@@ -60,7 +60,29 @@ onMounted(() => {
         lineNumbers: "on",
       });
     }, 2000);
+
+
+  // Versuche, dass der neue wert aus der DB angezeigt wird (scriptContent überschrieben wird)
+
+  //   setTimeout(() => {
+  //   const newScriptContent = scriptContent.value;
+  //   editor.setValue(newScriptContent);
+  //   }, 5000);
+  
+  // setTimeout(() => {
+  //   const newScriptContent = "# Neuer Inhalt nach 5 Sekunden";
+
+  //   // Holen Sie sich das aktuelle Modell des Editors
+  //   const model = editor.getModel();
+
+  //   // Setzen Sie den neuen Wert für das Modell
+  //   if (model) {
+  //     model.setValue(newScriptContent);
+  //   }
+  // }, 5000);
+
   }
+
 
 });
 

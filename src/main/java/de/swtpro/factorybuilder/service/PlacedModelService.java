@@ -12,7 +12,6 @@ import java.util.Optional;
 @Service
 public class PlacedModelService {
     PlacedModelRepository placedModelRepository;
-
     FactoryRepository factoryRepository;
     FieldService fieldService;
     PlacedModelService(PlacedModelRepository placedModelRepository, FieldService fieldService, FactoryRepository factoryRepository){
@@ -237,7 +236,15 @@ public class PlacedModelService {
         return true;
     }
 
-
+    public boolean savePlacedModelWithNewScript(PlacedModel placedModel) {
+        try {
+            placedModelRepository.save(placedModel);
+            return true;
+        } catch(Exception e) {
+            System.out.println("Model (mit neuem Skript) konnte nicht gespeichert werden.");
+            return false;
+        }
+    }
 
     
     // get scripting file path as String (wahrscheinlich lieber nicht weil unnötig -> einfach aus ordner wo textfiles drin sind holen/ fragen ob gibt)
