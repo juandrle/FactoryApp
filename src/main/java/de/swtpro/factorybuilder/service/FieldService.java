@@ -38,6 +38,7 @@ public class FieldService {
             for (int j = 0; j < factory.getDepth(); j++) {
                 for (int k = 0; k < factory.getHeight(); k++) {
                     Field field = new Field(new Position(i - factory.getWidth() / 2, j - factory.getDepth() / 2, k));
+                    // Field field = new Field(new Position(i - factory.getDepth() / 2, j - factory.getWidth() / 2, k));
                     //field.setPosition(new Position(i - factory.getWidth() / 2, j - factory.getDepth() / 2, k));
                     field.setFactoryID(factory.getFactoryID());
                     fields.add(field);

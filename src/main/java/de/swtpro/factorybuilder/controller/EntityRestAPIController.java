@@ -75,7 +75,7 @@ public class EntityRestAPIController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         
-        LOGGER.info("placed Model with placedModelID: " + placedModel.getId() + " and modelID: " + placedModel.getModelId() + ", called " + placedModel.getModel().getName());
+        LOGGER.info("placed Model with placedModelID: " + placedModel.getId() + " and modelID: " + placedModel.getModelId() + " ('" + placedModel.getModel().getName() + "')");
 
         return ResponseEntity.ok(placedModel.getId());
     }
