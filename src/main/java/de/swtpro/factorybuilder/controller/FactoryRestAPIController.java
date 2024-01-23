@@ -5,6 +5,7 @@ import de.swtpro.factorybuilder.DTO.factory.FactoryEnterDTO;
 import de.swtpro.factorybuilder.DTO.factory.FactoryPasswordCheckDTO;
 import de.swtpro.factorybuilder.DTO.factory.FactoryUserDTO;
 import de.swtpro.factorybuilder.DTO.factory.UpdateImageFactoryDTO;
+import de.swtpro.factorybuilder.DTO.user.UserNameDTO;
 import de.swtpro.factorybuilder.DTO.entity.PlacedModelDTO;
 import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Model;
@@ -14,11 +15,13 @@ import de.swtpro.factorybuilder.service.*;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/factory")
@@ -140,23 +143,27 @@ public class FactoryRestAPIController {
         LOGGER.info("LULE ENTER HAT GEKLAPPT");
         LOGGER.info("Received FactoryUserDTO: " + factoryUserDTO);
         try {
-            long factoryId = factoryUserDTO.factoryId();
-            String username = factoryUserDTO.username();
+            long factoryId = factoryUserDTO.factoryID();
+            String username = factoryUserDTO.userName();
 
             LOGGER.info("Factory ID: " + factoryId + ", Username: " + username);
 
             // Factory factory = factoryService.getFactoryById(factoryId).orElseThrow();
             User user = userService.getUserByName(username).orElseThrow();
+            LOGGER.info("das ist unser current user" + user);
 
             List<User> currentUsers = factoryService.getCurrentUsersInFactory(factoryId);
-            LOGGER.info("DAS IST UNSERE LISTE" + currentUsers);
-            if(currentUsers.contains(user)){
-                return ResponseEntity.ok(false);
-            }else {
-                factoryService.addUserToFactory(factoryId, user);
-                return ResponseEntity.ok(true);
-            }
-           
+            
+                if(currentUsers.contains(user)){
+                    return ResponseEntity.ok(false);
+                }else {
+                    factoryService.addUserToFactory(factoryId, user);
+                    List<User> currentUsers2 = factoryService.getCurrentUsersInFactory(factoryId);
+                    LOGGER.info("DAS IST UNSERE LISTE" + currentUsers2);
+                    return ResponseEntity.ok(true);
+                }
+
+            
             
         }catch (Exception e){
             LOGGER.error("Exception in enter method", e);
@@ -168,9 +175,10 @@ public class FactoryRestAPIController {
     @CrossOrigin
     @PostMapping("/leave")
     public ResponseEntity<Boolean> leave(@RequestBody FactoryUserDTO factoryUserDTO){
+        LOGGER.info("Received FactoryUserDTO: " + factoryUserDTO);
         try {
-            long factoryId = factoryUserDTO.factoryId();
-            String username = factoryUserDTO.username();
+            long factoryId = factoryUserDTO.factoryID();
+            String username = factoryUserDTO.userName();
 
             Factory factory = factoryService.getFactoryById(factoryId).orElseThrow();
             User user = userService.getUserByName(username).orElseThrow();
@@ -179,6 +187,8 @@ public class FactoryRestAPIController {
 
             if(currentUsers.contains(user)){
                 factoryService.removeUserFromFactory(factoryId, user);
+                List<User> currentUsers2 = factoryService.getCurrentUsersInFactory(factoryId);
+                LOGGER.info("DAS IST UNSERE LISTE nach dem Verlassen" + currentUsers2);
                 return ResponseEntity.ok(true);
             }else {
                 
@@ -190,6 +200,24 @@ public class FactoryRestAPIController {
         }
         
     }
+
+    @CrossOrigin
+    @GetMapping("/{factoryId}/users")
+    public ResponseEntity<List<UserNameDTO>> getUsersInFactory(@PathVariable("factoryId") Long factoryId) {
+        LOGGER.info("sind wir überhaupt hier drinne");
+        try {
+            List<User> users = factoryService.getCurrentUsersInFactory(factoryId);
+            LOGGER.info("das sollte die user, bei der sidebar sein:" + users);
+
+            // Convert the list of User entities to a list of UserNameDTO
+            List<UserNameDTO> userNameDTOs = convertToUserNameDTOList(users);
+
+            return ResponseEntity.ok(userNameDTOs);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     public List<PlacedModelDTO> getEntitiesFromFactory(Factory factory) {
         // Nimm alle aus modelRepository mit factoryId == factoryId
@@ -215,4 +243,10 @@ public class FactoryRestAPIController {
 
         return dtos;
     }
+
+    private List<UserNameDTO> convertToUserNameDTOList(List<User> users) {
+    return users.stream()
+            .map(user -> new UserNameDTO(user.getUsername()))
+            .collect(Collectors.toList());
+}
 }

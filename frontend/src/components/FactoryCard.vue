@@ -104,6 +104,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
     if (response.ok) {
       const data = await response.json()
       if (data) {
+        await enterFactory(props.factory?.id, sessUser.value)
         await router.push('/factory')
       } else {
         isInputValid.value = false

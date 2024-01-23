@@ -9,6 +9,7 @@ import type {IFactoryCreate} from "@/types/backendTypes"
 import {useFactory} from "@/utils/composition-functions/useFactory"
 import {useSessionUser} from "@/utils/composition-functions/useSessionUser"
 import {useError} from "@/utils/composition-functions/useError";
+import { enterFactory } from '@/utils/backend-communication/postRequests'
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
@@ -55,6 +56,7 @@ function createFactory() {
         }
         updateFactoryID(newID)
         updateFactoryName(factoryName.value)
+        enterFactory(newID, sessUser.value)
         router.push('/factory')
       })
       .catch((error) => {

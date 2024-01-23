@@ -646,7 +646,7 @@ init()
       "
     />
   </div>
-  <FactoryMenu :username="useSessionUser().sessionUser" :factory-name="factoryName" v-if="showSideMenu"
+  <FactoryMenu :username="useSessionUser().sessionUser" :factory-name="factoryName" :factory-ID="useFactory().factoryID.value" v-if="showSideMenu"
                @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
 </template>
 
