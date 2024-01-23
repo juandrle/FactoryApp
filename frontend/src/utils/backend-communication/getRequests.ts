@@ -18,20 +18,22 @@ export const getAllUsers: () => Promise<{ username: string }[]> = async () => {
   return fetch(backendUrl + '/api/users/getAll').then((res) => res.json())
 }
 
-// Scripting Request
-
-// export const getAllSystemProperties : (modelId: number) => Promise<ISystemProperty[]>= async (modelId: number) => {
-//   console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllSystemProperties aufgerufen")
-//   return fetch(backendUrl + '/api/entity/systemProperties/getAll/' + modelId, { credentials: 'include'}).then((res) => res.json())
-// }
-
-// export const getAllUserProperties : (modelId: number) => Promise<IUserProperty[]>= async (modelId: number) => {
-//   console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllUserProperties aufgerufen")
-//   return fetch(backendUrl + '/api/entity/userProperties/getAll/'+ modelId, { credentials: 'include'}).then((res) => res.json())
-// }
+// Scripting Requests
 
 // get scripting file to display in FE View "ScriptContainer"
 export const getScriptingContent = async (modelId: number): Promise<String> => {
   console.log("AYWAAAAAAA!!!!!! im FE Anfrage Scripting aufgerufen")
   return fetch(backendUrl + '/api/entity/getScriptContent/' + modelId).then((res) => res.text())
+}
+
+// get systemProperties file to display on the right side in FE View "ScriptContainer"
+export const getAllSystemProperties : (modelId: number) => Promise<ISystemProperty[]>= async (modelId: number) => {
+  console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllSystemProperties aufgerufen")
+  return fetch(backendUrl + '/api/entity/systemProperties/getAll/' + modelId, { credentials: 'include'}).then((res) => res.json())
+}
+
+// get userProperties file to display on the right side in FE View "ScriptContainer"
+export const getAllUserProperties : (modelId: number) => Promise<IUserProperty[]>= async (modelId: number) => {
+  console.log("AYWAAAAAAA!!!!!! im FE Anfrage getAllUserProperties aufgerufen")
+  return fetch(backendUrl + '/api/entity/userProperties/getAll/'+ modelId, { credentials: 'include'}).then((res) => res.json())
 }

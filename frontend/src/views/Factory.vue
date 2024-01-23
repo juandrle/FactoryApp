@@ -636,15 +636,11 @@ const saveAndCloseScript = (scriptContent: string) => {
   showScripting.value = !showScripting.value
   showMenuBar.value = true
 
-  // hier diese Code zur Maschine speichern
-  id: allPlacedEntities[currentObjectSelected.uuid].id
-  console.log("id vom objekt: ", allPlacedEntities[currentObjectSelected.uuid].id,
-    "objekt: " ,allPlacedEntities[currentObjectSelected.uuid], "alle objekte: ", allPlacedEntities)
+  let modelIdForSavingTheScript = allPlacedEntities[currentObjectSelected.uuid].id
+  console.log("objekt: " ,allPlacedEntities[currentObjectSelected.uuid])
 
-
-    // schicke den string mit den kompletten script an das backend
-
-    sendScriptingToBackend(allPlacedEntities[currentObjectSelected.uuid].id, scriptContent);
+  // schicke den string mit den kompletten script an das backend (mit der zugehörigen modelId)
+  sendScriptingToBackend(modelIdForSavingTheScript, scriptContent);
 }
 
 const closeScript = () => {
@@ -674,7 +670,7 @@ const closeScript = () => {
       "
     />
   </div>
-  <ScriptContainer v-if="showScripting" :model="allPlacedEntities[currentObjectSelected.uuid]" @saveAndClose="saveAndCloseScript('test, das ist der code')" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
+  <ScriptContainer v-if="showScripting" :model="allPlacedEntities[currentObjectSelected.uuid]" @saveAndClose="saveAndCloseScript('test, hier soll scriptContent aus ScriptContainer mitgegeben werden')" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
   <FactoryMenu :username="useSessionUser().sessionUser" :factory-name="factoryName" v-if="showSideMenu"
                @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
 </template>

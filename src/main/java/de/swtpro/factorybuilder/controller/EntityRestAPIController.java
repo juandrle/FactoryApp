@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/entity")
@@ -105,66 +106,73 @@ public class EntityRestAPIController {
                 ModelType.ITEM_PROCESSED, ModelType.ITEM_RESOURCE, ModelType.ITEM_PRODUCT);
     }
 
+
+
+    // Scripting:
+
     @CrossOrigin
     @GetMapping("/getScriptContent/{modelId}") 
-    public String getScriptingContent(@PathVariable long modelId) {
-        LOGGER.info("ModelId: ", modelId);
+    public ResponseEntity<String> getScriptingContent(@PathVariable long modelId) {
+
+        LOGGER.info("ModelId: ", modelId); 
+        LOGGER.info("BE Funktion getScriptContent wurde aufgerufen LULE");
+
+        PlacedModel placedModel = null;
+
         try {
-            Resource resource = resourceLoader.getResource("classpath:scripting/test.txt");
-            InputStream input = resource.getInputStream();
+            placedModel = placedModelService.getPlacedModelById(modelId).orElseThrow();
+            String scriptContent = placedModel.getScript(); 
+            LOGGER.info("Script wurde in DB gefunden.");
+            return ResponseEntity.ok(scriptContent);
+            //return scriptContent;
 
-            LOGGER.info("BE Funktion getScriptContent wurde aufgerufen LULE");
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
-                StringBuilder content = new StringBuilder();
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    content.append(line).append("\n");
-                }
-
-                String fileContent = content.toString();
-                LOGGER.info(fileContent);
-                // return ResponseEntity.ok(fileContent);
-                return "aus apicontroller, aber nicht aus file diese";
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Failed reading content of script";
+        } catch(NoSuchElementException e) {
+            LOGGER.info("Script konnte nicht gespeichert werden, da es modelId in DB nicht gefunden wurde.", e.getCause());
         }
 
-        // if file in ordner(resources/scripting) : file oeffnen und inhalt als string
-        // zurueckgeben,
-        // else : leeren string zurueckgeben
-        // (ohne datenbank zugriff)
+        return ResponseEntity.ok("default Script, weil script nicht aus DB gezogen werden konnte.");
+    }
+    
+    
+    @CrossOrigin
+    @PostMapping("/postScript/{modelId}")
+    public void postScriptingContent(@RequestBody saveScriptDTO saveScriptRequest) { 
 
+        LOGGER.info("postScriptingContent() (RestAPI) erreicht. Script, das gespeichert werden soll: ", saveScriptRequest.scriptContent().toString());                                                                        
+        LOGGER.info(saveScriptRequest.toString());
+
+        PlacedModel placedModel = null;
+
+        try {
+            placedModel = placedModelService.getPlacedModelById(saveScriptRequest.modelID()).orElseThrow();
+            placedModel.setScript(saveScriptRequest.scriptContent());
+            LOGGER.info("Script wurde erfolgreich in DB gespeichert.");
+        } catch (NoSuchElementException e) {
+            LOGGER.info("ModelId wurde in DB nicht gefunden -> Script kann nicht gespeichert werden.", e.getCause());
+        }
+
+        // PS: nur script wird in DB gespeichert, user- & systemProperties werden bei jedem get-Aufruf neu aus Skript interpretiert
+    }
+    
+    
+    @CrossOrigin
+    @GetMapping("/systemProperties/getAll/{modelId}") 
+    public ResponseEntity<String> getSystemProperties(@PathVariable long modelId) {
+        
+        LOGGER.info("BE Funktion getSystemProperties wurde aufgerufen LULE");
+        return ResponseEntity.ok("getSystemProperties default");
+
+        // hier muss das Script aus der DB geholt werden, interpretiert werden und ausgelesene Variable systemProperties zurueckgeben
     }
 
-
-    // @CrossOrigin
-    // @GetMapping("/systemProperties/getAll/{modelId}") // + modelId oder requestbody siehe getRequests.ts
-    // public ResponseEntity<String> getSystemProperties(@PathVariable long modelId) {
+    @CrossOrigin
+    @GetMapping("/userProperties/getAll/{modelId}") 
+    public ResponseEntity<String> getUserProperties(@PathVariable long modelId) {
         
-    //     LOGGER.info("BE Funktion getSystemProperties wurde aufgerufen LULE");
-    //     return ResponseEntity.ok("getSystemProperties hat geklappt");
-    // }
+        LOGGER.info("BE Funktion getUserProperties wurde aufgerufen LULE");
+        return ResponseEntity.ok("getUserProperties default");
+
+        // hier muss das Script aus der DB geholt werden, interpretiert werden und ausgelesene Variable userProperties zurueckgeben
+    }
     
-
-    // @CrossOrigin
-    // @PostMapping("/postScript/{modelId}")
-    // public void postScriptingContent(@RequestBody saveScriptDTO saveScriptRequest) { // statt modelID in url mitgeben:
-    //                                                                                  // body in postrequest mit modelID
-    //                                                                                  // und scriptContent, siehe
-    //                                                                                  // postRequests.ts
-
-    //     LOGGER.info("postScriptingContent() (RestAPI) erreicht. Script, das gespeichert werden soll: ", saveScriptRequest.scriptContent().toString());                                                                        
-    //     LOGGER.info(saveScriptRequest.toString()); // test
-
-        // if file in ordner(resources/scripting) : file überschreiben,
-        // else : file anlegen und string von frontend rein PS: file name einfach immer
-        // modelId oder modelName + modelID, damit beim GET wieder finden koennen
-        // (ohne datenbank zugriff)
-    // }
-
 }

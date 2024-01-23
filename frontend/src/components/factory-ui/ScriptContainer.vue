@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { IModelScripting, ISystemProperty, IUserProperty } from '@/types/backendTypes';
-import { getScriptingContent } from '@/utils/backend-communication/getRequests';
+import { getAllSystemProperties, getAllUserProperties, getScriptingContent } from '@/utils/backend-communication/getRequests';
 import * as monaco from 'monaco-editor';
 import { onMounted, onBeforeUnmount, ref, type Ref } from "vue";
 
 const containerRef = ref(null);
 let editor: monaco.editor.IStandaloneCodeEditor;
 
-const props = defineProps({ // brauchen wir das noch?
+const props = defineProps({ 
   model: {
     type: Object as () => IModelScripting,
     required: true
@@ -18,38 +18,30 @@ const systemProperties: Ref<ISystemProperty[]> = ref([])
 const userProperties: Ref<IUserProperty[]> = ref([])
 
 
-// const onMonacoInit = () => {       // komischer vorschlag von chat wegen monacoeditor zeug
-//   if (containerRef.value) {
-//     editor = monaco.editor.create(containerRef.value, {
-//       // ... (dein bestehender Code)
-//     });
-
-//     setTimeout(() => {
-//       editor.updateOptions({
-//         lineNumbers: 'on',
-//       });
-//     }, 2000);
-//   }
-// };
-
 onMounted(() => {
 
   // fetch get scriptContent from BE Folder/File.txt
-  console.log(props.model)
+  console.log("modelId, die get-Methode übergeben wird: ", props.model)
   getScriptingContent(props.model!!.id).then((scriptingContent) => {
-    scriptContent.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
+    if(scriptingContent.toString() != "") {
+      scriptContent.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
+    } else {
+      // test:
+      scriptContent.value = "script wurde versucht zu ziehen war aber noch leer in DB";
+    }
+    console.log(scriptContent.value)
   })
   
   // fetch to get all existing system-props for this model from DB 
-  // getAllSystemProperties(props.model?.id).then((json) => {
-  //   systemProperties.value = json
-  //   console.log(json)
-  // })
+  getAllSystemProperties(props.model?.id).then((json) => {
+    systemProperties.value = json
+    console.log(json)
+  })
 
-  // getAllUserProperties(props.model?.id).then((json) => {
-  //   userProperties.value = json
-  //   console.log(json)
-  // })
+  getAllUserProperties(props.model?.id).then((json) => {
+    userProperties.value = json
+    console.log(json)
+  })
 
 
   if (containerRef.value) {
@@ -70,9 +62,6 @@ onMounted(() => {
     }, 2000);
   }
 
-  // monaco.editor.getModels()[0].onWillDispose(() => {    
-  //   onMonacoInit();
-  // });
 });
 
 onBeforeUnmount(() => {
@@ -111,4 +100,33 @@ onBeforeUnmount(() => {
 - Component Design so aendern wie auf wireframe von vincent
 - falls nicht klappt: logger fuer alle methoden zum testen
 
---> 
+
+
+stand 23.01.2024
+- warum wird bei post script nicht in db gefunden aber bei get schon 
+- maybe in file-bytearray oder so statt als string speichern in DB 
+- layout überarbeiten siehe wireframe 
+
+ 
+
+
+
+  // const onMonacoInit = () => {       // komischer vorschlag von chat wegen monacoeditor zeug
+  //   if (containerRef.value) {
+  //     editor = monaco.editor.create(containerRef.value, {
+  //       // ... (dein bestehender Code)
+  //     });
+  
+  //     setTimeout(() => {
+  //       editor.updateOptions({
+  //         lineNumbers: 'on',
+  //       });
+  //     }, 2000);
+  //   }
+  // }; 
+
+
+  // monaco.editor.getModels()[0].onWillDispose(() => {    
+  //   onMonacoInit();
+  // }); 
+-->

@@ -43,7 +43,8 @@ public class PlacedModel implements Serializable{
     // how many items are needed / can be stored in a machine
     private int capacity;
 
-    // private String scripting_file; 
+    // private String script;
+    private String script;
 
     @ManyToOne
     @JoinColumn(name = "modelId", referencedColumnName = "id")
@@ -146,4 +147,12 @@ public class PlacedModel implements Serializable{
     public void setModel(Model model) {
         this.model = model;
     }
+
+    public String getScript() {
+        return script != null ? this.getScript() : "";    // oder leiber null returnen, mal gucken
+    }
+
+    public void setScript(String script) {  // wird eventuell noch zu file-byte-array geändert
+        this.script = script;
+    }    
 }

@@ -173,21 +173,22 @@ export const sendScriptingToBackend = async (modelId: number, scriptContent: str
             scriptContent: scriptContent
         })
 
-        console.log("sendCriptingToBackend() requestBody: ", requestBody); 
+        console.log("sendScriptingToBackend() requestBody: ", requestBody); 
 
-        const response = await fetch(backendUrl + '/api/entity/postScript', {
+        const response = await fetch(backendUrl + '/api/entity/postScript/' + modelId, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: requestBody,
+            credentials: 'include'
         })
 
-        console.log("sendCriptingToBackend() response: ", response);
+        console.log("sendScriptingToBackend() response: ", response);
 
         if (!response.ok) throw new Error(response.statusText)
-        // return await response.json()
-        const res = await response.text()
 
-        console.log(res)
+        // return await response.json() // diese klappt nicht
+        const res = await response.text()
+        // console.log(res)
         return res
     
     } catch (err) {
@@ -196,11 +197,4 @@ export const sendScriptingToBackend = async (modelId: number, scriptContent: str
     }
 }
 
-// oder so? :
-//   export const sendScriptingToBackend: any = async ( // siehe factory.vue z. 241f. 
-//     url: string,
-//     scene: THREE.Scene,
-//     loader: any,
-//     code: string
-// ) => {}
 
