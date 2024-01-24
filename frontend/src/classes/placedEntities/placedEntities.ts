@@ -1,3 +1,5 @@
+import { getCenterPoint } from '@/utils/rotation/rotate'
+import { drawBox } from '@/utils/threeJS/helpFunctions'
 import * as THREE from 'three'
 
 /**
@@ -36,35 +38,69 @@ export class PlacedEntities {
   /**
    * Single Pipe Actions
    */
-  public getAllStraightSinglePipes = () =>
-    this.allEntities.filter((entity) => entity.modelId === 'pipe_straight')
+  public getAllStraightSinglePipes = (): IEntity[] => {
+    return this.allEntities.filter((entity) => entity.modelId === 'pipe_straight')
+  }
+
+  public getAllCurvedPipes = (): {
+    startPoint: THREE.Vector3
+    endPoint: THREE.Vector3
+  }[] => {
+    const allCurvedPipes = this.allEntities.filter((entity) => entity.modelId === 'pipe_curved')
+    const out : {
+      startPoint: THREE.Vector3
+      endPoint: THREE.Vector3
+    }[] = []
+
+    console.log(allCurvedPipes);
+    allCurvedPipes.forEach((mesh) => {
+      out.push({
+        startPoint: this.getPointsFromStraightSinglePipe(mesh).startPoint.clone(),
+        endPoint: this.getPointsFromStraightSinglePipe(mesh).endPoint.clone()
+      })
+    })
+
+    return out;
+  }
 
   public getPointsFromStraightSinglePipe = (
     pipe: IEntity
   ): { startPoint: THREE.Vector3; endPoint: THREE.Vector3 } => {
-    const startPointLocal: THREE.Vector3 = new THREE.Vector3().copy(
-      pipe.threejsObject.children.find((mesh) => mesh.name === 'pipe_entrance')?.geometry
-        ?.boundingSphere?.center
+    const pipeEntrance = pipe.threejsObject.children.find(
+      (mesh) => mesh.name === 'pipe_entrance' || mesh.name === 'pipe_entrence'
     )
-    const endPointLocal: THREE.Vector3 = new THREE.Vector3().copy(
-      pipe.threejsObject.children.find((mesh) => mesh.name === 'pipe_exit')?.geometry
-        ?.boundingSphere?.center
-    )
-    const pipePositionWorld: THREE.Vector3 = pipe.threejsObject.position
-    const startPoint = new THREE.Vector3().copy(pipePositionWorld).add(startPointLocal)
-    const endPoint = new THREE.Vector3().copy(pipePositionWorld).add(endPointLocal)
+    const pipeExit = pipe.threejsObject.children.find((mesh) => mesh.name === 'pipe_exit')
+
+    if (!pipeEntrance || !pipeExit) {
+      console.log('didnt find pipe exit or entrance')
+      return {
+        startPoint: new THREE.Vector3(0, 0, 0),
+        endPoint: new THREE.Vector3(0, 0, 0)
+      }
+    }
 
     return {
-      startPoint: startPoint,
-      endPoint: endPoint
+      startPoint: getCenterPoint(pipeEntrance).clone(),
+      endPoint: getCenterPoint(pipeExit).clone()
     }
   }
 
   /**
    * Pipe System
+   *
+   * TODO: Auch rotierte Pipes also | start - end end - start|
    */
 
-  public getAllStraihtPipes = (): {
+  public getAllPipes = (): {
+    startPoint: THREE.Vector3
+    endPoint: THREE.Vector3
+    pipeCount: number
+    type: string
+  }[] => {
+    return []
+  }
+
+  public getAllStraightPipes = (): {
     startPoint: THREE.Vector3
     endPoint: THREE.Vector3
     pipeCount: number
@@ -78,7 +114,7 @@ export class PlacedEntities {
 
       out.forEach((wholePipe) => {
         if (currentStartPoint.clone().round().equals(wholePipe.endPoint.clone().round())) {
-          // Nachbar rechts gefunden
+          // Nachbar links gefunden
           wholePipe.endPoint = currentEndPoint
           wholePipe.pipeCount++
           isPartOfBiggerPipe = true
@@ -95,10 +131,9 @@ export class PlacedEntities {
             // Extending
             wholePipe.endPoint = potentialOtherRight.endPoint
             wholePipe.pipeCount += potentialOtherRight.pipeCount
-
           }
         } else if (currentEndPoint.clone().round().equals(wholePipe.startPoint.clone().round())) {
-          // Nachbar links gefunden
+          // Nachbar rechts gefunden
           wholePipe.startPoint = currentStartPoint
           wholePipe.pipeCount++
           isPartOfBiggerPipe = true

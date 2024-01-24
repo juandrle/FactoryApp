@@ -9,7 +9,7 @@ import { PlacedEntities, type IEntity } from '@/classes/placedEntities/placedEnt
 import { getIntersectionsMouse } from '@/utils/threeJS/3d'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import CircularMenu from '@/components/factory-ui/CircularMenu.vue'
-import { AnimationManager } from "@/classes/animation/animationManager";
+import { AnimationManager } from '@/classes/animation/animationManager'
 import {
   factoryImageUpdate,
   moveRequest,
@@ -24,6 +24,8 @@ import { ManipulationMode } from '@/enum/ManipulationMode'
 
 import {
   createRoom,
+  drawBox,
+  drawLine,
   moveHighlight,
   selectionObject,
   updateHighlightModel
@@ -35,7 +37,7 @@ import {
   replaceEntity,
   makeObjectTransparent
 } from '@/utils/threeJS/entityManipulation'
-import { rotateModel, rotateModelFromXtoY } from '@/utils/rotation/rotate'
+import { getCenterPoint, rotateModel, rotateModelFromXtoY } from '@/utils/rotation/rotate'
 import { useFactory } from '@/utils/composition-functions/useFactory'
 import MenuBar from '@/components/factory-ui/MenuBar.vue'
 import FactoryMenu from '@/components/factory-ui/SideBar.vue'
@@ -75,8 +77,8 @@ let sizes: {
   ratio: number
 }
 let originalOrientation = ''
-let placedEntities: PlacedEntities;
-let animationManager: AnimationManager;
+let placedEntities: PlacedEntities
+let animationManager: AnimationManager
 /**
  * THREE.JS Specific
  */
@@ -127,9 +129,9 @@ const setupLoader = (): void => {
   loader = new GLTFLoader()
 }
 
-const setupManager = ():void => {
-  placedEntities = new PlacedEntities();
-  animationManager = new AnimationManager(placedEntities, scene, loader);
+const setupManager = (): void => {
+  placedEntities = new PlacedEntities()
+  animationManager = new AnimationManager(placedEntities, scene, loader)
   ccm = new CameraControlsManager(camera, renderer.domElement, CameraMode.ORBIT)
   currentMode = ccm.currentMode
 }
@@ -214,21 +216,21 @@ const onChangeEntityClicked = (situation: string): void => {
       manipulationMode.value = ManipulationMode.ROTATE
 
       // set pivot point for future rotation
-      if (!pivot || currentObjectSelected !== pivot.children[0]) {
-        if (currentObjectSelected.parent === null) return
-        if (currentObjectSelected.parent.type === 'Object3D') {
-          pivot = currentObjectSelected.parent
-          return
-        }
-        let box = new THREE.Box3().setFromObject(currentObjectSelected)
-        let center = new THREE.Vector3()
-        box.getCenter(center)
-        currentObjectSelected.position.sub(new THREE.Vector3(center.x, center.y, 0))
-        pivot = new THREE.Object3D()
-        pivot.position.set(center.x, center.y, currentObjectSelected.position.z)
-        scene.add(pivot)
-        pivot.add(currentObjectSelected)
-      }
+      // if (!pivot || currentObjectSelected !== pivot.children[0]) {
+      //   if (currentObjectSelected.parent === null) return
+      //   if (currentObjectSelected.parent.type === 'Object3D') {
+      //     pivot = currentObjectSelected.parent
+      //     return
+      //   }
+      //   let box = new THREE.Box3().setFromObject(currentObjectSelected)
+      //   let center = new THREE.Vector3()
+      //   box.getCenter(center)
+      //   currentObjectSelected.position.sub(new THREE.Vector3(center.x, center.y, 0))
+      //   pivot = new THREE.Object3D()
+      //   pivot.position.set(center.x, center.y, currentObjectSelected.position.z)
+      //   scene.add(pivot)
+      //   pivot.add(currentObjectSelected)
+      // }
       break
 
     case 'move':
@@ -289,6 +291,10 @@ const onClearAllClick = (event: any) => {
         console.error('An error occurred during entity deletion:', error)
       })
   })
+}
+
+const onDebugClick = (event: any) => {
+  
 }
 
 /**
@@ -359,7 +365,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     case 'ARROWLEFT':
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
-          rotateModel('left', pivot)
+          rotateModel('left', currentObjectSelected)
           placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, 'left')
       }
       break
@@ -367,7 +373,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
     case 'ARROWRIGHT':
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
-          rotateModel('right', pivot)
+          rotateModel('right', currentObjectSelected)
           placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, 'right')
       }
       break
@@ -676,6 +682,14 @@ init()
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-20 left-10 cursor-pointer"
     >
       ClearAll
+    </button>
+
+    <button
+      @click="onDebugClick"
+      id="ignore"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute top-0 left-0 cursor-pointer"
+    >
+      Debug
     </button>
 
     <MenuBar
