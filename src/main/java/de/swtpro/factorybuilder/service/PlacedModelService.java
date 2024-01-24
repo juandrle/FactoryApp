@@ -125,7 +125,11 @@ public class PlacedModelService {
                     for(int i = 0; i < 2;i++)
                         placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY(), rootPos.getZ()+i), placedModel.getFactoryID()).orElseThrow());
                     break;
-    
+                
+                // transportation
+                case "pipe_straight", "pipe_curved":
+                    placedFields.add(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow());
+                    break;
             }
             
             // add in- and output position and orientation to lists
@@ -223,6 +227,11 @@ public class PlacedModelService {
                     f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
                     placedInputs.add(createInput(f,"South"));
                    break;
+                
+                // transportation
+                case "pipe_straight":
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
             }
             
             for(Field placedField: placedModel.getPlacedFields()){
