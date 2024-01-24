@@ -261,77 +261,94 @@ public class PlacedModelService {
     public List<PlacedModel> findAllByFactoryId(Factory factory) {
         return placedModelRepository.findByFactory(factory);
     }
-    
+
     private boolean checkField(Field f, PlacedModel thisModel, String ori) {
-        boolean condition = false;
         String counterOri = "";
         int extraX = 0, extraY = 0;
-        Input input = thisModel.getInputByPosition(f.getPosition());
-        Output output = thisModel.getOutputByPosition(f.getPosition());
-        int height = 0, width = 0;
+        List<Input> inputList = thisModel.getInputByPosition(f.getPosition());
+        List<Output> outputList = thisModel.getOutputByPosition(f.getPosition());
 
         switch (ori) {
             case "North":
-                //height = -factory.getHeight()/2 +1;
-                if (f.getPosition().getY() > height) {
-                    condition = true;
-                    extraY = -1;
-                }
+                extraX = -1;
                 counterOri = "South";
                 break;
             case "South":
-                //height = factory.getHeight();
-                if (f.getPosition().getY() < height/2- 1) {
-                    condition = true;
-                    extraY = 1;
-                }
+                extraX = 1;
                 counterOri = "North";
                 break;
             case "East":
-                //width = factory.getWidth()/2 - 1;
-                if (f.getPosition().getX() < width) {
-                    condition = true;
-                    extraX = 1;
-                }
+                extraY = 1;
                 counterOri = "West";
                 break;
             case "West":
-                //width = factory.getWidth()/2 + 1;
-                if (f.getPosition().getX() > width) {
-                    condition = true;
-                    extraX = -1;
-                }
+                extraY = -1;
                 counterOri = "East";
                 break;
         }
-        if (condition) {
-            Position tmpPosition = new Position(f.getPosition().getX() + extraX, f.getPosition().getY() + extraY,
-                    f.getPosition().getZ());
-            Field tmpField = fieldService.getFieldByPosition(tmpPosition, thisModel.getFactoryID()).orElse(null);
-            assert tmpField != null;
-            PlacedModel tmpPlacedModel = tmpField.getPlacedModel();
-            if (tmpPlacedModel != null) {
-                if (thisModel.getId() == tmpPlacedModel.getId())
-                    return true;
-    
-                // zeigt mein input auf ein feld das kein output ist
-                if (input != null && input.getOrientation().equals(ori)) {
-                    return tmpPlacedModel.getOutputByPosition(tmpPosition).getOrientation().equals(counterOri);
-    
+        Position tmpPosition = new Position(f.getPosition().getX() + extraX, f.getPosition().getY() + extraY,
+                f.getPosition().getZ());
+
+        Field tmpField = fieldService.getFieldByPosition(tmpPosition, thisModel.getFactoryID()).orElse(null);
+        // edge case: if field doesn't exist (out of bounds)
+        if(tmpField == null){
+            if(!inputList.isEmpty()){
+                for(Input i: inputList){
+                    if(i.getOrientation().equals(ori)) return false;
                 }
-                // zeigt mein output auf ein feld das kein input ist
-                else if (output != null && output.getOrientation().equals(ori)) {
-                    return tmpPlacedModel.getInputByPosition(tmpPosition).getOrientation().equals(counterOri);
-    
+            }
+            if(!outputList.isEmpty()){
+                for(Output o: outputList){
+                    if(o.getOrientation().equals(ori)) return false;
                 }
-                // zeigt mein feld auf ein feld das einen in/output in richtugn meines feldes
-                // hat
-                else {
-                    Output placedModelOutput = tmpPlacedModel.getOutputByPosition(tmpPosition);
-                    if (placedModelOutput != null) {
-                        if (placedModelOutput.getOrientation().equals(counterOri))
+            }
+            return true;
+        }
+
+        PlacedModel tmpPlacedModel = tmpField.getPlacedModel();
+        if (tmpPlacedModel != null) {
+            // move case: if placedModel IDs match (no need to check)
+            if (thisModel.getId() == tmpPlacedModel.getId())
+                return true;
+
+            // zeigt mein input auf ein feld das kein output ist
+            if (!inputList.isEmpty()) {
+                for(Input i: inputList){
+                    if(i.getOrientation().equals(ori)) {
+                        for(Output o: tmpPlacedModel.getOutputByPosition(tmpPosition)) {
+                            if (o.getOrientation().equals(counterOri))
+                                return true;
+                        }
+                    }
+                }
+                if (outputList.isEmpty()) return false;
+            }
+            // zeigt mein output auf ein feld das kein input ist
+            if (!outputList.isEmpty()) {
+                for(Output o: outputList){
+                    if(o.getOrientation().equals(ori)) {
+                        for(Input i: tmpPlacedModel.getInputByPosition(tmpPosition))
+                            if(i.getOrientation().equals(counterOri))
+                                return true;
+                    }
+                }
+                return false;
+            }
+            // zeigt mein feld auf ein feld das einen in/output in richtung meines feldes
+            // hat
+            else {
+                List<Output> placedModelOutputs = tmpPlacedModel.getOutputByPosition(tmpPosition);
+                List<Input> placedModelInputs = tmpPlacedModel.getInputByPosition(tmpPosition);
+                if (!placedModelOutputs.isEmpty()) {
+                    for(Output o: placedModelOutputs){
+                        if (o.getOrientation().equals(counterOri))
                             return false;
-                        return !tmpPlacedModel.getInputByPosition(tmpPosition).getOrientation().equals(counterOri);
+                    }
+                }
+                if (!placedModelInputs.isEmpty()) {
+                    for(Input i: placedModelInputs){
+                        if (i.getOrientation().equals(counterOri))
+                            return false;
                     }
                 }
             }

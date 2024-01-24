@@ -180,7 +180,8 @@ const onChangeEntityClicked = (situation: string) => {
       manipulationMode.value = ManipulationMode.ROTATE
 
       // set pivot point for future rotation
-if (!pivot || currentObjectSelected !== pivot.children[0]) {
+        /*
+        if (!pivot || currentObjectSelected !== pivot.children[0]) {
         if (currentObjectSelected.parent.type === 'Object3D') {
           pivot = currentObjectSelected.parent
           return
@@ -194,6 +195,8 @@ if (!pivot || currentObjectSelected !== pivot.children[0]) {
         scene.add(pivot)
         pivot.add(currentObjectSelected)
       }
+         */
+
       break
 
     case 'move':
@@ -310,7 +313,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
         }).then(res => res.json()).then(success => {
 
           if(!success){
-            rotateModelfromXtoY(originalOrientation, allPlacedEntities[currentObjectSelected.uuid].orientation, pivot)
+            rotateModelfromXtoY(originalOrientation, allPlacedEntities[currentObjectSelected.uuid].orientation, currentObjectSelected)
           }
           console.log(success)
         })
