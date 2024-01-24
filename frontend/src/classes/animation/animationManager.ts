@@ -2,7 +2,6 @@ import { interpolateVector } from '@/utils/animation/animation'
 import { loadEntitie } from '@/utils/threeJS/entityManipulation'
 import * as THREE from 'three'
 import type { PlacedEntities } from '../placedEntities/placedEntities'
-import { drawLine } from '@/utils/threeJS/helpFunctions'
 
 export class AnimationManager {
   private placedEntitesRef: PlacedEntities
@@ -92,10 +91,10 @@ export class AnimationManager {
       // Berechne den mittleren Punkt zwischen from und to
       const midPoint = new THREE.Vector3()
         .lerpVectors(from, to, 0.5)
-        .add(new THREE.Vector3(0, -from.distanceTo(to) / 4, from.distanceTo(to) / 4))
+        .add(new THREE.Vector3(0, -from.distanceTo(to) / 3, 0))
 
-      drawLine(from, to, this.sceneRef)
-      drawLine(midPoint, midPoint, this.sceneRef)
+      // drawLine(from, to, this.sceneRef)
+      // drawLine(midPoint, midPoint, this.sceneRef)
 
       // Erstelle eine CatmullRomCurve3 durch die Punkte from, to
       const curve = new THREE.CatmullRomCurve3([from, midPoint, to])

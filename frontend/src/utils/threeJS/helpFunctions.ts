@@ -328,3 +328,24 @@ export const drawBox = (object: THREE.Object3D, scene: THREE.Scene): void => {
   const box = new THREE.BoxHelper(object, 0xffff00)
   scene.add(box)
 }
+
+// export const roundVector = (vector: THREE.Vector3): THREE.Vector3 =>  {
+//   vector.x = Math.round(vector.x * 2, Midpoint.AwayFromZero) / 2
+
+
+//   vector.y = Math.round(vector.y * 2) / 2;
+//   vector.z = Math.round(vector.z * 2) / 2;
+//   return vector.clone();
+// }
+
+// function roundToHalf(value:) {
+//   var converted = parseFloat(value); // Make sure we have a number
+//   var decimal = (converted - parseInt(converted, 10));
+//   decimal = Math.round(decimal * 10);
+//   if (decimal == 5) { return (parseInt(converted, 10)+0.5); }
+//   if ( (decimal < 3) || (decimal > 7) ) {
+//      return Math.round(converted);
+//   } else {
+//      return (parseInt(converted, 10)+0.5);
+//   }
+// }

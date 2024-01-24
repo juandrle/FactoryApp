@@ -1,5 +1,5 @@
 import { getCenterPoint } from '@/utils/rotation/rotate'
-import { drawBox } from '@/utils/threeJS/helpFunctions'
+import { drawBox, drawLine } from '@/utils/threeJS/helpFunctions';
 import * as THREE from 'three'
 
 /**
@@ -7,6 +7,11 @@ import * as THREE from 'three'
  */
 export class PlacedEntities {
   private allEntities: IEntity[] = []
+  private sceneRef: THREE.Scene;
+
+  constructor(sceneRef: THREE.Scene) {
+    this.sceneRef = sceneRef;
+  }
 
   /**
    * Single Entity Operations
@@ -52,7 +57,6 @@ export class PlacedEntities {
       endPoint: THREE.Vector3
     }[] = []
 
-    console.log(allCurvedPipes);
     allCurvedPipes.forEach((mesh) => {
       out.push({
         startPoint: this.getPointsFromStraightSinglePipe(mesh).startPoint.clone(),
@@ -112,7 +116,11 @@ export class PlacedEntities {
       let currentEndPoint = this.getPointsFromStraightSinglePipe(currentPipe).endPoint.clone()
       let isPartOfBiggerPipe = false
 
+      
+      // console.log(currentEndPoint, "rounded to", roundVector(currentEndPoint))
+      // console.log(currentStartPoint, "rounded to",roundVector(currentEndPoint))
       out.forEach((wholePipe) => {
+
         if (currentStartPoint.clone().round().equals(wholePipe.endPoint.clone().round())) {
           // Nachbar links gefunden
           wholePipe.endPoint = currentEndPoint

@@ -130,7 +130,7 @@ const setupLoader = (): void => {
 }
 
 const setupManager = (): void => {
-  placedEntities = new PlacedEntities()
+  placedEntities = new PlacedEntities(scene)
   animationManager = new AnimationManager(placedEntities, scene, loader)
   ccm = new CameraControlsManager(camera, renderer.domElement, CameraMode.ORBIT)
   currentMode = ccm.currentMode
