@@ -15,14 +15,21 @@ public class Field implements Serializable {
     private long id;
     private long factoryID;
 
-    @Column(unique = true)
+
+    @Column(unique = true, updatable = false, nullable = false)
     private Position pos;
 
     @Nullable
     @ManyToOne(cascade = ALL)
     private PlacedModel placedModel;
 
+
+    public Field(Position pos) {
+        this.pos = pos;
+    }
+
     public Field() {
+
     }
 
 
@@ -34,7 +41,7 @@ public class Field implements Serializable {
 
     public Position getPosition() { return pos;}
 
-    public void setPosition(Position pos){ this.pos = pos; }
+    //public void setPosition(Position pos){ this.pos = pos; }
 
     public long getId() {
         return id;

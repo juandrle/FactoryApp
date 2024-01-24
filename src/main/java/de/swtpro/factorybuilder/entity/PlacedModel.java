@@ -35,6 +35,7 @@ public class PlacedModel implements Serializable{
     
     // where are we on the grid
 
+
     @OneToMany(cascade = ALL, mappedBy = "placedModel")
     private List<Field> placedFields;
 
@@ -52,6 +53,11 @@ public class PlacedModel implements Serializable{
         this.rootPos = rootPos;
         this.model = model;
         this.orientation = "North";
+        // TODO: what's the initial capacity?
+        this.capacity = 4;
+        this.placedFields = new ArrayList<>();
+        this.inputs = new ArrayList<>();
+        this.outputs = new ArrayList<>();
     }
 
     public PlacedModel() {
@@ -135,4 +141,5 @@ public class PlacedModel implements Serializable{
     public void setModel(Model model) {
         this.model = model;
     }
+    public Model getModel() { return this.model; }
 }
