@@ -213,23 +213,8 @@ const onChangeEntityClicked = (situation: string): void => {
 
     case 'rotate':
       // Set mode
-      manipulationMode.value = ManipulationMode.ROTATE
-
-if (!pivot || currentObjectSelected !== pivot.children[0]) {
-        if (currentObjectSelected.parent.type === 'Object3D') {
-          pivot = currentObjectSelected.parent
-          return
-        }
-        let box = new THREE.Box3().setFromObject(currentObjectSelected)
-        let center = new THREE.Vector3()
-        box.getCenter(center)
-        currentObjectSelected.position.sub(new THREE.Vector3(center.x, center.y, 0))
-        pivot = new THREE.Object3D()
-        pivot.position.set(center.x, center.y, currentObjectSelected.position.z)
-        scene.add(pivot)
-        pivot.add(currentObjectSelected)
-      }
-      break
+      manipulationMode.value = ManipulationMode.ROTATE;
+      break;
 
     case 'move':
       // Set move mode
@@ -363,8 +348,6 @@ const handleKeyDown = (event: KeyboardEvent) => {
     case 'ARROWLEFT':
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
-          rotateModel("left", currentObjectSelected);
-          allPlacedEntities[currentObjectSelected.uuid].orientation = turnLeft(allPlacedEntities[currentObjectSelected.uuid].orientation)
           rotateModel('left', currentObjectSelected)
           placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, 'left')
       }
@@ -373,8 +356,6 @@ const handleKeyDown = (event: KeyboardEvent) => {
     case 'ARROWRIGHT':
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
-          rotateModel("right", currentObjectSelected);
-          allPlacedEntities[currentObjectSelected.uuid].orientation = turnRight(allPlacedEntities[currentObjectSelected.uuid].orientation)
           rotateModel('right', currentObjectSelected)
           placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, 'right')
       }
@@ -387,8 +368,6 @@ const handleKeyDown = (event: KeyboardEvent) => {
     default:
       break
   }
-
-  console.log(allPlacedEntities)
 }
 
 const handleMouseMove = (event: MouseEvent) => {
