@@ -1,7 +1,8 @@
 package de.swtpro.factorybuilder.controller;
-
-
-import de.swtpro.factorybuilder.DTO.PlacedModelDTO;
+import de.swtpro.factorybuilder.DTO.entity.MoveRequestDTO;
+import de.swtpro.factorybuilder.DTO.entity.PlaceRequestDTO;
+import de.swtpro.factorybuilder.DTO.entity.RotateRequestDTO;
+import de.swtpro.factorybuilder.DTO.factory.DeleteRequestDTO;
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.PlacedModel;
 import de.swtpro.factorybuilder.repository.ModelRepository;
@@ -77,9 +78,9 @@ public class EntityRestAPIController {
     @CrossOrigin
     @PostMapping("/rotate")
     public ResponseEntity<Boolean> rotate(@RequestBody RotateRequestDTO rotateRequestDTO) {
-        boolean rotated = placedModelService.rotateModel(rotateRequestDTO.id, rotateRequestDTO.orientation);
+        boolean rotated = placedModelService.rotateModel(rotateRequestDTO.id(), rotateRequestDTO.orientation());
 
-        LOGGER.info("rotate entity: " + String.valueOf(rotateRequestDTO.id) + " is " + String.valueOf(rotated));
+        LOGGER.info("rotate entity: " + String.valueOf(rotateRequestDTO.id()) + " is " + String.valueOf(rotated));
 
         return ResponseEntity.ok(rotated);
     }
@@ -87,8 +88,9 @@ public class EntityRestAPIController {
     @CrossOrigin
     @PostMapping("/move")
     public ResponseEntity<Boolean> move(@RequestBody MoveRequestDTO moveRequestDTO) {
-        Position pos = new Position(moveRequestDTO.x, moveRequestDTO.y, moveRequestDTO.z);
-        boolean moved = placedModelService.moveModel(moveRequestDTO.id, pos);
+        Position pos = new Position(moveRequestDTO.x(), moveRequestDTO.y(), moveRequestDTO.z());
+        boolean moved = placedModelService.moveModel(moveRequestDTO.id(), pos);
+
         //LOGGER.info(moveRequestDTO.toString());
         //LOGGER.info("move entity: " + String.valueOf(moveRequestDTO.id) + String.valueOf(moved));
         LOGGER.info("Moved: " + moved);

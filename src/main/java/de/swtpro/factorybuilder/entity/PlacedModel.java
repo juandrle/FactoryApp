@@ -1,6 +1,7 @@
 package de.swtpro.factorybuilder.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.swtpro.factorybuilder.utility.Position;
