@@ -14,4 +14,5 @@ public interface FieldRepository extends JpaRepository<Field, Long> {
     Long countByPosAndFactoryID(Position position, long factoryID);
 
 
+    void deleteAllByFactoryID(Long id);
 }
