@@ -1,11 +1,12 @@
 import * as THREE from 'three'
 
 export const rotateModel = (dir: string, object: THREE.Object3D) => {
-  // Rotiere das Objekt um die eigene Achse
+  // Rotiere das Objekt um den Fixpunkt
+  // adjusted rotation for usability (key right to rotate clockwise)
   if (dir === 'left') {
-    object.rotation.z -= Math.PI / 2
-  } else {
     object.rotation.z += Math.PI / 2
+  } else {
+    object.rotation.z -= Math.PI / 2
   }
 }
 

@@ -394,7 +394,6 @@ public class PlacedModelService {
 
         while(!tmpOrientation.equals(newOrientation)){
             tmpOrientation = rotateOrientation(tmpOrientation);
-            //LOGGER.info("OLD ORIENTATION: " + oldOrientation + ", NEW ORIENTATION: " + tmpOrientation);
             thisModel.setOrientation(tmpOrientation);
 
             try {// adjusting every field where model is placed on
@@ -402,12 +401,8 @@ public class PlacedModelService {
                 // remove root position from placedFields list
                 thisModel.getPlacedFields().remove(fieldService.getFieldByPosition(thisModel.getRootPos(), thisModel.getFactoryID()).orElseThrow());
 
-                //LOGGER.info("old rootpos: " + thisModel.getRootPos().getX() +"/"+thisModel.getRootPos().getY() +"/"+thisModel.getRootPos().getZ());
-
                 // adjust only the root position
                 thisModel.setRootPos(adjustPosition(oldOrientation,tmpOrientation,thisModel.getRootPos(), true,null));
-
-                //LOGGER.info("new rootpos: " + thisModel.getRootPos().getX() +"/"+thisModel.getRootPos().getY() +"/"+thisModel.getRootPos().getZ());
 
                 for (Field f : thisModel.getPlacedFields()){
                     // new position, so we don't mess up the field position
@@ -420,7 +415,6 @@ public class PlacedModelService {
                     newPosList.add(fld.orElseThrow());
 
                 }
-
 
                 // add root position back to placedFields list
                 newPosList.add(fieldService.getFieldByPosition(thisModel.getRootPos(), thisModel.getFactoryID()).orElseThrow());
@@ -455,32 +449,12 @@ public class PlacedModelService {
                 return false;
             }
 
-
         }
-
-        // START check
-        /*
-        if (checkForPlacement(thisModel, factory)) {
-            for (Field f : backupModel.getPlacedFields()) {
-                fieldService.deletePlacedModelOnField(f);
-            }
-            for (Field f : thisModel.getPlacedFields()) {
-                fieldService.setPlacedModelOnField(thisModel, f);
-            }
-            return true;
-        }
-
-        return false;
-        */
-        // END check
-
-
-        //fallback to old position and orientation
+        //validate placement or else fallback to old position and orientation
         if(!checkForPlacement(thisModel)){
             rotateModel(thisModelID,backupOrientation);
             return false;
         }
-
 
         try {
             //set field that placedModel used to be on to null
