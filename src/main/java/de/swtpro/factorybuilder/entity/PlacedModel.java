@@ -100,18 +100,20 @@ public class PlacedModel implements Serializable{
 
     public List<Input> getInputs() { return inputs;}
 
-    public Input getInputByPosition(Position pos){
+    public List<Input> getInputByPosition(Position pos){
+        List<Input> inputList = new ArrayList<>();
         for(Input i: getInputs()){
-            if(i.getPosition() == pos)return i;
+            if(i.getPosition().equals(pos))inputList.add(i);
         }
-        return null;
+        return inputList;
     }
 
-    public Output getOutputByPosition(Position pos){
+    public List<Output> getOutputByPosition(Position pos){
+        List<Output> outputList = new ArrayList<>();
         for(Output o: getOutputs()){
-            if(o.getPosition() == pos)return o;
+            if(o.getPosition().equals(pos))outputList.add(o);
         }
-        return null;
+        return outputList;
     }
 
     public List<Output> getOutputs() {
