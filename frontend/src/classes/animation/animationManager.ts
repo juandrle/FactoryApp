@@ -23,7 +23,7 @@ export class AnimationManager {
     })
 
     this.placedEntitesRef.getAllCurvedPipes().forEach(({ startPoint, endPoint }) => {
-      this.animateObjectCurved(startPoint, endPoint, this.mockModelUrl, 1000, () => {})
+      this.animateObjectCurved(startPoint, endPoint, this.mockModelUrl, 500, () => {})
     })
   }
 
