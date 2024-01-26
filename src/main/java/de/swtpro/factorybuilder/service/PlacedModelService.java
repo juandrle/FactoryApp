@@ -21,110 +21,106 @@ public class PlacedModelService {
     PlacedModelRepository placedModelRepository;
     FactoryService factoryService;
     FieldService fieldService;
-    PlacedModelService(PlacedModelRepository placedModelRepository, FieldService fieldService, FactoryService factoryService){
+
+    PlacedModelService(PlacedModelRepository placedModelRepository, FieldService fieldService, FactoryService factoryService) {
         this.placedModelRepository = placedModelRepository;
         this.fieldService = fieldService;
         this.factoryService = factoryService;
     }
+
     public Optional<PlacedModel> getPlacedModelById(long id) {
         return placedModelRepository.findById(id);
     }
-    private Position createNewPosition(int x, int y, int z){
-        return new Position(x,y,z);
+
+    private Position createNewPosition(int x, int y, int z) {
+        return new Position(x, y, z);
     }
-    private Input createInput(Field f, String orientation){
+
+    private Input createInput(Field f, String orientation) {
         Input input = new Input();
-            input.setOrientation(orientation);
-            input.setPosition(f.getPosition());
-            return input;
+        input.setOrientation(orientation);
+        input.setPosition(f.getPosition());
+        return input;
     }
-    private Output createOutput(Field f, String orientation){
+
+    private Output createOutput(Field f, String orientation) {
         Output output = new Output();
         output.setOrientation(orientation);
         output.setPosition(f.getPosition());
         return output;
     }
-    private boolean fillPlacedModelLists(PlacedModel placedModel){
-        Position rootPos = placedModel.getRootPos();
-        List<Field> placedFields = placedModel.getPlacedFields();
-        List<Input> placedInputs = placedModel.getInputs();
-        List<Output> placedOutputs = placedModel.getOutputs();
+
+    private boolean fillPlacedModelLists(PlacedModel placedModel) {
+        Position rootPos = placedModel.getRootPos(); // TODO: Ihr solltet diese Variable auch verwenden wenn ihr sie euch hier schon so schön holt
+        List<Field> placedFields = placedModel.getPlacedFields(); // TODO: Eine riesiger perfomance gain kann hier gemacht werden indem man die listen erstmal zwischenspeichert und am ende der methode erst in die datenbank speichert
+        List<Input> placedInputs = placedModel.getInputs(); // TODO: Eine riesiger perfomance gain kann hier gemacht werden indem man die listen erstmal zwischenspeichert und am ende der methode erst in die datenbank speichert
+        List<Output> placedOutputs = placedModel.getOutputs(); // TODO: Eine riesiger perfomance gain kann hier gemacht werden indem man die listen erstmal zwischenspeichert und am ende der methode erst in die datenbank speichert
         Field f;
 
         try {
             // add fields to placedModel list
-            switch(placedModel.getModel().getName()){
+            switch (placedModel.getModel().getName()) {
                 // machine
                 case "brennerofen", "schmelzofen":
-                    for(int i = 0; i < 2;i++)
-                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY(), rootPos.getZ()+i), placedModel.getFactoryID()).orElseThrow());
+                    for (int i = 0; i < 2; i++)
+                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY(), rootPos.getZ() + i), placedModel.getFactoryID()/*TODO: sollte in einer variable oben zwischengespeichert werden. verhindert so viele datenbankzugriffe*/).orElseThrow());
                     break;
                 case "elektronikmaschine", "saegemuehle":
-                    for(int i = 0; i < 2;i++)
-                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+i, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                    for (int i = 0; i < 2; i++)
+                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + i, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
                     break;
                 case "erzreiniger", "planiermaschine":
-                    for(int i = 0; i < 3;i++)
-                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+i, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
-                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+1, rootPos.getZ()+1), placedModel.getFactoryID()).orElseThrow());
+                    for (int i = 0; i < 3; i++)
+                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + i, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + 1, rootPos.getZ() + 1), placedModel.getFactoryID()).orElseThrow());
                     break;
                 case "farbmischer", "schleifmaschine":
                     placedFields.add(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow());
                     break;
                 case "farbsprueher", "vulkanisierer":
-                    for(int i = 0; i < 2;i++){
-                        for(int j = 0; j < 2;j++)
-                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                    for (int i = 0; i < 2; i++) {
+                        for (int j = 0; j < 2; j++)
+                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + i, rootPos.getY() + j, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
                     }
                     break;
                 case "montagemaschine_gross":
                     // deprecated
-                    for(int i = 0; i < 3;i++){
-                        for(int j = 0; j < 3;j++){
-                            for(int k = 0; k < 2;k++)
-                                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()+k), placedModel.getFactoryID()).orElseThrow());
+                    for (int i = 0; i < 3; i++) {
+                        for (int j = 0; j < 3; j++) {
+                            for (int k = 0; k < 2; k++)
+                                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + i, rootPos.getY() + j, rootPos.getZ() + k), placedModel.getFactoryID()).orElseThrow());
                         }
                     }
-                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+1, rootPos.getZ()+3), placedModel.getFactoryID()).orElseThrow());
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() + 1, rootPos.getZ() + 3), placedModel.getFactoryID()).orElseThrow());
                     break;
                 case "montagemaschine_klein":
                     // deprecated
-                    for(int i = 0; i < 3;i++)
-                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+i, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
-                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()-1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
-                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()-1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
-                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY(), rootPos.getZ()+1), placedModel.getFactoryID()).orElseThrow());
+                    for (int i = 0; i < 3; i++)
+                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + i, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() - 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() - 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY(), rootPos.getZ() + 1), placedModel.getFactoryID()).orElseThrow());
                     break;
                 case "montagemaschine_mittel":
-                    for(int i = 0; i < 3;i++){
-                        for(int j = 0; j < 3;j++)
-                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
+                    for (int i = 0; i < 3; i++) {
+                        for (int j = 0; j < 3; j++)
+                            placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + i, rootPos.getY() + j, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow());
                     }
-                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+1, rootPos.getZ()+1), placedModel.getFactoryID()).orElseThrow());
+                    placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() + 1, rootPos.getZ() + 1), placedModel.getFactoryID()).orElseThrow());
                     break;
-
-                // start-/endpoint
-                case "rohstoffannahme":
-                    for(int i = 0; i < 3;i++){
-                        for(int j = 0; j < 3;j++){
-                            for(int k = 0; k < 3;k++)
-                                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()+k), placedModel.getFactoryID()).orElseThrow());
-                        }
-                    }
-                    break;
-                case "warenausgabe":
-                    for(int i = 0; i < 3;i++){
-                        for(int j = 0; j < 3;j++){
-                            for(int k = 0; k < 3;k++)
-                                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+i,rootPos.getY()+j, rootPos.getZ()+k), placedModel.getFactoryID()).orElseThrow());
+                case "warenausgabe", "rohstoffannahme":
+                    for (int i = 0; i < 3; i++) {
+                        for (int j = 0; j < 3; j++) {
+                            for (int k = 0; k < 3; k++)
+                                placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + i, rootPos.getY() + j, rootPos.getZ() + k), placedModel.getFactoryID()).orElseThrow());
                         }
                     }
                     break;
 
                 // obstacles
                 case "saeule", "schild":
-                    for(int i = 0; i < 2;i++)
-                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY(), rootPos.getZ()+i), placedModel.getFactoryID()).orElseThrow());
+                    for (int i = 0; i < 2; i++)
+                        placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY(), rootPos.getZ() + i), placedModel.getFactoryID()).orElseThrow());
                     break;
 
                 // transportation
@@ -134,100 +130,101 @@ public class PlacedModelService {
             }
 
             // add in- and output position and orientation to lists
-            switch(placedModel.getModel().getName()){
+            switch (placedModel.getModel().getName()) {
                 // machines
                 case "brennerofen", "schmelzofen", "schleifmaschine", "farbmischer":
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"North"));
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"West"));
-                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"South"));
-                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"East"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "North"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
                     break;
                 case "elektronikmaschine", "erzreiniger", "planiermaschine", "saegemuehle":
                     int dif = 2;
-                    if(placedModel.getModel().getName().equals("elektronikmaschine")||placedModel.getModel().getName().equals("saegemuehle")) dif = 1;
+                    if (placedModel.getModel().getName().equals("elektronikmaschine") || placedModel.getModel().getName().equals("saegemuehle"))
+                        dif = 1;
 
                     // input
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"North"));
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"West"));
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"South"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "North"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
 
                     // output
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+dif, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"North"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+dif, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"East"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+dif, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"South"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + dif, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "North"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + dif, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "East"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + dif, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "South"));
                     break;
                 case "farbsprueher", "vulkanisierer":
                     // input
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"North"));
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"West"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"West"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"South"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "North"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "West"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "South"));
 
                     // output
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"East"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"North"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"South"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"East"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "East"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "North"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() + 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "South"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() + 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "East"));
                     break;
                 case "montagemaschine_mittel", "montagemaschine_gross":
                     // input
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"West"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"West"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"West"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"South"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"South"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY()+2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"South"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "West"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 2, rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "West"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 2, rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "South"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 2, rootPos.getY() + 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "South"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 2, rootPos.getY() + 2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "South"));
 
                     // output
-                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"North"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"North"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"North"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY()+2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"East"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"East"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY()+2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"East"));
-                   break;
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "North"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "North"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + 2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "North"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY() + 2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "East"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() + 2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "East"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 2, rootPos.getY() + 2, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "East"));
+                    break;
                 case "montagemaschine_klein":
                     // deprecated
                     // input
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(),rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"West"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()-1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"North"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX(), rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "West"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() - 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "North"));
                     // output
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+1,rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"South"));
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"East"));
-                  break;
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() + 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "South"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 2, rootPos.getY(), rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "East"));
+                    break;
 
                 // start-/endpoint
                 case "rohstoffannahme":
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedOutputs.add(createOutput(f,"South"));
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 2, rootPos.getY() + 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedOutputs.add(createOutput(f, "South"));
                     break;
                 case "warenausgabe":
-                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX()+2,rootPos.getY()+1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
-                    placedInputs.add(createInput(f,"South"));
-                   break;
+                    f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 2, rootPos.getY() + 1, rootPos.getZ()), placedModel.getFactoryID()).orElseThrow();
+                    placedInputs.add(createInput(f, "South"));
+                    break;
 
                 // transportation
                 case "pipe_straight":
@@ -254,14 +251,14 @@ public class PlacedModelService {
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
                     break;
                 case "switch_4":
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"North"));
-                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"West"));
-                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"South"));
-                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"East"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "North"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
                     break;
             }
 
-            for(Field placedField: placedModel.getPlacedFields()){
+            for (Field placedField : placedModel.getPlacedFields()) {
                 LOGGER.info("Trying to place model at position: " + placedField.getPosition().toString());
             }
 
@@ -272,30 +269,31 @@ public class PlacedModelService {
         }
 
     }
+
     @Transactional
     public PlacedModel createPlacedModel(Model model, Position rootPosition, long factoryID) {
         if (model != null && rootPosition != null) {
-           try {
+            try {
                 Factory factory = factoryService.getFactoryById(factoryID).orElseThrow();
                 PlacedModel placedModel = new PlacedModel(factory, rootPosition, model);
 
                 // fill placedModel lists (placedFields, input and output)
-                if (!fillPlacedModelLists(placedModel))  return null;
-                    if (checkForPlacement(placedModel)) {
-                        for(Field f:placedModel.getPlacedFields()){
-                            fieldService.setPlacedModelOnField(placedModel, f);
-                        }
-
-                        return placedModelRepository.save(placedModel);
+                if (!fillPlacedModelLists(placedModel)) return null;
+                if (checkForPlacement(placedModel)) {
+                    for (Field f : placedModel.getPlacedFields()) {
+                        fieldService.setPlacedModelOnField(placedModel, f);
                     }
-            }
-            catch (Exception e) {
+
+                    return placedModelRepository.save(placedModel);
+                }
+            } catch (Exception e) {
                 LOGGER.error("Factory with Id: " + factoryID + " doesn't exist", e);
             }
         }
         LOGGER.error("Placing model NOT successfull");
         return null;
     }
+
     public List<PlacedModel> findAllByFactoryId(Factory factory) {
         return placedModelRepository.findByFactory(factory);
     }
@@ -329,15 +327,15 @@ public class PlacedModelService {
 
         Field tmpField = fieldService.getFieldByPosition(tmpPosition, thisModel.getFactoryID()).orElse(null);
         // edge case: if field doesn't exist (out of bounds)
-        if(tmpField == null){
-            if(!inputList.isEmpty()){
-                for(Input i: inputList){
-                    if(i.getOrientation().equals(ori)) return false;
+        if (tmpField == null) {
+            if (!inputList.isEmpty()) {
+                for (Input i : inputList) {
+                    if (i.getOrientation().equals(ori)) return false;
                 }
             }
-            if(!outputList.isEmpty()){
-                for(Output o: outputList){
-                    if(o.getOrientation().equals(ori)) return false;
+            if (!outputList.isEmpty()) {
+                for (Output o : outputList) {
+                    if (o.getOrientation().equals(ori)) return false;
                 }
             }
             return true;
@@ -351,9 +349,9 @@ public class PlacedModelService {
 
             // zeigt mein input auf ein feld das kein output ist
             if (!inputList.isEmpty()) {
-                for(Input i: inputList){
-                    if(i.getOrientation().equals(ori)) {
-                        for(Output o: tmpPlacedModel.getOutputByPosition(tmpPosition)) {
+                for (Input i : inputList) {
+                    if (i.getOrientation().equals(ori)) {
+                        for (Output o : tmpPlacedModel.getOutputByPosition(tmpPosition)) {
                             if (o.getOrientation().equals(counterOri))
                                 return true;
                         }
@@ -363,10 +361,10 @@ public class PlacedModelService {
             }
             // zeigt mein output auf ein feld das kein input ist
             if (!outputList.isEmpty()) {
-                for(Output o: outputList){
-                    if(o.getOrientation().equals(ori)) {
-                        for(Input i: tmpPlacedModel.getInputByPosition(tmpPosition))
-                            if(i.getOrientation().equals(counterOri))
+                for (Output o : outputList) {
+                    if (o.getOrientation().equals(ori)) {
+                        for (Input i : tmpPlacedModel.getInputByPosition(tmpPosition))
+                            if (i.getOrientation().equals(counterOri))
                                 return true;
                     }
                 }
@@ -378,13 +376,13 @@ public class PlacedModelService {
                 List<Output> placedModelOutputs = tmpPlacedModel.getOutputByPosition(tmpPosition);
                 List<Input> placedModelInputs = tmpPlacedModel.getInputByPosition(tmpPosition);
                 if (!placedModelOutputs.isEmpty()) {
-                    for(Output o: placedModelOutputs){
+                    for (Output o : placedModelOutputs) {
                         if (o.getOrientation().equals(counterOri) && thisModel.getId() != tmpPlacedModel.getId())
                             return false;
                     }
                 }
                 if (!placedModelInputs.isEmpty()) {
-                    for(Input i: placedModelInputs){
+                    for (Input i : placedModelInputs) {
                         if (i.getOrientation().equals(counterOri) && thisModel.getId() != tmpPlacedModel.getId())
                             return false;
                     }
@@ -393,9 +391,10 @@ public class PlacedModelService {
         }
         return true;
     }
+
     private boolean checkForPlacement(PlacedModel thisModel) {
         // check if fields are free
-        for (Field f: thisModel.getPlacedFields()) {
+        for (Field f : thisModel.getPlacedFields()) {
             if (f.getPlacedModel() != null && thisModel.getId() != f.getPlacedModel().getId())
                 return false;
             // check north
@@ -414,23 +413,24 @@ public class PlacedModelService {
         // if everything is ok return true;
         return true;
     }
+
     @Transactional
     public boolean rotateModel(long thisModelID, String newOrientation) {
         PlacedModel thisModel = getPlacedModelById(thisModelID).orElse(null);
-        if(thisModel == null) return false;
+        if (thisModel == null) return false;
 
-        long factoryID = thisModel.getFactoryID();
+        long factoryID = thisModel.getFactoryID(); // TODO: Schön! so auch bei der place model oben
         Factory factory = factoryService.getFactoryById(factoryID).orElse(null);
-        if(factory == null) return false;
+        if (factory == null) return false;
 
         List<Field> newPosList = new ArrayList<>();
         List<Field> oldPosList = new ArrayList<>(thisModel.getPlacedFields());
-        Position backupRootPos = createNewPosition(thisModel.getRootPos().getX(),thisModel.getRootPos().getY(),thisModel.getRootPos().getZ());
+        Position backupRootPos = createNewPosition(thisModel.getRootPos().getX(), thisModel.getRootPos().getY(), thisModel.getRootPos().getZ());
         final String backupOrientation = thisModel.getOrientation();
         String oldOrientation = thisModel.getOrientation();
         String tmpOrientation = thisModel.getOrientation();
 
-        while(!tmpOrientation.equals(newOrientation)){
+        while (!tmpOrientation.equals(newOrientation)) {
             tmpOrientation = rotateOrientation(tmpOrientation);
             thisModel.setOrientation(tmpOrientation);
 
@@ -440,14 +440,14 @@ public class PlacedModelService {
                 thisModel.getPlacedFields().remove(fieldService.getFieldByPosition(thisModel.getRootPos(), thisModel.getFactoryID()).orElseThrow());
 
                 // adjust only the root position
-                thisModel.setRootPos(adjustPosition(oldOrientation,tmpOrientation,thisModel.getRootPos(), true,null));
+                thisModel.setRootPos(adjustPosition(oldOrientation, tmpOrientation, thisModel.getRootPos(), true, null));
 
-                for (Field f : thisModel.getPlacedFields()){
+                for (Field f : thisModel.getPlacedFields()) {
                     // new position, so we don't mess up the field position
-                    Position position = createNewPosition(f.getPosition().getX(),f.getPosition().getY(),f.getPosition().getZ());
+                    Position position = createNewPosition(f.getPosition().getX(), f.getPosition().getY(), f.getPosition().getZ());
                     Position pos = adjustPosition(oldOrientation, tmpOrientation, position, false, backupRootPos);
                     var fld = fieldService.getFieldByPosition(pos, factoryID);
-                    if(fld.isEmpty()){
+                    if (fld.isEmpty()) {
                         LOGGER.error("fehler fld");
                     }
                     newPosList.add(fld.orElseThrow());
@@ -465,45 +465,44 @@ public class PlacedModelService {
 
                 for (Input i : thisModel.getInputs()) {
                     // new position, so we don't mess up the field position
-                    Position outPosition = createNewPosition(i.getPosition().getX(),i.getPosition().getY(),i.getPosition().getZ());
-                    i.setPosition(adjustPosition(oldOrientation,tmpOrientation, outPosition, false, backupRootPos));
+                    Position outPosition = createNewPosition(i.getPosition().getX(), i.getPosition().getY(), i.getPosition().getZ());
+                    i.setPosition(adjustPosition(oldOrientation, tmpOrientation, outPosition, false, backupRootPos));
                     i.setOrientation(rotateOrientation(i.getOrientation()));
                 }
 
 
                 for (Output o : thisModel.getOutputs()) {
                     // new position, so we don't mess up the field position
-                    Position outPosition = createNewPosition(o.getPosition().getX(),o.getPosition().getY(),o.getPosition().getZ());
-                    o.setPosition(adjustPosition(oldOrientation,tmpOrientation, outPosition, false, backupRootPos));
+                    Position outPosition = createNewPosition(o.getPosition().getX(), o.getPosition().getY(), o.getPosition().getZ());
+                    o.setPosition(adjustPosition(oldOrientation, tmpOrientation, outPosition, false, backupRootPos));
                     o.setOrientation(rotateOrientation(o.getOrientation()));
                 }
 
 
                 oldOrientation = tmpOrientation;
                 backupRootPos = createNewPosition(thisModel.getRootPos().getX(), thisModel.getRootPos().getY(), thisModel.getRootPos().getZ());
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 LOGGER.error("Ein Fehler im System: " + e);
                 return false;
             }
 
         }
         //validate placement or else fallback to old position and orientation
-        if(!checkForPlacement(thisModel)){
-            rotateModel(thisModelID,backupOrientation);
+        if (!checkForPlacement(thisModel)) {
+            rotateModel(thisModelID, backupOrientation);
             return false;
         }
 
         try {
             //set field that placedModel used to be on to null
-            for(Field f: oldPosList){
-                if(f.getPlacedModel() != null && f.getPlacedModel().getId() == thisModel.getId())
+            for (Field f : oldPosList) {
+                if (f.getPlacedModel() != null && f.getPlacedModel().getId() == thisModel.getId())
                     fieldService.deletePlacedModelOnField(f);
             }
 
             //place placedModel on new fields
-            for(Field f: thisModel.getPlacedFields())
-                fieldService.setPlacedModelOnField(thisModel,f);
+            for (Field f : thisModel.getPlacedFields())
+                fieldService.setPlacedModelOnField(thisModel, f);
         } catch (Exception e) {
             LOGGER.error("Ein Fehler im System: " + e);
             return false;
@@ -514,13 +513,13 @@ public class PlacedModelService {
 
     private Position adjustPosition(String oldOri, String newOri, Position tmpPos, boolean isRootPos, Position oldRootPos) {
         int absX = 0, absY = 0;
-        if(!isRootPos) {
+        if (!isRootPos) {
             absX = Math.abs(tmpPos.getX() - oldRootPos.getX());
             absY = Math.abs(tmpPos.getY() - oldRootPos.getY());
         }
-        switch(oldOri){
+        switch (oldOri) {
             case "North":
-                if(newOri.equals("East")) {
+                if (newOri.equals("East")) {
                     /* tmpPos.setX(tmpPos.getX() + absY - 1 -absX);
                     tmpPos.setY(tmpPos.getY() + absX + absY); */
                     tmpPos.setX(tmpPos.getX() + absY - absX);
@@ -528,7 +527,7 @@ public class PlacedModelService {
                 }
                 break;
             case "East":
-                if(newOri.equals("South")) {
+                if (newOri.equals("South")) {
                     /* tmpPos.setX(tmpPos.getX() - absY + absX);
                     tmpPos.setY(tmpPos.getY() + absX - 1 - absY); */
                     tmpPos.setX(tmpPos.getX() - absY - 1 - absX);
@@ -536,7 +535,7 @@ public class PlacedModelService {
                 }
                 break;
             case "South":
-                if(newOri.equals("West")) {
+                if (newOri.equals("West")) {
                     /* tmpPos.setX(tmpPos.getX() - absY + 1 +absX);
                     tmpPos.setY(tmpPos.getY() - absX + absY); */
                     tmpPos.setX(tmpPos.getX() - absY + absX);
@@ -544,51 +543,52 @@ public class PlacedModelService {
                 }
                 break;
             case "West":
-                if(newOri.equals("North")) {
+                if (newOri.equals("North")) {
                     /* tmpPos.setX(tmpPos.getX() + absY -absX);
                     tmpPos.setY(tmpPos.getY() - absX + 1 +absY); */
                     tmpPos.setX(tmpPos.getX() + absY + 1 + absX);
                     tmpPos.setY(tmpPos.getY() + absX - absY);
                 }
                 break;
-            }
+        }
 
         return tmpPos;
     }
 
     private String rotateOrientation(String orientation) {
-            return switch (orientation) {
-                case "North" -> "East";
-                case "East" -> "South";
-                case "South" -> "West";
-                case "West" -> "North";
-                default -> "";
-            };
-
+        return switch (orientation) {
+            case "North" -> "East";
+            case "East" -> "South";
+            case "South" -> "West";
+            case "West" -> "North";
+            default -> "";
+        };
 
 
     }
+
     @Transactional
     public boolean removeModelFromFactory(long placedModelID) {
-        try{
+        try {
             PlacedModel placedModel = getPlacedModelById(placedModelID).orElseThrow();
 
-            for (Field f: placedModel.getPlacedFields()) {
+            for (Field f : placedModel.getPlacedFields()) {
                 fieldService.deletePlacedModelOnField(f);
             }
             placedModel.getPlacedFields().clear();
             placedModelRepository.deleteById(placedModelID);
         } catch (NoSuchElementException e) {
-            LOGGER.error("placed model with ID: "+ placedModelID + " not found");
+            LOGGER.error("placed model with ID: " + placedModelID + " not found");
             return false;
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("An error occurred: " + e);
             return false;
         }
 
         return true;
     }
-    private Position adjustMove(Position position,Position oldRootPosition,Position newRootPosition){
+
+    private Position adjustMove(Position position, Position oldRootPosition, Position newRootPosition) {
         position.setX(position.getX() - (oldRootPosition.getX() - newRootPosition.getX()));
         position.setY(position.getY() - (oldRootPosition.getY() - newRootPosition.getY()));
         return position;
@@ -607,51 +607,50 @@ public class PlacedModelService {
         PlacedModel placedModel = getPlacedModelById(modelID).orElse(null);
         if (placedModel == null) return false;
         Factory factory = factoryService.getFactoryById(placedModel.getFactoryID()).orElse(null);
-        if(factory == null) return false;
+        if (factory == null) return false;
 
         //LOGGER.info("NEW ROOT POS from DTO: " + newRootPosition.toString());
 
         // fallback rootPosition and placedFields
-        Position fallbackRootPosition = createNewPosition(placedModel.getRootPos().getX(),placedModel.getRootPos().getY(),placedModel.getRootPos().getZ());
+        Position fallbackRootPosition = createNewPosition(placedModel.getRootPos().getX(), placedModel.getRootPos().getY(), placedModel.getRootPos().getZ());
         List<Field> fallbackPlacedList = new ArrayList<>(placedModel.getPlacedFields());
         List<Output> fallbackOutputs = new ArrayList<>(placedModel.getOutputs());
         List<Input> fallbackInputs = new ArrayList<>(placedModel.getInputs());
 
         List<Field> newPlacedList = new ArrayList<>();
-        
+
 
         try {
-            for (Field f: placedModel.getPlacedFields()){
-                Position tmpPosition = createNewPosition(f.getPosition().getX(),f.getPosition().getY(),f.getPosition().getZ());
+            for (Field f : placedModel.getPlacedFields()) {
+                Position tmpPosition = createNewPosition(f.getPosition().getX(), f.getPosition().getY(), f.getPosition().getZ());
                 //LOGGER.info("TEMP POS: " + tmpPosition.toString());
-                Position pos = adjustMove(tmpPosition,fallbackRootPosition,newRootPosition);
+                Position pos = adjustMove(tmpPosition, fallbackRootPosition, newRootPosition);
                 //LOGGER.info("ADJUSTED POS: " + pos.toString());
                 Field tmpField = fieldService.getFieldByPosition(pos, factory.getFactoryID()).orElseThrow();
                 newPlacedList.add(tmpField);
             }
 
-            for(Input i: placedModel.getInputs()){
-                i.setPosition(adjustMove(i.getPosition(),placedModel.getRootPos(),newRootPosition));
+            for (Input i : placedModel.getInputs()) {
+                i.setPosition(adjustMove(i.getPosition(), placedModel.getRootPos(), newRootPosition));
             }
-            for(Output o: placedModel.getOutputs()){
-                o.setPosition(adjustMove(o.getPosition(),placedModel.getRootPos(),newRootPosition));
+            for (Output o : placedModel.getOutputs()) {
+                o.setPosition(adjustMove(o.getPosition(), placedModel.getRootPos(), newRootPosition));
             }
             placedModel.getPlacedFields().clear();
-            placedModel.getPlacedFields().addAll(newPlacedList);
+            placedModel.getPlacedFields().addAll(newPlacedList); // TODO: Genau so oben immer einfach am schluss wenn ihr true returned
             placedModel.setRootPos(newRootPosition);
 
             if (checkForPlacement(placedModel)) {
                 // set fields that placedModel used to be on to null
-                for (Field f: fallbackPlacedList) {
+                for (Field f : fallbackPlacedList) {
                     fieldService.deletePlacedModelOnField(f);
                 }
                 // place placedModel on fields based on new placedFields list
-                for (Field f: placedModel.getPlacedFields()){
+                for (Field f : placedModel.getPlacedFields()) {
                     fieldService.setPlacedModelOnField(placedModel, f);
                 }
                 return true;
-            }
-            else {
+            } else {
                 // reset lists and root position
                 placedModel.getPlacedFields().clear();
                 placedModel.getInputs().clear();
@@ -665,12 +664,10 @@ public class PlacedModelService {
 
                 return false;
             }
-        }
-        catch (NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             LOGGER.error("Field not found: " + e);
             return false;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error("An error occurred: " + e);
             return false;
         }
