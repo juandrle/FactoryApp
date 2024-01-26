@@ -582,56 +582,64 @@ public class PlacedModelService {
             LOGGER.error("placed model with ID: "+ placedModelID + " not found");
             return false;
         } catch (Exception e){
-            LOGGER.error("Ein Fehler im System: " + e);
+            LOGGER.error("An error occurred: " + e);
             return false;
         }
 
         return true;
     }
     private Position adjustMove(Position position,Position oldRootPosition,Position newRootPosition){
-        int x = position.getX() + newRootPosition.getX()- oldRootPosition.getX();
-        int y = position.getY() + newRootPosition.getY()- oldRootPosition.getY();
-        return createNewPosition(x, y, position.getZ());
+        position.setX(position.getX() - (oldRootPosition.getX() - newRootPosition.getX()));
+        position.setY(position.getY() - (oldRootPosition.getY() - newRootPosition.getY()));
+        return position;
+        //return createNewPosition(x,y,position.getZ());
     }
 
     @Transactional
     public boolean moveModel(long modelID, Position newRootPosition) {
+        //logger shows wrong position from frontend or from MoveRequestDTO?
+        LOGGER.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + newRootPosition.toString());
+        //hardcoded to validate algorithm (and it does work!)
+        //newRootPosition.setX(10);
+        //newRootPosition.setY(12);
+        //newRootPosition.setZ(0);
+
         PlacedModel placedModel = getPlacedModelById(modelID).orElse(null);
         if (placedModel == null) return false;
         Factory factory = factoryService.getFactoryById(placedModel.getFactoryID()).orElse(null);
         if(factory == null) return false;
 
- // fallback placedFields list
+        //LOGGER.info("NEW ROOT POS from DTO: " + newRootPosition.toString());
+
+        // fallback rootPosition and placedFields
+        Position fallbackRootPosition = createNewPosition(placedModel.getRootPos().getX(),placedModel.getRootPos().getY(),placedModel.getRootPos().getZ());
         List<Field> fallbackPlacedList = new ArrayList<>(placedModel.getPlacedFields());
+        List<Output> fallbackOutputs = new ArrayList<>(placedModel.getOutputs());
+        List<Input> fallbackInputs = new ArrayList<>(placedModel.getInputs());
 
         List<Field> newPlacedList = new ArrayList<>();
+        
 
         try {
-            for (Field f: fallbackPlacedList){
-                Position tmpPosition = adjustMove(f.getPosition(),placedModel.getRootPos(),newRootPosition);
-                Field tmpField = fieldService.getFieldByPosition(tmpPosition, factory.getFactoryID()).orElseThrow();
+            for (Field f: placedModel.getPlacedFields()){
+                Position tmpPosition = createNewPosition(f.getPosition().getX(),f.getPosition().getY(),f.getPosition().getZ());
+                //LOGGER.info("TEMP POS: " + tmpPosition.toString());
+                Position pos = adjustMove(tmpPosition,fallbackRootPosition,newRootPosition);
+                //LOGGER.info("ADJUSTED POS: " + pos.toString());
+                Field tmpField = fieldService.getFieldByPosition(pos, factory.getFactoryID()).orElseThrow();
                 newPlacedList.add(tmpField);
             }
-        } catch (NoSuchElementException e) {
-            LOGGER.error("Field not found: " + e);
-            return false;
-        }
-        //Todo rest
 
-        /* for (Field f: fallbackPlacedList) {
-            LOGGER.info("FALLBACK POSITION x: " + f.getPosition().getX() + "/ y: " + f.getPosition().getY() + "/ z: " + f.getPosition().getZ());
-        } */
-        // fallback rootPosition
-        Position fallbackRootPosition = placedModel.getRootPos();
+            for(Input i: placedModel.getInputs()){
+                i.setPosition(adjustMove(i.getPosition(),placedModel.getRootPos(),newRootPosition));
+            }
+            for(Output o: placedModel.getOutputs()){
+                o.setPosition(adjustMove(o.getPosition(),placedModel.getRootPos(),newRootPosition));
+            }
+            placedModel.getPlacedFields().clear();
+            placedModel.getPlacedFields().addAll(newPlacedList);
+            placedModel.setRootPos(newRootPosition);
 
-        // empty all placedModel lists
-        placedModel.getPlacedFields().clear();
-        placedModel.getInputs().clear();
-        placedModel.getOutputs().clear();
-
-        // change root position and fill placedModel lists starting from new root position
-        placedModel.setRootPos(newRootPosition);
-        if (fillPlacedModelLists(placedModel)) {
             if (checkForPlacement(placedModel)) {
                 // set fields that placedModel used to be on to null
                 for (Field f: fallbackPlacedList) {
@@ -643,14 +651,28 @@ public class PlacedModelService {
                 }
                 return true;
             }
-        }
+            else {
+                // reset lists and root position
+                placedModel.getPlacedFields().clear();
+                placedModel.getInputs().clear();
+                placedModel.getOutputs().clear();
 
-        // reset lists and root position
-        placedModel.getPlacedFields().clear();
-        placedModel.getInputs().clear();
-        placedModel.getOutputs().clear();
-        placedModel.setRootPos(fallbackRootPosition);
-        fillPlacedModelLists(placedModel);
-        return false;
+                placedModel.getInputs().addAll(fallbackInputs);
+                placedModel.getOutputs().addAll(fallbackOutputs);
+                placedModel.getPlacedFields().addAll(fallbackPlacedList);
+
+                placedModel.setRootPos(fallbackRootPosition);
+
+                return false;
+            }
+        }
+        catch (NoSuchElementException e) {
+            LOGGER.error("Field not found: " + e);
+            return false;
+        }
+        catch (Exception e){
+            LOGGER.error("An error occurred: " + e);
+            return false;
+        }
     }
 }
