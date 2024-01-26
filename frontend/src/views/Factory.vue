@@ -450,9 +450,9 @@ const handleClick = (event: any) => {
       break
     case ManipulationMode.MOVE:
       moveRequest({
-        x: highlight.position.x,
-        y: highlight.position.y,
-        z: highlight.position.z,
+        x: currentObjectSelected.position.x,
+        y: currentObjectSelected.position.y,
+        z: currentObjectSelected.position.z,
         id: placedEntities.getByUUID(currentObjectSelected.uuid).id,
         factoryId: factoryID.value
       })
@@ -464,6 +464,8 @@ const handleClick = (event: any) => {
             manipulationMode.value = ManipulationMode.IDLE
           } else {
             console.log('not moved')
+            replaceEntity(currObjSelectedOriginPos, currentObjectSelected, currentObjectSelected)
+            manipulationMode.value = ManipulationMode.IDLE
           }
         })
       break
