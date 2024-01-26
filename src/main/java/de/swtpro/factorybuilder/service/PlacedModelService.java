@@ -127,7 +127,7 @@ public class PlacedModelService {
                     break;
 
                 // transportation
-                case "pipe_straight", "pipe_curved":
+                case "pipe_straight", "pipe_curved", "switch_3_2_in_ws", "switch_3_2_in_es", "switch_3_2_out_we", "switch_4":
                     placedFields.add(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow());
                     break;
             }
@@ -232,6 +232,32 @@ public class PlacedModelService {
                 case "pipe_straight":
                     placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
+                    break;
+                case "pipe_curved":
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
+                    break;
+                case "switch_3_2_in_ws":
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
+                    break;
+                case "switch_3_2_in_es":
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    break;
+                case "switch_3_2_out_we":
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
+                    break;
+                case "switch_4":
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"North"));
+                    placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"West"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"South"));
+                    placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(),"East"));
+                    break;
             }
 
             for(Field placedField: placedModel.getPlacedFields()){
