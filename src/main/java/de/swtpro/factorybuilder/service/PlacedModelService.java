@@ -128,7 +128,7 @@ public class PlacedModelService {
                     break;
 
                 // transportation
-                case "pipe_straight", "pipe_curved", "switch_3_2_in_ws", "switch_3_2_in_es", "switch_3_2_out_we", "switch_4":
+                case "pipe_straight", "pipe_curved", "switch_3_2_out_we", "switch_4":
                     placedFields.add(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow());
                     break;
             }
@@ -238,7 +238,7 @@ public class PlacedModelService {
                     placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
                     break;
-                case "switch_3_2_in_ws":
+                /* case "switch_3_2_in_ws":
                     placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
                     placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
@@ -247,7 +247,7 @@ public class PlacedModelService {
                     placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "East"));
                     placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
-                    break;
+                    break; */
                 case "switch_3_2_out_we":
                     placedInputs.add(createInput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "South"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(placedModel.getRootPos(), placedModel.getFactoryID()).orElseThrow(), "West"));
@@ -267,8 +267,6 @@ public class PlacedModelService {
 
             return true;
         } catch (NoSuchElementException e) {
-            // TODO: handle exception
-            // return false if field not found (out of bounds)
             LOGGER.error("Field not found. Out of bounds.");
             return false;
         }
@@ -277,18 +275,22 @@ public class PlacedModelService {
     @Transactional
     public PlacedModel createPlacedModel(Model model, Position rootPosition, long factoryID) {
         if (model != null && rootPosition != null) {
-            Factory factory = factoryService.getFactoryById(factoryID).orElseThrow();
-            PlacedModel placedModel = new PlacedModel(factory, rootPosition, model);
+           try {
+                Factory factory = factoryService.getFactoryById(factoryID).orElseThrow();
+                PlacedModel placedModel = new PlacedModel(factory, rootPosition, model);
 
-            // fill placedModel lists (placedFields, input and output)
-            if (fillPlacedModelLists(placedModel)) {
-                if (checkForPlacement(placedModel)) {
-                    for(Field f:placedModel.getPlacedFields()){
-                        fieldService.setPlacedModelOnField(placedModel, f);
+                // fill placedModel lists (placedFields, input and output)
+                if (!fillPlacedModelLists(placedModel))  return null;
+                    if (checkForPlacement(placedModel)) {
+                        for(Field f:placedModel.getPlacedFields()){
+                            fieldService.setPlacedModelOnField(placedModel, f);
+                        }
+
+                        return placedModelRepository.save(placedModel);
                     }
-
-                    return placedModelRepository.save(placedModel);
-                }
+            }
+            catch (Exception e) {
+                LOGGER.error("Factory with Id: " + factoryID + " doesn't exist", e);
             }
         }
         LOGGER.error("Placing model NOT successfull");
@@ -481,7 +483,7 @@ public class PlacedModelService {
                 backupRootPos = createNewPosition(thisModel.getRootPos().getX(), thisModel.getRootPos().getY(), thisModel.getRootPos().getZ());
             }
             catch (Exception e) {
-                LOGGER.error("Ein Fehler im System: " + e,e);
+                LOGGER.error("Ein Fehler im System: " + e);
                 return false;
             }
 
@@ -499,12 +501,11 @@ public class PlacedModelService {
                     fieldService.deletePlacedModelOnField(f);
             }
 
-
             //place placedModel on new fields
             for(Field f: thisModel.getPlacedFields())
                 fieldService.setPlacedModelOnField(thisModel,f);
         } catch (Exception e) {
-            LOGGER.error("Ein Fehler im System: " + e,e);
+            LOGGER.error("Ein Fehler im System: " + e);
             return false;
         }
 
@@ -569,17 +570,19 @@ public class PlacedModelService {
     }
     @Transactional
     public boolean removeModelFromFactory(long placedModelID) {
-        PlacedModel placedModel = getPlacedModelById(placedModelID).orElse(null);
-        if (placedModel == null) return false;
-
-        for (Field f: placedModel.getPlacedFields()) {
-            fieldService.deletePlacedModelOnField(f);
-        }
-        placedModel.getPlacedFields().clear();
         try{
+            PlacedModel placedModel = getPlacedModelById(placedModelID).orElseThrow();
+
+            for (Field f: placedModel.getPlacedFields()) {
+                fieldService.deletePlacedModelOnField(f);
+            }
+            placedModel.getPlacedFields().clear();
             placedModelRepository.deleteById(placedModelID);
-        }catch (Exception e){
-            LOGGER.error("Ein Fehler im System: " + e,e);
+        } catch (NoSuchElementException e) {
+            LOGGER.error("placed model with ID: "+ placedModelID + " not found");
+            return false;
+        } catch (Exception e){
+            LOGGER.error("Ein Fehler im System: " + e);
             return false;
         }
 
@@ -610,7 +613,7 @@ public class PlacedModelService {
                 newPlacedList.add(tmpField);
             }
         } catch (NoSuchElementException e) {
-            LOGGER.error("Field not found: " + e,e);
+            LOGGER.error("Field not found: " + e);
             return false;
         }
         //Todo rest

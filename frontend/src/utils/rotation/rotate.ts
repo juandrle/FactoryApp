@@ -29,7 +29,6 @@ export const rotateModelFromXtoY = (from: string, to: string, object: THREE.Obje
   let rotations = (toIndex - fromIndex + 4) % 4
 
   for (let i = 0; i < rotations; i++) {
-    console.log('turning')
     rotateModel('left', object)
     placedEntities.rotateEntityByUUID(object.uuid, 'left')
   }

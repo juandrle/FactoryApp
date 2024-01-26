@@ -310,8 +310,8 @@ const handleKeyDown = (event: KeyboardEvent) => {
             .then((success) => {
               if (!success) {
                 rotateModelFromXtoY(
-                  placedEntities.getByUUID(currentObjectSelected.uuid).orientation,
                   originalOrientation,
+                  placedEntities.getByUUID(currentObjectSelected.uuid).orientation,
                     currentObjectSelected,
                     placedEntities
                 )

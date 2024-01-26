@@ -43,7 +43,6 @@ const signUp = async () => {
         usernameTaken.value = false
         passwordNotEqual.value = false
       }
-      console.log("weird shit is happening")
       updateSessUser(username.value)
       await router.push('/')
       break
