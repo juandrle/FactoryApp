@@ -1,3 +1,4 @@
+import type { PlacedEntities } from '@/classes/placedEntities/placedEntities'
 import * as THREE from 'three'
 
 export const rotateModel = (dir: string, object: THREE.Object3D) => {
@@ -20,15 +21,16 @@ export const getCenterPoint = (object: THREE.Object3D) => {
 /**
  * Helpfull for snapping, because its rotates multiple times
  * */
-export const rotateModelFromXtoY = (from: string, to: string, object: THREE.Object3D) => {
+export const rotateModelFromXtoY = (from: string, to: string, object: THREE.Object3D, placedEntities: PlacedEntities) => {
+  
   let directions = ['North', 'East', 'South', 'West']
   let toIndex = directions.indexOf(to)
   let fromIndex = directions.indexOf(from)
   let rotations = (toIndex - fromIndex + 4) % 4
-  console.log(rotations)
 
   for (let i = 0; i < rotations; i++) {
     console.log('turning')
     rotateModel('left', object)
+    placedEntities.rotateEntityByUUID(object.uuid, 'left')
   }
 }
