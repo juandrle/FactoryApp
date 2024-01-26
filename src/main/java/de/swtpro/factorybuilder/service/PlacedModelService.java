@@ -548,8 +548,13 @@ public class PlacedModelService {
         for (Field f: placedModel.getPlacedFields()) {
             fieldService.deletePlacedModelOnField(f);
         }
-
-        placedModelRepository.deleteById(placedModelID);
+        placedModel.getPlacedFields().clear();
+        try{
+            placedModelRepository.deleteById(placedModelID);
+        }catch (Exception e){
+            LOGGER.error("Ein Fehler im System: " + e,e);
+            return false;
+        }
 
         return true;
     }
