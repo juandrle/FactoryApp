@@ -25,6 +25,7 @@ export const rotateModelFromXtoY = (from: string, to: string, object: THREE.Obje
   let toIndex = directions.indexOf(to)
   let fromIndex = directions.indexOf(from)
   let rotations = (toIndex - fromIndex + 4) % 4
+  console.log(rotations)
 
   for (let i = 0; i < rotations; i++) {
     console.log('turning')

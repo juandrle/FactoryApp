@@ -306,18 +306,18 @@ const handleKeyDown = (event: KeyboardEvent) => {
           orientation: placedEntities.getByUUID(currentObjectSelected.uuid).orientation,
           factoryId: factoryID.value
         })
-          .then((res) => res.json())
-          .then((success) => {
-            if (!success) {
-              rotateModelFromXtoY(
-                originalOrientation,
-                placedEntities.getByUUID(currentObjectSelected.uuid).orientation,
-                pivot
-              )
-            }
-          })
+            .then((res) => res.json())
+            .then((success) => {
+              if (!success) {
+                console.log("didnt work")
+                rotateModelFromXtoY(
+                    originalOrientation,
+                    placedEntities.getByUUID(currentObjectSelected.uuid).orientation,
+                    currentObjectSelected
+                )
+              }
+            })
       }
-
       showDynamicDiv.value = false
       showCircMenu.value = false
       if (currentObjectSelected) highlightObjectWithColor(currentObjectSelected, false)
@@ -345,6 +345,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
       }
       break
 
+/* Buggy if changed
     case 'ARROWLEFT':
       switch (manipulationMode.value) {
         case ManipulationMode.ROTATE:
@@ -352,6 +353,7 @@ const handleKeyDown = (event: KeyboardEvent) => {
           placedEntities.rotateEntityByUUID(currentObjectSelected.uuid, 'left')
       }
       break
+*/
 
     case 'ARROWRIGHT':
       switch (manipulationMode.value) {

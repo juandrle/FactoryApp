@@ -4,6 +4,7 @@ import de.swtpro.factorybuilder.entity.*;
 import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.utility.Position;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Null;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -584,14 +585,36 @@ public class PlacedModelService {
 
         return true;
     }
+    private Position adjustMove(Position position,Position oldRootPosition,Position newRootPosition){
+        int x = position.getX() + newRootPosition.getX()- oldRootPosition.getX();
+        int y = position.getY() + newRootPosition.getY()- oldRootPosition.getY();
+        return createNewPosition(x, y, position.getZ());
+    }
+
     @Transactional
     public boolean moveModel(long modelID, Position newRootPosition) {
         PlacedModel placedModel = getPlacedModelById(modelID).orElse(null);
         if (placedModel == null) return false;
-        Factory factory = factoryService.getFactoryById(placedModel.getFactoryID()).orElseThrow();
+        Factory factory = factoryService.getFactoryById(placedModel.getFactoryID()).orElse(null);
+        if(factory == null) return false;
 
-        // fallback placedFields list
+ // fallback placedFields list
         List<Field> fallbackPlacedList = new ArrayList<>(placedModel.getPlacedFields());
+
+        List<Field> newPlacedList = new ArrayList<>();
+
+        try {
+            for (Field f: fallbackPlacedList){
+                Position tmpPosition = adjustMove(f.getPosition(),placedModel.getRootPos(),newRootPosition);
+                Field tmpField = fieldService.getFieldByPosition(tmpPosition, factory.getFactoryID()).orElseThrow();
+                newPlacedList.add(tmpField);
+            }
+        } catch (NoSuchElementException e) {
+            LOGGER.error("Field not found: " + e,e);
+            return false;
+        }
+        //Todo rest
+
         /* for (Field f: fallbackPlacedList) {
             LOGGER.info("FALLBACK POSITION x: " + f.getPosition().getX() + "/ y: " + f.getPosition().getY() + "/ z: " + f.getPosition().getZ());
         } */
