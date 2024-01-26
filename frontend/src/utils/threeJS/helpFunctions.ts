@@ -168,7 +168,7 @@ export const moveHighlight = (
     let filteredSceneObjects = sceneObjects.filter((item: any) => item.name.includes('entity'))
     for (const obj of filteredSceneObjects) {
       const objBox = new THREE.Box3().setFromObject(obj)
-      if (highlightBox.intersectsBox(objBox)) {
+      if (highlightBox.intersectsBox(objBox) && obj !== highlight) {
         highlightObjectWithColor(highlight, true, 'red')
         return true
       } else {
