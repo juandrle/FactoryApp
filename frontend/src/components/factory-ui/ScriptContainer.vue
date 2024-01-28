@@ -19,15 +19,13 @@ const userProperties: Ref<IUserProperty[]> = ref([])
 
 
 onMounted(() => {
-
-  console.log("modelId, die get-Methode übergeben wird: ", props.model)
-  getScriptingContent(props.model!!.id).then((scriptingContent) => {
-    console.log("ScriptingContent: ", scriptingContent);
+  // console.log("modelId, die get-Methode übergeben wird: ", props.model.id)
+  getScriptingContent(props.model.id).then((scriptingContent) => {
+    console.log("___SCRIPTING CONTENT___: ", scriptingContent);
     if(scriptingContent != "") {
       scriptContent.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
     } else {
-      // test:
-      scriptContent.value = "script wurde versucht zu ziehen war aber noch leer in DB";
+      scriptContent.value = "Script wurde versucht zu ziehen war aber noch leer in DB";
     }
     console.log(scriptContent.value)
   })
@@ -104,11 +102,11 @@ onBeforeUnmount(() => {
     <div class="propertiesDiv">
       <div class="userProperties">
         <h4>User Properties</h4>
-        <p></p>
+        <p>{{scriptContent}}</p>
       </div>
       <div class="systemProperties">
         <h4>System Properties</h4>
-        <p></p>
+        <p>{{ systemProperties }}</p>
       </div>
   </div>
   </div>

@@ -243,6 +243,7 @@ const onChangeEntityClicked = (situation: string): void => {
       console.log('scripting Entity')
       showScripting.value = !showScripting.value
       showMenuBar.value = false
+      console.log("ModelIDDDDDD: ", allPlacedEntities[currentObjectSelected.uuid].id)
       break
 
     case 'clone':

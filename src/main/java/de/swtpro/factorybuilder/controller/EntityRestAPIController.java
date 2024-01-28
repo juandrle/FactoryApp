@@ -113,7 +113,7 @@ public class EntityRestAPIController {
     @CrossOrigin
     @GetMapping("/getScriptContent/{modelId}") 
     public ResponseEntity<String> getScriptingContent(@PathVariable long modelId) {
-
+        
         LOGGER.info("ModelId: ", modelId); 
         LOGGER.info("BE Funktion getScriptContent wurde aufgerufen LULE");
 
