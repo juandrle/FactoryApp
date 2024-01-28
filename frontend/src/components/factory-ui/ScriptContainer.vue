@@ -98,7 +98,7 @@ onBeforeUnmount(() => {
 <template>
   <div ref="containerRef" class="scriptDiv">
     <div class="saveBtn">
-      <button @click="$emit('saveAndClose', scriptContent)" type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 m-3 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Script absetzen</button>
+      <button @click="$emit('saveAndClose', editor.getValue())" type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 m-3 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Script absetzen</button>
       <button @click="$emit('closeScript')" type="button" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 m-3 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Abbrechen</button>
     </div> 
     <div class="propertiesDiv">
@@ -121,7 +121,7 @@ onBeforeUnmount(() => {
   height: 600px;
   position: fixed;
   top: 50%;
-  left: 50%;
+  left: 42.5%;
   transform: translate(-50%, -50%);
   border: 1.5px solid grey;
 }

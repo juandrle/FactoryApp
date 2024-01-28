@@ -640,6 +640,7 @@ const saveAndCloseScript = (scriptContent: string) => {
   console.log("objekt: " ,allPlacedEntities[currentObjectSelected.uuid])
 
   // schicke den string mit den kompletten script an das backend (mit der zugehörigen modelId)
+  console.log("Das wird an ScriptContent ans BE geschickt: ", scriptContent);
   sendScriptingToBackend(modelIdForSavingTheScript, scriptContent);
 }
 
@@ -670,7 +671,7 @@ const closeScript = () => {
       "
     />
   </div>
-  <ScriptContainer v-if="showScripting" :model="allPlacedEntities[currentObjectSelected.uuid]" @saveAndClose="saveAndCloseScript('test, hier soll scriptContent aus ScriptContainer mitgegeben werden')" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
+  <ScriptContainer v-if="showScripting" :model="allPlacedEntities[currentObjectSelected.uuid]" @saveAndClose="saveAndCloseScript" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
   <FactoryMenu :username="useSessionUser().sessionUser" :factory-name="factoryName" v-if="showSideMenu"
                @closeSideBar="onToggleSideMenuVisibility"></FactoryMenu>
 </template>
