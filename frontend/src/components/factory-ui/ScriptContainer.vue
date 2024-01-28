@@ -23,7 +23,8 @@ onMounted(() => {
   getScriptingContent(props.model.id).then((scriptingContent) => {
     console.log("___SCRIPTING CONTENT___: ", scriptingContent);
     if(scriptingContent != "") {
-      scriptContent.value = scriptingContent.toString(); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
+      scriptContent.value = scriptingContent.toString();
+      editor.setValue(scriptContent.value); //TODO: Warum muss man hier noch .toString() schreiben, wenn wir doch schon einen String bekommen?
     } else {
       scriptContent.value = "Script wurde versucht zu ziehen war aber noch leer in DB";
     }
@@ -102,7 +103,7 @@ onBeforeUnmount(() => {
     <div class="propertiesDiv">
       <div class="userProperties">
         <h4>User Properties</h4>
-        <p>{{scriptContent}}</p>
+        <p>{{ userProperties }}</p>
       </div>
       <div class="systemProperties">
         <h4>System Properties</h4>
