@@ -10,8 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Collections;
 
 @Service
 public class FactoryService {
@@ -30,6 +34,24 @@ public class FactoryService {
     // private PasswordEncoder passwordEncoderService(){
     // return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     // }
+
+    private Map<Long, List<User>> factoryUsers = new HashMap<>();
+
+    public void addUserToFactory(Long factoryId, User user){
+        factoryUsers.computeIfAbsent(factoryId, k -> new ArrayList<>()).add(user);
+    }
+
+    public void removeUserFromFactory(Long factoryId, User user){
+        factoryUsers.computeIfPresent(factoryId, (k, users) -> {
+            users.remove(user);
+            return users.isEmpty() ? null : users;
+        });
+    }
+
+    public List<User> getCurrentUsersInFactory(Long factoryId) {
+        return factoryUsers.getOrDefault(factoryId, new ArrayList<>());
+    }
+
     public Factory saveFactory(Factory factory) {
         if (!factory.getPassword().isEmpty())factory.setPassword(passwordEncoder.encode(factory.getPassword()));
         return factoryRepository.save(factory);

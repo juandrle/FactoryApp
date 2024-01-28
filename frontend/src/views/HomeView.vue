@@ -50,8 +50,10 @@ onUnmounted(() => {
       </div>
     </div>
     <div class="m-item">
-      <h1 class="game-name">Machine Deluxe 3000</h1>
-      <h2 class="subtitle">Create your own factory</h2>
+      <h1 class="game-name">MachineDeluxe3000</h1>
+     
+        <p class="subtitle" >create your own factory</p>
+     
     </div>
     <div class="r-item">
       <div class="header">
@@ -150,11 +152,19 @@ onUnmounted(() => {
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  top:10%;
 }
 
 .game-name {
   position: absolute;
   top: 17%;
+  font: normal normal bold 70px/84px Overpass;
+  letter-spacing: 0;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+.container .m-item .title {
+  margin-top: 200px;
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0;
   font-weight: 400;
@@ -171,10 +181,13 @@ onUnmounted(() => {
 
 }
 
-.subtitle {
+.container .m-item .subtitle {
   font: normal normal 28px/40px Overpass;
-  margin-bottom: 300px;
-
+  flex: 1 1 50%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: -100px;
 }
 
 .logo-title {

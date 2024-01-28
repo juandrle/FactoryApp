@@ -19,3 +19,26 @@ export const getAllUsers: () => Promise<{ username: string }[]> = async () => {
   return fetch(backendUrl + '/api/users/getAll').then((res) => res.json())
 }
 
+export const getAllUsersInFactory = async (factoryId: number): Promise<{ username: string }[]> => {
+  try {
+    const response = await fetch(`${backendUrl}/api/factory/${factoryId}/users`, {
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      console.error('HTTP error!', response.status, response.statusText);
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Assuming the response is plain text
+    const data = await response.json();
+    console.log(data)
+    return data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+};
+
+
+

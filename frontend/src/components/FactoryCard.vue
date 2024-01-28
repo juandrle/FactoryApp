@@ -7,6 +7,7 @@ import {backendUrl} from '@/utils/config/config'
 import type {IVector3} from "@/types/global";
 import {useFactory} from "@/utils/composition-functions/useFactory";
 import {useSessionUser} from "@/utils/composition-functions/useSessionUser";
+import { enterFactory } from '@/utils/backend-communication/postRequests'
 
 const props = defineProps<{
   factory: IFactory
@@ -27,7 +28,7 @@ let updateFactoryID: (newID: number) => void = useFactory().updateFactoryID
 let updateFactoryName = useFactory().updateFactoryName
 const sessUser = useSessionUser().sessionUser
 
-const rotateCard = (clickTarget: EventTarget | null) => {
+const rotateCard = async (clickTarget: EventTarget | null) => {
   if (!clickTarget) return
   const card = clickTarget as HTMLElement
   const newSize = {
@@ -39,6 +40,7 @@ const rotateCard = (clickTarget: EventTarget | null) => {
   updateFactorySize(newSize)
   updateFactoryName(props.factory.name)
   if (!props.factory.hasPassword || props.factory?.author === sessUser.value) {
+    await enterFactory(props.factory?.id, sessUser.value)
     router.push('/factory')
   } else {
     if (card) {
@@ -102,6 +104,7 @@ async function submitPassword(factoryId: number, factoryEnterPassword: string) {
     if (response.ok) {
       const data = await response.json()
       if (data) {
+        await enterFactory(props.factory?.id, sessUser.value)
         await router.push('/factory')
       } else {
         isInputValid.value = false

@@ -1,6 +1,7 @@
 package de.swtpro.factorybuilder.entity;
 
 import java.util.List;
+import java.util.Objects;
 
 // import de.swtpro.factorybuilder.utility.Position;
 import jakarta.persistence.*;
@@ -31,7 +32,19 @@ public class User implements Serializable {
     @OneToMany
     private List<Factory> createdFactories;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
+    
     public String getUsername() {
         return username;
     }

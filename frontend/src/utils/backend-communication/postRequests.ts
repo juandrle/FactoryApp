@@ -165,3 +165,66 @@ export const logoutUser = async () => {
     }
 }
 
+export const enterFactory = async (factoryID: number, userName: string) => {
+    
+    try {
+        console.log(`Entering factory with ID: ${factoryID} and username: ${userName}`);
+        const url = backendUrl + '/api/factory/enter'
+        const requestBody = JSON.stringify({
+            factoryID: factoryID,
+            userName: userName
+        });
+        console.log(requestBody); // Log the payload
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: requestBody,
+        });
+
+        console.log('Response status:', response.status);
+        const responseBody = await response.text();
+        console.log('Response body:', responseBody);
+
+        if (!response.ok) {
+            return "Entering unsuccessful";
+        } else {
+            console.log(response);
+        }
+            
+    } catch (error) {
+        console.error('Error while entering factory: ', error);
+        return "Error entering factory";
+    }
+}
+
+export const leaveFactory = async (factoryID: number, userName: string) => {
+    
+    try {
+        console.log(`Leaving factory with ID: ${factoryID} and username: ${userName}`);
+        const url = backendUrl + '/api/factory/leave'
+        const requestBody = JSON.stringify({
+            factoryID: factoryID,
+            userName: userName
+        });
+        console.log(requestBody); // Log the payload
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: requestBody,
+        });
+
+        console.log('Response status:', response.status);
+        const responseBody = await response.text();
+        console.log('Response body:', responseBody);
+
+        if (!response.ok) {
+            return "Leaving unsuccessful";
+        } else {
+            console.log(response);
+        }
+            
+    } catch (error) {
+        console.error('Error while leaving factory: ', error);
+        return "Error leaving factory";
+    }
+}

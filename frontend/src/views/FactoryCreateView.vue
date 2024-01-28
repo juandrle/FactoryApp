@@ -9,6 +9,7 @@ import type {IFactoryCreate} from "@/types/backendTypes"
 import {useFactory} from "@/utils/composition-functions/useFactory"
 import {useSessionUser} from "@/utils/composition-functions/useSessionUser"
 import {useError} from "@/utils/composition-functions/useError";
+import { enterFactory } from '@/utils/backend-communication/postRequests'
 
 const sizes = ref([
   {label: '30x50x8', value: {x: 30, y: 50, z: 8} as IVector3},
@@ -55,6 +56,7 @@ function createFactory() {
         }
         updateFactoryID(newID)
         updateFactoryName(factoryName.value)
+        enterFactory(newID, sessUser.value)
         router.push('/factory')
       })
       .catch((error) => {
@@ -171,13 +173,13 @@ function createFactory() {
   color: white;
 }
 
-.game-name {
+.container .m-item .game-name {
   position: absolute;
-  top: 17%;
+  top: 10%;
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0;
   font-weight: 400;
-  margin-bottom: 0;
+  
 }
 
 .radio-option {
@@ -242,7 +244,7 @@ function createFactory() {
 .factory-settings {
   position: relative;
   min-width: 100%;
-  top: 4rem;
+  top: 5rem;
   padding: 2.5rem 2.25rem;
 }
 
