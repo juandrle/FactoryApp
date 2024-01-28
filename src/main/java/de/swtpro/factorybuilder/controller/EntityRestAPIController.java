@@ -1,12 +1,12 @@
 package de.swtpro.factorybuilder.controller;
-
-
 import de.swtpro.factorybuilder.DTO.entity.MoveRequestDTO;
 import de.swtpro.factorybuilder.DTO.entity.PlaceRequestDTO;
 import de.swtpro.factorybuilder.DTO.entity.RotateRequestDTO;
 import de.swtpro.factorybuilder.DTO.factory.DeleteRequestDTO;
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.PlacedModel;
+import de.swtpro.factorybuilder.repository.ModelRepository;
+import de.swtpro.factorybuilder.repository.PlacedModelRepository;
 import de.swtpro.factorybuilder.service.FactoryService;
 
 import de.swtpro.factorybuilder.service.ModelService;
@@ -15,8 +15,12 @@ import de.swtpro.factorybuilder.utility.ModelType;
 import de.swtpro.factorybuilder.utility.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException.Conflict;
 
 import java.util.List;
 
@@ -26,8 +30,15 @@ import java.util.List;
 public class EntityRestAPIController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityRestAPIController.class);
+
+    // do we need the repos in here as well ?
+    @Autowired
     ModelService modelService;
+
+    @Autowired
     FactoryService factoryService;
+
+    @Autowired
     PlacedModelService placedModelService;
 
     EntityRestAPIController(ModelService modelService, FactoryService factoryService, PlacedModelService placedModelService) {
@@ -44,7 +55,14 @@ public class EntityRestAPIController {
         Model model = modelService.getByName(placeRequestDTO.modelId()).orElseThrow();
         PlacedModel placedModel = placedModelService.createPlacedModel(model,pos,placeRequestDTO.factoryID());
 
-        LOGGER.info(placedModel.toString());
+
+        if (placedModel == null) {
+            // TODO: handle conflict status in frontend?
+            // return conflict status (HTTP 409) when placedModel is null
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        LOGGER.info("placed Model with placedModelID: " + placedModel.getId() + " and modelID: " + placedModel.getModelId() + " ('" + placedModel.getModel().getName() + "')");
 
         // Entity wir in Datenbank erzeugt, und id wird gesendet
         return ResponseEntity.ok(placedModel.getId());
@@ -60,14 +78,11 @@ public class EntityRestAPIController {
     @CrossOrigin
     @PostMapping("/rotate")
     public ResponseEntity<Boolean> rotate(@RequestBody RotateRequestDTO rotateRequestDTO) {
-        //Position pos = new Position(placeRequestDTO.x, placeRequestDTO.y, placeRequestDTO.z);
+        boolean rotated = placedModelService.rotateModel(rotateRequestDTO.id(), rotateRequestDTO.orientation());
 
-        //boolean rotated = placedModelService.rotateModel(idToRotate, pos, factoryService.getFactoryById(placeRequestDTO.factoryID).orElseThrow());
+        LOGGER.info("rotate entity: " + String.valueOf(rotateRequestDTO.id()) + " is " + String.valueOf(rotated));
 
-        //LOGGER.info("rotate entity: " + String.valueOf(idToRotate) + String.valueOf(rotated));
-
-        LOGGER.info(rotateRequestDTO.toString());
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok(rotated);
     }
 
     @CrossOrigin
@@ -75,9 +90,11 @@ public class EntityRestAPIController {
     public ResponseEntity<Boolean> move(@RequestBody MoveRequestDTO moveRequestDTO) {
         Position pos = new Position(moveRequestDTO.x(), moveRequestDTO.y(), moveRequestDTO.z());
         boolean moved = placedModelService.moveModel(moveRequestDTO.id(), pos);
-        LOGGER.info(moveRequestDTO.toString());
-        LOGGER.info("move entity: " + moveRequestDTO.id() + moved);
-        return ResponseEntity.ok(true);
+
+        //LOGGER.info(moveRequestDTO.toString());
+        //LOGGER.info("move entity: " + String.valueOf(moveRequestDTO.id) + String.valueOf(moved));
+        LOGGER.info("Moved: " + moved);
+        return ResponseEntity.ok(moved);
     }
 
     @CrossOrigin

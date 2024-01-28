@@ -36,7 +36,7 @@ const categoryInfos: { icon: string; name: string; type: string }[] = [
 
 const props = defineProps<{
   entities: IBackendEntityPreview[]
-  activeEntity: IBackendEntityPreview
+  activeEntity?: IBackendEntityPreview
 }>()
 
 const getAllCategoriesFromEntities = (entities: IBackendEntityPreview[]): ICategory[] => {

@@ -1,6 +1,7 @@
 package de.swtpro.factorybuilder.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.swtpro.factorybuilder.utility.Position;
@@ -35,6 +36,7 @@ public class PlacedModel implements Serializable{
     
     // where are we on the grid
 
+
     @OneToMany(cascade = ALL, mappedBy = "placedModel")
     private List<Field> placedFields;
 
@@ -52,6 +54,11 @@ public class PlacedModel implements Serializable{
         this.rootPos = rootPos;
         this.model = model;
         this.orientation = "North";
+        // TODO: what's the initial capacity?
+        this.capacity = 4;
+        this.placedFields = new ArrayList<>();
+        this.inputs = new ArrayList<>();
+        this.outputs = new ArrayList<>();
     }
 
     public PlacedModel() {
@@ -93,18 +100,20 @@ public class PlacedModel implements Serializable{
 
     public List<Input> getInputs() { return inputs;}
 
-    public Input getInputByPosition(Position pos){
+    public List<Input> getInputByPosition(Position pos){
+        List<Input> inputList = new ArrayList<>();
         for(Input i: getInputs()){
-            if(i.getPosition() == pos)return i;
+            if(i.getPosition().equals(pos))inputList.add(i);
         }
-        return null;
+        return inputList;
     }
 
-    public Output getOutputByPosition(Position pos){
+    public List<Output> getOutputByPosition(Position pos){
+        List<Output> outputList = new ArrayList<>();
         for(Output o: getOutputs()){
-            if(o.getPosition() == pos)return o;
+            if(o.getPosition().equals(pos))outputList.add(o);
         }
-        return null;
+        return outputList;
     }
 
     public List<Output> getOutputs() {
@@ -135,4 +144,5 @@ public class PlacedModel implements Serializable{
     public void setModel(Model model) {
         this.model = model;
     }
+    public Model getModel() { return this.model; }
 }

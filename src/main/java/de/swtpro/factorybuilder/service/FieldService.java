@@ -2,8 +2,12 @@ package de.swtpro.factorybuilder.service;
 
 import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Field;
+import de.swtpro.factorybuilder.entity.PlacedModel;
 import de.swtpro.factorybuilder.repository.FieldRepository;
 import de.swtpro.factorybuilder.utility.Position;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +19,15 @@ import java.util.Optional;
 public class FieldService {
     private final FieldRepository fieldRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlacedModelService.class);
+
     FieldService(FieldRepository fieldRepository) {
         this.fieldRepository = fieldRepository;
     }
 
     public Optional<Field> getFieldByPosition(Position pos, long factoryId){
+        LOGGER.info("POS: " + pos + ", FactoryID: " + factoryId);
+        assert fieldRepository.countByPosAndFactoryID(pos, factoryId) == 1;
         return fieldRepository.findByPosAndFactoryID(pos, factoryId);
     }
     public Optional<Field> getFieldById(Long id) {
@@ -34,8 +42,9 @@ public class FieldService {
         for (int i = 0; i < factory.getWidth(); i++) {
             for (int j = 0; j < factory.getDepth(); j++) {
                 for (int k = 0; k < factory.getHeight(); k++) {
-                    Field field = new Field();
-                    field.setPosition(new Position(i - factory.getWidth() / 2, j - factory.getDepth() / 2, k));
+                    Field field = new Field(new Position(i - factory.getWidth() / 2, j - factory.getDepth() / 2, k));
+                    // Field field = new Field(new Position(i - factory.getDepth() / 2, j - factory.getWidth() / 2, k));
+                    //field.setPosition(new Position(i - factory.getWidth() / 2, j - factory.getDepth() / 2, k));
                     field.setFactoryID(factory.getFactoryID());
                     fields.add(field);
 
@@ -43,5 +52,13 @@ public class FieldService {
             }
         }
         fieldRepository.saveAll(fields);
+    }
+    @Transactional
+    public void setPlacedModelOnField(PlacedModel placedModel, Field field) {
+        field.setPlacedModel(placedModel);
+    }
+    @Transactional
+    public void deletePlacedModelOnField(Field field) {
+        field.setPlacedModel(null);
     }
 }
