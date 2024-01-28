@@ -2,6 +2,7 @@ package de.swtpro.factorybuilder.controller;
 
 import de.swtpro.factorybuilder.DTO.entity.MoveRequestDTO;
 import de.swtpro.factorybuilder.DTO.entity.PlaceRequestDTO;
+import de.swtpro.factorybuilder.DTO.entity.PropertyDTO;
 import de.swtpro.factorybuilder.DTO.entity.RotateRequestDTO;
 import de.swtpro.factorybuilder.DTO.entity.saveScriptDTO;
 import de.swtpro.factorybuilder.DTO.factory.DeleteRequestDTO;
@@ -165,22 +166,29 @@ public class EntityRestAPIController {
     
     @CrossOrigin
     @GetMapping("/systemProperties/getAll/{modelId}") 
-    public ResponseEntity<String> getSystemProperties(@PathVariable long modelId) {
+    public ResponseEntity<PropertyDTO[]> getSystemProperties(@PathVariable long modelId) {
         
-        LOGGER.info("BE Funktion getSystemProperties wurde aufgerufen LULE");
-        return ResponseEntity.ok("getSystemProperties default");
-
         // hier muss das Script aus der DB geholt werden, interpretiert werden und ausgelesene Variable systemProperties zurueckgeben
+
+        // hier geben wir default die Standartwerte zurueck, siehe WIKI: scripting
+        // diese muessen überschrieben werden, wenn sie im Script veraendert wurden
+        // folgende Zeilen koennen auch in die Klasse, wo das Skript interpretiert wird, sodass man die Variablen durch einen Methodenaufruf bekommt
+        PropertyDTO[] systemproperties = {new PropertyDTO("Verarbeitungsgeschwindigkeit", "5 sek"), 
+        new PropertyDTO("Erfolgswahrscheinlichkeit", "100%"), 
+        new PropertyDTO("ProduktionsQualitaet", "100%")};
+
+        LOGGER.info("BE Funktion getSystemProperties wurde aufgerufen LULE");
+        return ResponseEntity.ok(systemproperties);
     }
 
     @CrossOrigin
     @GetMapping("/userProperties/getAll/{modelId}") 
-    public ResponseEntity<String> getUserProperties(@PathVariable long modelId) {
+    public ResponseEntity<PropertyDTO[]> getUserProperties(@PathVariable long modelId) {
         
-        LOGGER.info("BE Funktion getUserProperties wurde aufgerufen LULE");
-        return ResponseEntity.ok("getUserProperties default");
-
         // hier muss das Script aus der DB geholt werden, interpretiert werden und ausgelesene Variable userProperties zurueckgeben
+
+        LOGGER.info("BE Funktion getUserProperties wurde aufgerufen LULE");
+        return ResponseEntity.ok(null);
     }
     
 }

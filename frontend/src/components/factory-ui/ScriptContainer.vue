@@ -103,11 +103,11 @@ onBeforeUnmount(() => {
     <div class="propertiesDiv">
       <div class="userProperties">
         <h4>User Properties</h4>
-        <p>{{ userProperties }}</p>
+        <p class="userPropertyValues" v-for="userProperty in userProperties">{{ userProperty.property }} =  {{ userProperty.value }}</p>
       </div>
       <div class="systemProperties">
         <h4>System Properties</h4>
-        <p>{{ systemProperties }}</p>
+        <p class="systemPropertyValues" v-for="systemProperty in systemProperties">{{ systemProperty.property }} =  {{ systemProperty.value }}</p>
       </div>
   </div>
   </div>
@@ -153,6 +153,11 @@ onBeforeUnmount(() => {
 }
 .userProperties h4{
   margin: 0.5rem;
+  padding-bottom: 0.75rem;
+}
+
+.userPropertyValues {
+  margin: 0.5rem;
 }
 .systemProperties{
   background-color: #1E1E1E;
@@ -162,6 +167,11 @@ onBeforeUnmount(() => {
   border: 1.5px solid grey;
 }
 .systemProperties h4{
+  margin: 0.5rem;
+  padding-bottom: 0.75rem;
+}
+
+.systemPropertyValues {
   margin: 0.5rem;
 }
 </style>
