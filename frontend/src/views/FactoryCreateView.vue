@@ -175,7 +175,7 @@ function createFactory() {
 
 .game-name {
   position: absolute;
-  top: 17%;
+  top: 12%;
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0;
   font-weight: 400;
@@ -244,7 +244,7 @@ function createFactory() {
 .factory-settings {
   position: relative;
   min-width: 100%;
-  top: 4rem;
+  top: 4.5rem;
   padding: 2.5rem 2.25rem;
 }
 

@@ -126,7 +126,7 @@ onMounted(() => {
 
 }
 
-.title {
+.container-right .title {
   margin-top: 200px;
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0;
@@ -134,9 +134,9 @@ onMounted(() => {
   margin-bottom: 0;
 }
 
-.subtitle {
+.container-right .subtitle {
   font: normal normal 28px/40px Overpass;
-  margin-bottom: 100px;
+  margin-top: 50px;
 
 }
 
