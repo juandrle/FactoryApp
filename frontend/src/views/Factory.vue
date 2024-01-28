@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {Ref} from 'vue'
 import {onBeforeUnmount, onMounted, onUnmounted, provide, ref, watch} from 'vue'
-import type {IEntity, IVector3} from '@/types/global'
+import type {IVector3} from '@/types/global'
 import type {IBackendEntity, IBackendEntityPreview, IEntityDelete} from '@/types/backendTypes'
 import * as THREE from 'three'
 import { CameraControlsManager } from '@/classes/cameraControls/CameraControlsManager'
@@ -135,10 +135,6 @@ const setupManager = (): void => {
   animationManager = new AnimationManager(placedEntities, scene, loader)
   ccm = new CameraControlsManager(camera, renderer.domElement, CameraMode.ORBIT)
   currentMode = ccm.currentMode
-}
-
-const setupLoader = (): void => {
-  loader = new GLTFLoader()
 }
 
 
