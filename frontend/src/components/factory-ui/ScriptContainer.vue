@@ -96,16 +96,77 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="containerRef" class="scriptDiv" style="width:800px;height:600px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border:1.5px solid grey;">
-    <div class="saveBtn" style="width:800px; height:65px;position: fixed; top: 95.75%; left: 50%; transform: translate(-50%, -50%); display: flex; justify-content: space-between; z-index: 1;">
+  <div ref="containerRef" class="scriptDiv">
+    <div class="saveBtn">
       <button @click="$emit('saveAndClose', scriptContent)" type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 m-3 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Script absetzen</button>
       <button @click="$emit('closeScript')" type="button" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 m-3 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Abbrechen</button>
     </div> 
+    <div class="propertiesDiv">
+      <div class="userProperties">
+        <h4>User Properties</h4>
+        <p></p>
+      </div>
+      <div class="systemProperties">
+        <h4>System Properties</h4>
+        <p></p>
+      </div>
+  </div>
   </div>
 </template>
 
 <style scoped>
+.scriptDiv {
+  display: flex;
+  width: 800px;
+  height: 600px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1.5px solid grey;
+}
+
+.saveBtn {
+  width: 800px;
+  height: 65px;
+  position: fixed;
+  top: 95.75%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+}
+.propertiesDiv{
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 600px;
+  width: 300px;
+  left: 105%;
+}
+.userProperties{
+  background-color: #1E1E1E;
+  height: 290px;
+  width: 100%;
+  border: 1.5px solid grey;
+}
+.userProperties h4{
+  margin: 0.5rem;
+}
+.systemProperties{
+  background-color: #1E1E1E;
+  width: 100%;
+  height: 290px;
+  top: 50%;
+  border: 1.5px solid grey;
+}
+.systemProperties h4{
+  margin: 0.5rem;
+}
 </style>
+
 
 
 
