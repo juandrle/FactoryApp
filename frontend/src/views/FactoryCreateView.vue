@@ -173,13 +173,13 @@ function createFactory() {
   color: white;
 }
 
-.game-name {
+.container .m-item .game-name {
   position: absolute;
-  top: 12%;
+  top: 10%;
   font: normal normal bold 70px/84px Overpass;
   letter-spacing: 0;
   font-weight: 400;
-  margin-bottom: 0;
+  
 }
 
 .radio-option {
@@ -244,7 +244,7 @@ function createFactory() {
 .factory-settings {
   position: relative;
   min-width: 100%;
-  top: 4.5rem;
+  top: 5rem;
   padding: 2.5rem 2.25rem;
 }
 

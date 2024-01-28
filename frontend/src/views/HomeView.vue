@@ -187,7 +187,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin-top: -200px;
+  margin-top: -100px;
 }
 
 .logo-title {
