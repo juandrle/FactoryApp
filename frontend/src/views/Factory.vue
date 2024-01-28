@@ -662,7 +662,7 @@ const closeScript = () => {
     <div class="debug-bar"></div>
     <MenuBar
         id="ignore"
-        v-if="allEntities && currentCameraMode === 1"
+        v-if="allEntities && currentCameraMode === 1 && showMenuBar"
         :entities="allEntities"
         :active-entity="activeEntity"
         @update-active-entity="
