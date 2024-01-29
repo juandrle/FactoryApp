@@ -104,7 +104,7 @@ public class PlacedModelService {
                     placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() - 1, rootPos.getZ()), factoryID).orElseThrow());
                     placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY(), rootPos.getZ() + 1), factoryID).orElseThrow());
                     break;
-                case "montagemaschine_mittel":
+                case "montagemaschine":
                     for (int i = 0; i < 3; i++) {
                         for (int j = 0; j < 3; j++)
                             placedFields.add(fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + i, rootPos.getY() + j, rootPos.getZ()), factoryID).orElseThrow());
@@ -129,7 +129,7 @@ public class PlacedModelService {
                     break;
                 
                 // transportation
-                case "pipe_straight", "pipe_curved", "switch_3_2_out_we", "switch_4":
+                case "roehre", "kurve", "weiche(3)", "weiche(4)":
                     placedFields.add(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow());
                     break;
             }
@@ -180,7 +180,7 @@ public class PlacedModelService {
                     f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY() + 1, rootPos.getZ()), factoryID).orElseThrow();
                     placedOutputs.add(createOutput(f, "East"));
                     break;
-                case "montagemaschine_mittel", "montagemaschine_gross":
+                case "montagemaschine", "montagemaschine_gross":
                     // input
                     placedInputs.add(createInput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "West"));
                     f = fieldService.getFieldByPosition(createNewPosition(rootPos.getX() + 1, rootPos.getY(), rootPos.getZ()), factoryID).orElseThrow();
@@ -232,11 +232,11 @@ public class PlacedModelService {
                     break;
 
                 // transportation
-                case "pipe_straight":
+                case "roehre":
                     placedInputs.add(createInput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "West"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "East"));
                     break;
-                case "pipe_curved":
+                case "kurve":
                     placedInputs.add(createInput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "West"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "South"));
                     break;
@@ -250,12 +250,12 @@ public class PlacedModelService {
                     placedInputs.add(createInput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "South"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "West"));
                     break; */
-                case "switch_3_2_out_we":
+                case "weiche(3)":
                     placedInputs.add(createInput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "South"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "West"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "East"));
                     break;
-                case "switch_4":
+                case "weiche(4)":
                     placedInputs.add(createInput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "North"));
                     placedInputs.add(createInput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "West"));
                     placedOutputs.add(createOutput(fieldService.getFieldByPosition(rootPos, factoryID).orElseThrow(), "South"));

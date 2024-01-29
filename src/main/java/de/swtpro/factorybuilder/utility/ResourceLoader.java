@@ -27,7 +27,7 @@ public class ResourceLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        getAllModelsByPathAndTypes("/static/models/mock", ModelType.MACHINE, ModelType.OTHER,
+        getAllModelsByPathAndTypes("/static/models", ModelType.MACHINE, ModelType.OTHER,
                 ModelType.ITEM_PRODUCT, ModelType.ITEM_RESOURCE, ModelType.ITEM_PROCESSED, ModelType.TRANSPORT);
 
     }
@@ -71,7 +71,7 @@ public class ResourceLoader implements CommandLineRunner {
         try (Stream<Path> paths = Files.walk(path)) {
             paths.forEach(e -> {
                 Path relativePath = path.relativize(e);
-                String filePath = "/models/mock" + type + "/" + relativePath.toString().replace(File.separator, "/");
+                String filePath = "/models" + type + "/" + relativePath.toString().replace(File.separator, "/");
                 String[] suffixPaths = type.split("/");
                 if (!filePath.endsWith(suffixPaths[suffixPaths.length - 1] + "/")) {
                     Model m = new Model();
