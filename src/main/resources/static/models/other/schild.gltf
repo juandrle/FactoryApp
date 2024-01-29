@@ -1,0 +1,263 @@
+{
+  "accessors": [
+    {
+      "name": "Sign-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 70,
+      "min": [
+        0.48658400774002075,
+        0.2861790060997009,
+        0.0000470000013592653
+      ],
+      "max": [
+        0.5069860219955444,
+        0.7138209939002991,
+        1.3393369913101196
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "Sign-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 70,
+      "min": [
+        -0.9999794960021973,
+        -1,
+        -0.9999794960021973
+      ],
+      "max": [
+        0.9999788999557495,
+        1,
+        0.9999794960021973
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "Sign-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 70,
+      "min": [
+        -2.442275047302246,
+        -3.7330679893493652
+      ],
+      "max": [
+        3.0965020656585693,
+        4.733067989349365
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "Sign-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 114,
+      "min": [
+        0
+      ],
+      "max": [
+        69
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    },
+    {
+      "name": "Sign-Mesh_1_positions",
+      "componentType": 5126,
+      "count": 4,
+      "min": [
+        0.5013769865036011,
+        0.29468101263046265,
+        1.028988003730774
+      ],
+      "max": [
+        0.5033329725265503,
+        0.7053189873695374,
+        1.3319059610366821
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 840
+    },
+    {
+      "name": "Sign-Mesh_1_normals",
+      "componentType": 5126,
+      "count": 4,
+      "min": [
+        0.9999788999557495,
+        0,
+        -0.006499862764030695
+      ],
+      "max": [
+        0.9999788999557495,
+        0,
+        -0.006499862764030695
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 840
+    },
+    {
+      "name": "Sign-Mesh_1_texcoords",
+      "componentType": 5126,
+      "count": 4,
+      "min": [
+        0.019881999120116234,
+        0.02322399988770485
+      ],
+      "max": [
+        0.9801179766654968,
+        0.9767739772796631
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 560
+    },
+    {
+      "name": "Sign-Mesh_1_indices",
+      "componentType": 5123,
+      "count": 6,
+      "min": [
+        0
+      ],
+      "max": [
+        3
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 228
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "sign",
+      "byteLength": 2608,
+      "uri": "data:application/octet-stream;base64,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"
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 888,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 888,
+      "byteOffset": 888,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 592,
+      "byteOffset": 1776,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 240,
+      "byteOffset": 2368,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "lambert3",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.029986,
+          0.012082,
+          0.004208,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.522882568
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": true
+    },
+    {
+      "name": "lambert2",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.5,
+          0.5,
+          0.5,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.8
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": true
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Sign-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        },
+        {
+          "attributes": {
+            "POSITION": 4,
+            "NORMAL": 5,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "Sign",
+      "mesh": 0
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

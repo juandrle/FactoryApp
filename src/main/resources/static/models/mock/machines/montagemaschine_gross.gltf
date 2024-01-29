@@ -1,0 +1,1715 @@
+{
+  "accessors": [
+    {
+      "name": "cube_middle_back_bottom-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0,
+        1,
+        0
+      ],
+      "max": [
+        1,
+        2,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "name": "cube_middle_back_bottom-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "name": "cube_middle_back_bottom-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 0
+    },
+    {
+      "name": "cube_middle_back_bottom-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 0
+    },
+    {
+      "name": "cube_middle_bottom-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        1,
+        1,
+        0
+      ],
+      "max": [
+        2,
+        2,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 288
+    },
+    {
+      "name": "cube_middle_bottom-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 288
+    },
+    {
+      "name": "cube_middle_bottom-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 192
+    },
+    {
+      "name": "cube_middle_bottom-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 72
+    },
+    {
+      "name": "cube_middle_front_bottom-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        2,
+        1,
+        0
+      ],
+      "max": [
+        3,
+        2,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 576
+    },
+    {
+      "name": "cube_middle_front_bottom-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 576
+    },
+    {
+      "name": "cube_middle_front_bottom-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 384
+    },
+    {
+      "name": "cube_middle_front_bottom-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 144
+    },
+    {
+      "name": "cube_middle_middle-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        1,
+        1,
+        1
+      ],
+      "max": [
+        2,
+        2,
+        2
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 864
+    },
+    {
+      "name": "cube_middle_middle-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 864
+    },
+    {
+      "name": "cube_middle_middle-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 576
+    },
+    {
+      "name": "cube_middle_middle-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 216
+    },
+    {
+      "name": "cube_middle_left_bottom-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        1,
+        0,
+        0
+      ],
+      "max": [
+        2,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 1152
+    },
+    {
+      "name": "cube_middle_left_bottom-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 1152
+    },
+    {
+      "name": "cube_middle_left_bottom-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 768
+    },
+    {
+      "name": "cube_middle_left_bottom-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 288
+    },
+    {
+      "name": "cube_middle_right_bottom-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        1,
+        2,
+        0
+      ],
+      "max": [
+        2,
+        3,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 1440
+    },
+    {
+      "name": "cube_middle_right_bottom-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 1440
+    },
+    {
+      "name": "cube_middle_right_bottom-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 960
+    },
+    {
+      "name": "cube_middle_right_bottom-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 360
+    },
+    {
+      "name": "cube_front_left_bottom-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        2,
+        0,
+        0
+      ],
+      "max": [
+        3,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 1728
+    },
+    {
+      "name": "cube_front_left_bottom-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 1728
+    },
+    {
+      "name": "cube_front_left_bottom-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 1152
+    },
+    {
+      "name": "cube_front_left_bottom-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 432
+    },
+    {
+      "name": "cube_front_right_bottom-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        2,
+        2,
+        0
+      ],
+      "max": [
+        3,
+        3,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 2016
+    },
+    {
+      "name": "cube_front_right_bottom-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 2016
+    },
+    {
+      "name": "cube_front_right_bottom-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 1344
+    },
+    {
+      "name": "cube_front_right_bottom-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 504
+    },
+    {
+      "name": "cube_back_left_bottom-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0,
+        0,
+        0
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 2304
+    },
+    {
+      "name": "cube_back_left_bottom-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 2304
+    },
+    {
+      "name": "cube_back_left_bottom-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 1536
+    },
+    {
+      "name": "cube_back_left_bottom-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 576
+    },
+    {
+      "name": "cube_back_right_bottom-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0,
+        2,
+        0
+      ],
+      "max": [
+        1,
+        3,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 2592
+    },
+    {
+      "name": "cube_back_right_bottom-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 2592
+    },
+    {
+      "name": "cube_back_right_bottom-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 1728
+    },
+    {
+      "name": "cube_back_right_bottom-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 648
+    },
+    {
+      "name": "cube_middle_top-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        1,
+        1,
+        2
+      ],
+      "max": [
+        2,
+        2,
+        3
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 2880
+    },
+    {
+      "name": "cube_middle_top-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 2880
+    },
+    {
+      "name": "cube_middle_top-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 1920
+    },
+    {
+      "name": "cube_middle_top-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 720
+    },
+    {
+      "name": "cube_back_left_top-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0,
+        0,
+        1
+      ],
+      "max": [
+        1,
+        1,
+        2
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 3168
+    },
+    {
+      "name": "cube_back_left_top-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 3168
+    },
+    {
+      "name": "cube_back_left_top-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 2112
+    },
+    {
+      "name": "cube_back_left_top-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 792
+    },
+    {
+      "name": "cube_middle_back_top-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0,
+        1,
+        1
+      ],
+      "max": [
+        1,
+        2,
+        2
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 3456
+    },
+    {
+      "name": "cube_middle_back_top-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 3456
+    },
+    {
+      "name": "cube_middle_back_top-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 2304
+    },
+    {
+      "name": "cube_middle_back_top-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 864
+    },
+    {
+      "name": "cube_back_right_top-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0,
+        2,
+        1
+      ],
+      "max": [
+        1,
+        3,
+        2
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 3744
+    },
+    {
+      "name": "cube_back_right_top-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 3744
+    },
+    {
+      "name": "cube_back_right_top-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 2496
+    },
+    {
+      "name": "cube_back_right_top-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 936
+    },
+    {
+      "name": "cube_middle_right_top-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        1,
+        2,
+        1
+      ],
+      "max": [
+        2,
+        3,
+        2
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 4032
+    },
+    {
+      "name": "cube_middle_right_top-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 4032
+    },
+    {
+      "name": "cube_middle_right_top-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 2688
+    },
+    {
+      "name": "cube_middle_right_top-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 1008
+    },
+    {
+      "name": "cube_front_right_top-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        2,
+        2,
+        1
+      ],
+      "max": [
+        3,
+        3,
+        2
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 4320
+    },
+    {
+      "name": "cube_front_right_top-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 4320
+    },
+    {
+      "name": "cube_front_right_top-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 2880
+    },
+    {
+      "name": "cube_front_right_top-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 1080
+    },
+    {
+      "name": "cube_middle_front_top-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        2,
+        1,
+        1
+      ],
+      "max": [
+        3,
+        2,
+        2
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 4608
+    },
+    {
+      "name": "cube_middle_front_top-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 4608
+    },
+    {
+      "name": "cube_middle_front_top-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 3072
+    },
+    {
+      "name": "cube_middle_front_top-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 1152
+    },
+    {
+      "name": "cube_front_left_top-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        2,
+        0,
+        1
+      ],
+      "max": [
+        3,
+        1,
+        2
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 4896
+    },
+    {
+      "name": "cube_front_left_top-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 4896
+    },
+    {
+      "name": "cube_front_left_top-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 3264
+    },
+    {
+      "name": "cube_front_left_top-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 1224
+    },
+    {
+      "name": "cube_middle_left_top-Mesh_0_positions",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        1,
+        0,
+        1
+      ],
+      "max": [
+        2,
+        1,
+        2
+      ],
+      "type": "VEC3",
+      "bufferView": 0,
+      "byteOffset": 5184
+    },
+    {
+      "name": "cube_middle_left_top-Mesh_0_normals",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        -1,
+        -1,
+        -1
+      ],
+      "max": [
+        1,
+        1,
+        1
+      ],
+      "type": "VEC3",
+      "bufferView": 1,
+      "byteOffset": 5184
+    },
+    {
+      "name": "cube_middle_left_top-Mesh_0_texcoords",
+      "componentType": 5126,
+      "count": 24,
+      "min": [
+        0.125,
+        0
+      ],
+      "max": [
+        0.875,
+        1
+      ],
+      "type": "VEC2",
+      "bufferView": 2,
+      "byteOffset": 3456
+    },
+    {
+      "name": "cube_middle_left_top-Mesh_0_indices",
+      "componentType": 5123,
+      "count": 36,
+      "min": [
+        0
+      ],
+      "max": [
+        23
+      ],
+      "type": "SCALAR",
+      "bufferView": 3,
+      "byteOffset": 1296
+    }
+  ],
+  "asset": {
+    "generator": "obj2gltf",
+    "version": "2.0"
+  },
+  "buffers": [
+    {
+      "name": "montagemaschine_gross",
+      "byteLength": 15960,
+      "uri": "data:application/octet-stream;base64,AACAPwAAAEAAAIA/AAAAAAAAAEAAAIA/AAAAAAAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAACAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/AAAAAAAAgD8AAACAAAAAAAAAgD8AAACAAAAAAAAAgD8AAIA/AAAAAAAAAEAAAIA/AAAAAAAAAEAAAACAAAAAAAAAAEAAAACAAACAPwAAAEAAAACAAACAPwAAgD8AAACAAAAAAAAAgD8AAACAAACAPwAAAEAAAACAAACAPwAAAEAAAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAACAAAAAAAAAAEAAAACAAAAAAAAAAEAAAIA/AACAPwAAAEAAAIA/AACAPwAAAEAAAACAAAAAQAAAAEAAAIA/AACAPwAAAEAAAIA/AACAPwAAgD8AAIA/AAAAQAAAgD8AAIA/AAAAQAAAgD8AAACAAAAAQAAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAACAAACAPwAAgD8AAACAAACAPwAAgD8AAIA/AACAPwAAAEAAAIA/AACAPwAAAEAAAACAAACAPwAAAEAAAACAAAAAQAAAAEAAAACAAAAAQAAAgD8AAACAAACAPwAAgD8AAACAAAAAQAAAAEAAAACAAAAAQAAAAEAAAIA/AAAAQAAAgD8AAIA/AAAAQAAAgD8AAACAAACAPwAAAEAAAACAAACAPwAAAEAAAIA/AAAAQAAAAEAAAIA/AAAAQAAAAEAAAACAAABAQAAAAEAAAIA/AAAAQAAAAEAAAIA/AAAAQAAAgD8AAIA/AABAQAAAgD8AAIA/AABAQAAAgD8AAACAAABAQAAAgD8AAIA/AAAAQAAAgD8AAIA/AAAAQAAAgD8AAACAAAAAQAAAgD8AAACAAAAAQAAAgD8AAIA/AAAAQAAAAEAAAIA/AAAAQAAAAEAAAACAAAAAQAAAAEAAAACAAABAQAAAAEAAAACAAABAQAAAgD8AAACAAAAAQAAAgD8AAACAAABAQAAAAEAAAACAAABAQAAAAEAAAIA/AABAQAAAgD8AAIA/AABAQAAAgD8AAACAAAAAQAAAAEAAAACAAAAAQAAAAEAAAIA/AABAQAAAAEAAAIA/AABAQAAAAEAAAACAAAAAQAAAAEAAAABAAACAPwAAAEAAAABAAACAPwAAgD8AAABAAAAAQAAAgD8AAABAAAAAQAAAgD8AAIA/AAAAQAAAgD8AAABAAACAPwAAgD8AAABAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAABAAACAPwAAAEAAAABAAACAPwAAAEAAAIA/AACAPwAAAEAAAIA/AAAAQAAAAEAAAIA/AAAAQAAAgD8AAIA/AACAPwAAgD8AAIA/AAAAQAAAAEAAAIA/AAAAQAAAAEAAAABAAAAAQAAAgD8AAABAAAAAQAAAgD8AAIA/AACAPwAAAEAAAIA/AACAPwAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAIA/AAAAQAAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAAAAAAIA/AAAAQAAAAAAAAIA/AAAAQAAAAAAAAAAAAAAAQAAAAAAAAIA/AACAPwAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAACAAACAPwAAgD8AAACAAAAAQAAAgD8AAACAAAAAQAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAQAAAgD8AAACAAAAAQAAAgD8AAIA/AAAAQAAAAAAAAIA/AAAAQAAAAAAAAAAAAACAPwAAgD8AAACAAACAPwAAgD8AAIA/AAAAQAAAgD8AAIA/AAAAQAAAgD8AAACAAAAAQAAAQEAAAIA/AACAPwAAQEAAAIA/AACAPwAAAEAAAIA/AAAAQAAAAEAAAIA/AAAAQAAAAEAAAACAAAAAQAAAAEAAAIA/AACAPwAAAEAAAIA/AACAPwAAAEAAAACAAACAPwAAAEAAAACAAACAPwAAAEAAAIA/AACAPwAAQEAAAIA/AACAPwAAQEAAAACAAACAPwAAQEAAAACAAAAAQAAAQEAAAACAAAAAQAAAAEAAAACAAACAPwAAAEAAAACAAAAAQAAAQEAAAACAAAAAQAAAQEAAAIA/AAAAQAAAAEAAAIA/AAAAQAAAAEAAAACAAACAPwAAQEAAAACAAACAPwAAQEAAAIA/AAAAQAAAQEAAAIA/AAAAQAAAQEAAAACAAABAQAAAgD8AAIA/AAAAQAAAgD8AAIA/AAAAQAAAAAAAAIA/AABAQAAAAAAAAIA/AABAQAAAAAAAAAAAAABAQAAAAAAAAIA/AAAAQAAAAAAAAIA/AAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAIA/AAAAQAAAgD8AAIA/AAAAQAAAgD8AAACAAAAAQAAAgD8AAACAAABAQAAAgD8AAACAAABAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAABAQAAAgD8AAACAAABAQAAAgD8AAIA/AABAQAAAAAAAAIA/AABAQAAAAAAAAAAAAAAAQAAAgD8AAACAAAAAQAAAgD8AAIA/AABAQAAAgD8AAIA/AABAQAAAgD8AAACAAABAQAAAQEAAAIA/AAAAQAAAQEAAAIA/AAAAQAAAAEAAAIA/AABAQAAAAEAAAIA/AABAQAAAAEAAAACAAABAQAAAAEAAAIA/AAAAQAAAAEAAAIA/AAAAQAAAAEAAAACAAAAAQAAAAEAAAACAAAAAQAAAAEAAAIA/AAAAQAAAQEAAAIA/AAAAQAAAQEAAAACAAAAAQAAAQEAAAACAAABAQAAAQEAAAACAAABAQAAAAEAAAACAAAAAQAAAAEAAAACAAABAQAAAQEAAAACAAABAQAAAQEAAAIA/AABAQAAAAEAAAIA/AABAQAAAAEAAAACAAAAAQAAAQEAAAACAAAAAQAAAQEAAAIA/AABAQAAAQEAAAIA/AABAQAAAQEAAAACAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAgD8AAIA/AAAAAAAAgD8AAACAAAAAAAAAgD8AAACAAACAPwAAgD8AAACAAACAPwAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAACAAACAPwAAgD8AAIA/AACAPwAAAAAAAIA/AACAPwAAAAAAAAAAAAAAAAAAgD8AAACAAAAAAAAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAACAAACAPwAAQEAAAIA/AAAAAAAAQEAAAIA/AAAAAAAAAEAAAIA/AACAPwAAAEAAAIA/AACAPwAAAEAAAACAAACAPwAAAEAAAIA/AAAAAAAAAEAAAIA/AAAAAAAAAEAAAACAAAAAAAAAAEAAAACAAAAAAAAAAEAAAIA/AAAAAAAAQEAAAIA/AAAAAAAAQEAAAACAAAAAAAAAQEAAAACAAACAPwAAQEAAAACAAACAPwAAAEAAAACAAAAAAAAAAEAAAACAAACAPwAAQEAAAACAAACAPwAAQEAAAIA/AACAPwAAAEAAAIA/AACAPwAAAEAAAACAAAAAAAAAQEAAAACAAAAAAAAAQEAAAIA/AACAPwAAQEAAAIA/AACAPwAAQEAAAACAAAAAQAAAAEAAAEBAAACAPwAAAEAAAEBAAACAPwAAgD8AAEBAAAAAQAAAgD8AAEBAAAAAQAAAgD8AAABAAAAAQAAAgD8AAEBAAACAPwAAgD8AAEBAAACAPwAAgD8AAABAAACAPwAAgD8AAABAAACAPwAAgD8AAEBAAACAPwAAAEAAAEBAAACAPwAAAEAAAABAAACAPwAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAgD8AAABAAACAPwAAgD8AAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAEBAAAAAQAAAgD8AAEBAAAAAQAAAgD8AAABAAACAPwAAAEAAAABAAACAPwAAAEAAAEBAAAAAQAAAAEAAAEBAAAAAQAAAAEAAAABAAACAPwAAgD8AAABAAAAAAAAAgD8AAABAAAAAAAAAAAAAAABAAACAPwAAAAAAAABAAACAPwAAAAAAAIA/AACAPwAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAABAAAAAAAAAgD8AAABAAAAAAAAAgD8AAIA/AAAAAAAAgD8AAIA/AACAPwAAgD8AAIA/AACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAABAAACAPwAAAAAAAABAAACAPwAAAAAAAIA/AAAAAAAAgD8AAIA/AAAAAAAAgD8AAABAAACAPwAAgD8AAABAAACAPwAAgD8AAIA/AACAPwAAAEAAAABAAAAAAAAAAEAAAABAAAAAAAAAgD8AAABAAACAPwAAgD8AAABAAACAPwAAgD8AAIA/AACAPwAAgD8AAABAAAAAAAAAgD8AAABAAAAAAAAAgD8AAIA/AAAAAAAAgD8AAIA/AAAAAAAAgD8AAABAAAAAAAAAAEAAAABAAAAAAAAAAEAAAIA/AAAAAAAAAEAAAIA/AACAPwAAAEAAAIA/AACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/AACAPwAAAEAAAIA/AACAPwAAAEAAAABAAACAPwAAgD8AAABAAACAPwAAgD8AAIA/AAAAAAAAAEAAAIA/AAAAAAAAAEAAAABAAACAPwAAAEAAAABAAACAPwAAAEAAAIA/AACAPwAAQEAAAABAAAAAAAAAQEAAAABAAAAAAAAAAEAAAABAAACAPwAAAEAAAABAAACAPwAAAEAAAIA/AACAPwAAAEAAAABAAAAAAAAAAEAAAABAAAAAAAAAAEAAAIA/AAAAAAAAAEAAAIA/AAAAAAAAAEAAAABAAAAAAAAAQEAAAABAAAAAAAAAQEAAAIA/AAAAAAAAQEAAAIA/AACAPwAAQEAAAIA/AACAPwAAAEAAAIA/AAAAAAAAAEAAAIA/AACAPwAAQEAAAIA/AACAPwAAQEAAAABAAACAPwAAAEAAAABAAACAPwAAAEAAAIA/AAAAAAAAQEAAAIA/AAAAAAAAQEAAAABAAACAPwAAQEAAAABAAACAPwAAQEAAAIA/AAAAQAAAQEAAAABAAACAPwAAQEAAAABAAACAPwAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAIA/AAAAQAAAAEAAAABAAACAPwAAAEAAAABAAACAPwAAAEAAAIA/AACAPwAAAEAAAIA/AACAPwAAAEAAAABAAACAPwAAQEAAAABAAACAPwAAQEAAAIA/AACAPwAAQEAAAIA/AAAAQAAAQEAAAIA/AAAAQAAAAEAAAIA/AACAPwAAAEAAAIA/AAAAQAAAQEAAAIA/AAAAQAAAQEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAIA/AACAPwAAQEAAAIA/AACAPwAAQEAAAABAAAAAQAAAQEAAAABAAAAAQAAAQEAAAIA/AABAQAAAQEAAAABAAAAAQAAAQEAAAABAAAAAQAAAAEAAAABAAABAQAAAAEAAAABAAABAQAAAAEAAAIA/AABAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAIA/AAAAQAAAAEAAAIA/AAAAQAAAAEAAAABAAAAAQAAAQEAAAABAAAAAQAAAQEAAAIA/AAAAQAAAQEAAAIA/AABAQAAAQEAAAIA/AABAQAAAAEAAAIA/AAAAQAAAAEAAAIA/AABAQAAAQEAAAIA/AABAQAAAQEAAAABAAABAQAAAAEAAAABAAABAQAAAAEAAAIA/AAAAQAAAQEAAAIA/AAAAQAAAQEAAAABAAABAQAAAQEAAAABAAABAQAAAQEAAAIA/AABAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAQAAAgD8AAABAAABAQAAAgD8AAABAAABAQAAAgD8AAIA/AABAQAAAgD8AAABAAAAAQAAAgD8AAABAAAAAQAAAgD8AAIA/AAAAQAAAgD8AAIA/AAAAQAAAgD8AAABAAAAAQAAAAEAAAABAAAAAQAAAAEAAAIA/AAAAQAAAAEAAAIA/AABAQAAAAEAAAIA/AABAQAAAgD8AAIA/AAAAQAAAgD8AAIA/AABAQAAAAEAAAIA/AABAQAAAAEAAAABAAABAQAAAgD8AAABAAABAQAAAgD8AAIA/AAAAQAAAAEAAAIA/AAAAQAAAAEAAAABAAABAQAAAAEAAAABAAABAQAAAAEAAAIA/AABAQAAAgD8AAABAAAAAQAAAgD8AAABAAAAAQAAAAAAAAABAAABAQAAAAAAAAABAAABAQAAAAAAAAIA/AABAQAAAAAAAAABAAAAAQAAAAAAAAABAAAAAQAAAAAAAAIA/AAAAQAAAAAAAAIA/AAAAQAAAAAAAAABAAAAAQAAAgD8AAABAAAAAQAAAgD8AAIA/AAAAQAAAgD8AAIA/AABAQAAAgD8AAIA/AABAQAAAAAAAAIA/AAAAQAAAAAAAAIA/AABAQAAAgD8AAIA/AABAQAAAgD8AAABAAABAQAAAAAAAAABAAABAQAAAAAAAAIA/AAAAQAAAgD8AAIA/AAAAQAAAgD8AAABAAABAQAAAgD8AAABAAABAQAAAgD8AAIA/AAAAQAAAgD8AAABAAACAPwAAgD8AAABAAACAPwAAAAAAAABAAAAAQAAAAAAAAABAAAAAQAAAAAAAAIA/AAAAQAAAAAAAAABAAACAPwAAAAAAAABAAACAPwAAAAAAAIA/AACAPwAAAAAAAIA/AACAPwAAAAAAAABAAACAPwAAgD8AAABAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAQAAAgD8AAIA/AAAAQAAAAAAAAIA/AACAPwAAAAAAAIA/AAAAQAAAgD8AAIA/AAAAQAAAgD8AAABAAAAAQAAAAAAAAABAAAAAQAAAAAAAAIA/AACAPwAAgD8AAIA/AACAPwAAgD8AAABAAAAAQAAAgD8AAABAAAAAQAAAgD8AAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAAIAAAIA/AAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAAAAgAAAgL8AAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAACAvwAAAIAAAACAAAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AAAAgAAAAIAAAIC/AACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAACAPwAAAIAAAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAAgAAAgD8AAACAAAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AAAgPwAAAD8AAGA/AAAAPwAAYD8AAIA+AAAgPwAAgD4AAMA+AACAPgAAID8AAIA+AAAgPwAAAAAAAMA+AAAAAAAAwD4AAIA/AAAgPwAAgD8AACA/AABAPwAAwD4AAEA/AAAAPgAAAD8AAMA+AAAAPwAAwD4AAIA+AAAAPgAAgD4AAMA+AAAAPwAAID8AAAA/AAAgPwAAgD4AAMA+AACAPgAAwD4AAEA/AAAgPwAAQD8AACA/AAAAPwAAwD4AAAA/AgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYAAgADAAAAAAABAAIABgAHAAQABAAFAAYACQALAAgACwAJAAoADQAPAAwADwANAA4AEgATABAAEAARABIAFQAXABQAFwAVABYA"
+    }
+  ],
+  "bufferViews": [
+    {
+      "name": "bufferView_0",
+      "buffer": 0,
+      "byteLength": 5472,
+      "byteOffset": 0,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_1",
+      "buffer": 0,
+      "byteLength": 5472,
+      "byteOffset": 5472,
+      "byteStride": 12,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_2",
+      "buffer": 0,
+      "byteLength": 3648,
+      "byteOffset": 10944,
+      "byteStride": 8,
+      "target": 34962
+    },
+    {
+      "name": "bufferView_3",
+      "buffer": 0,
+      "byteLength": 1368,
+      "byteOffset": 14592,
+      "target": 34963
+    }
+  ],
+  "materials": [
+    {
+      "name": "Material",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.8,
+          0.8,
+          0.8,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.75
+      },
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "alphaMode": "OPAQUE",
+      "doubleSided": false
+    }
+  ],
+  "meshes": [
+    {
+      "name": "cube_middle_back_bottom-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_bottom-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 4,
+            "NORMAL": 5,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_front_bottom-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 8,
+            "NORMAL": 9,
+            "TEXCOORD_0": 10
+          },
+          "indices": 11,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_middle-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 12,
+            "NORMAL": 13,
+            "TEXCOORD_0": 14
+          },
+          "indices": 15,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_left_bottom-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 16,
+            "NORMAL": 17,
+            "TEXCOORD_0": 18
+          },
+          "indices": 19,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_right_bottom-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 20,
+            "NORMAL": 21,
+            "TEXCOORD_0": 22
+          },
+          "indices": 23,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_front_left_bottom-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 24,
+            "NORMAL": 25,
+            "TEXCOORD_0": 26
+          },
+          "indices": 27,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_front_right_bottom-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 28,
+            "NORMAL": 29,
+            "TEXCOORD_0": 30
+          },
+          "indices": 31,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_back_left_bottom-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 32,
+            "NORMAL": 33,
+            "TEXCOORD_0": 34
+          },
+          "indices": 35,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_back_right_bottom-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 36,
+            "NORMAL": 37,
+            "TEXCOORD_0": 38
+          },
+          "indices": 39,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_top-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 40,
+            "NORMAL": 41,
+            "TEXCOORD_0": 42
+          },
+          "indices": 43,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_back_left_top-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 44,
+            "NORMAL": 45,
+            "TEXCOORD_0": 46
+          },
+          "indices": 47,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_back_top-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 48,
+            "NORMAL": 49,
+            "TEXCOORD_0": 50
+          },
+          "indices": 51,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_back_right_top-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 52,
+            "NORMAL": 53,
+            "TEXCOORD_0": 54
+          },
+          "indices": 55,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_right_top-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 56,
+            "NORMAL": 57,
+            "TEXCOORD_0": 58
+          },
+          "indices": 59,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_front_right_top-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 60,
+            "NORMAL": 61,
+            "TEXCOORD_0": 62
+          },
+          "indices": 63,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_front_top-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 64,
+            "NORMAL": 65,
+            "TEXCOORD_0": 66
+          },
+          "indices": 67,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_front_left_top-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 68,
+            "NORMAL": 69,
+            "TEXCOORD_0": 70
+          },
+          "indices": 71,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "cube_middle_left_top-Mesh",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 72,
+            "NORMAL": 73,
+            "TEXCOORD_0": 74
+          },
+          "indices": 75,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "cube_middle_back_bottom",
+      "mesh": 0
+    },
+    {
+      "name": "cube_middle_bottom",
+      "mesh": 1
+    },
+    {
+      "name": "cube_middle_front_bottom",
+      "mesh": 2
+    },
+    {
+      "name": "cube_middle_middle",
+      "mesh": 3
+    },
+    {
+      "name": "cube_middle_left_bottom",
+      "mesh": 4
+    },
+    {
+      "name": "cube_middle_right_bottom",
+      "mesh": 5
+    },
+    {
+      "name": "cube_front_left_bottom",
+      "mesh": 6
+    },
+    {
+      "name": "cube_front_right_bottom",
+      "mesh": 7
+    },
+    {
+      "name": "cube_back_left_bottom",
+      "mesh": 8
+    },
+    {
+      "name": "cube_back_right_bottom",
+      "mesh": 9
+    },
+    {
+      "name": "cube_middle_top",
+      "mesh": 10
+    },
+    {
+      "name": "cube_back_left_top",
+      "mesh": 11
+    },
+    {
+      "name": "cube_middle_back_top",
+      "mesh": 12
+    },
+    {
+      "name": "cube_back_right_top",
+      "mesh": 13
+    },
+    {
+      "name": "cube_middle_right_top",
+      "mesh": 14
+    },
+    {
+      "name": "cube_front_right_top",
+      "mesh": 15
+    },
+    {
+      "name": "cube_middle_front_top",
+      "mesh": 16
+    },
+    {
+      "name": "cube_front_left_top",
+      "mesh": 17
+    },
+    {
+      "name": "cube_middle_left_top",
+      "mesh": 18
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ]
+    }
+  ]
+}

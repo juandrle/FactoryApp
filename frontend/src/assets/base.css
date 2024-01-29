@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Overpass&display=swap');
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  --color-text-light: #ffffff;
+  --color-text-dark: black;
+  --color-background-light: linear-gradient(#12111a, #211432);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text: var(--color-text-light);
+    --color-background: var(--color-background-light);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-background: var(--color-background-light);
+    --color-text: var(--color-text-dark);
+  }
+}
+
+body {
+  color: var(--color-text-light);
+  background: var(--color-background-light);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  line-height: 1.6;
+  font-family: 'Overpass', sans-serif;
+  font-size: 15px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  font-weight: normal;
+}
