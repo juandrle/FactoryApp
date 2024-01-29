@@ -164,3 +164,36 @@ export const logoutUser = async () => {
     }
 }
 
+
+export const sendScriptingToBackend = async (modelId: number, scriptContent: string) => {
+    try {
+        const requestBody = JSON.stringify({
+            modelId: modelId,
+            scriptContent: scriptContent
+        })
+
+        console.log("sendScriptingToBackend() requestBody: ", requestBody);
+
+        const response = await fetch(backendUrl + '/api/entity/postScript/' + modelId, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: requestBody,
+            credentials: 'include'
+        })
+
+        console.log("sendScriptingToBackend() response: ", response);
+
+        if (!response.ok) throw new Error(response.statusText)
+
+        // return await response.json() // diese klappt nicht
+        const res = await response.text()
+        // console.log(res)
+        return res
+
+    } catch (err) {
+        console.error(err)
+        return false
+    }
+}
+
+

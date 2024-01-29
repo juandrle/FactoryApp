@@ -1,0 +1,1 @@
+Das test.txt file wurde korrekt geöffnet und ich bin der Content

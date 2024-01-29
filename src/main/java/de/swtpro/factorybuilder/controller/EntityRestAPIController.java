@@ -1,7 +1,10 @@
 package de.swtpro.factorybuilder.controller;
+
 import de.swtpro.factorybuilder.DTO.entity.MoveRequestDTO;
 import de.swtpro.factorybuilder.DTO.entity.PlaceRequestDTO;
+import de.swtpro.factorybuilder.DTO.entity.PropertyDTO;
 import de.swtpro.factorybuilder.DTO.entity.RotateRequestDTO;
+import de.swtpro.factorybuilder.DTO.entity.saveScriptDTO;
 import de.swtpro.factorybuilder.DTO.factory.DeleteRequestDTO;
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.model.AbstractModel;
@@ -12,15 +15,25 @@ import de.swtpro.factorybuilder.service.model.AbstractModelService;
 import de.swtpro.factorybuilder.service.model.ManipulateAbstractModelService;
 import de.swtpro.factorybuilder.utility.ModelType;
 import de.swtpro.factorybuilder.utility.Position;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/entity")
@@ -93,6 +106,90 @@ public class EntityRestAPIController {
     public List<Model> getAll() {
         return modelService.getAllByTypes(ModelType.MACHINE, ModelType.TRANSPORT, ModelType.OTHER,
                 ModelType.ITEM_PROCESSED, ModelType.ITEM_RESOURCE, ModelType.ITEM_PRODUCT);
+    }
+
+
+
+    // Scripting:
+
+    @CrossOrigin
+    @GetMapping("/getScriptContent/{modelId}")
+    public ResponseEntity<String> getScriptingContent(@PathVariable long modelId) {
+
+        LOGGER.info("ModelId: ", modelId);
+        LOGGER.info("BE Funktion getScriptContent wurde aufgerufen LULE");
+
+        AbstractModel abstractModel = null;
+        String scriptContent = "";
+
+        try {
+            abstractModel = abstractModelService.getPlacedModelById(modelId).orElseThrow();
+            if (placedModel.getScript() != null) {
+                scriptContent = abstractModel.getScript();
+                LOGGER.info("Script wurde in DB gefunden: ", scriptContent);
+            } else {
+                LOGGER.info("Script ist null (in DB).");
+            }
+
+            return ResponseEntity.ok(scriptContent);
+            //return scriptContent;
+
+        } catch(NoSuchElementException e) {
+            LOGGER.info("Script konnte nicht gespeichert werden, da es modelId in DB nicht gefunden wurde.", e.getCause());
+        }
+
+        return ResponseEntity.ok("default Script, weil script nicht aus DB gezogen werden konnte.");
+    }
+
+
+    @CrossOrigin
+    @PostMapping("/postScript/{modelId}")
+    public void postScriptingContent(@RequestBody saveScriptDTO saveScriptRequest, @PathVariable long modelId) {
+
+        LOGGER.info("postScriptingContent() (RestAPI) erreicht. Script, das gespeichert werden soll: ", saveScriptRequest.scriptContent().toString());
+        LOGGER.info(saveScriptRequest.toString());
+
+        AbstractModel abstractModel = null;
+
+        try {
+            abstractModel = abstractModelService.getPlacedModelById(modelId).orElseThrow();
+            abstractModel.setScript(saveScriptRequest.scriptContent());
+            abstractModelService.savePlacedModelWithNewScript(placedModel);
+
+            LOGGER.info("Script wurde erfolgreich in DB gespeichert.");
+        } catch (NoSuchElementException e) {
+            LOGGER.info("ModelId wurde in DB nicht gefunden -> Script kann nicht gespeichert werden.", e.getCause());
+        }
+
+        // PS: nur script wird in DB gespeichert, user- & systemProperties werden bei jedem get-Aufruf neu aus Skript interpretiert
+    }
+
+
+    @CrossOrigin
+    @GetMapping("/systemProperties/getAll/{modelId}")
+    public ResponseEntity<PropertyDTO[]> getSystemProperties(@PathVariable long modelId) {
+
+        // hier muss das Script aus der DB geholt werden, interpretiert werden und ausgelesene Variable systemProperties zurueckgeben
+
+        // hier geben wir default die Standartwerte zurueck, siehe WIKI: scripting
+        // diese muessen überschrieben werden, wenn sie im Script veraendert wurden
+        // folgende Zeilen koennen auch in die Klasse, wo das Skript interpretiert wird, sodass man die Variablen durch einen Methodenaufruf bekommt
+        PropertyDTO[] systemproperties = {new PropertyDTO("Verarbeitungsgeschwindigkeit", "5 sek"),
+        new PropertyDTO("Erfolgswahrscheinlichkeit", "100%"),
+        new PropertyDTO("ProduktionsQualitaet", "100%")};
+
+        LOGGER.info("BE Funktion getSystemProperties wurde aufgerufen LULE");
+        return ResponseEntity.ok(systemproperties);
+    }
+
+    @CrossOrigin
+    @GetMapping("/userProperties/getAll/{modelId}")
+    public ResponseEntity<PropertyDTO[]> getUserProperties(@PathVariable long modelId) {
+
+        // hier muss das Script aus der DB geholt werden, interpretiert werden und ausgelesene Variable userProperties zurueckgeben
+
+        LOGGER.info("BE Funktion getUserProperties wurde aufgerufen LULE");
+        return ResponseEntity.ok(null);
     }
 
 }

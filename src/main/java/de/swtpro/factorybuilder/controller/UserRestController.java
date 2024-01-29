@@ -33,7 +33,7 @@ public class UserRestController {
         this.userService = userService;
     }
 
-
+    @CrossOrigin
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody UserDTO userDTO, BindingResult userFormularError) {
         if (userFormularError.hasErrors()) {
@@ -64,6 +64,7 @@ public class UserRestController {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody UserDTO userDTO, BindingResult userFormularError) {
         if (userFormularError.hasErrors()) {
@@ -89,12 +90,16 @@ public class UserRestController {
             }
         }
     }
+
+    @CrossOrigin
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
 
         SecurityContextHolder.getContext().setAuthentication(null);
         return ResponseEntity.ok("logout successful");
     }
+
+    
     @CrossOrigin
     @GetMapping("/getAll")
     public ResponseEntity<List<UserNameDTO>> getAll() {

@@ -14,7 +14,8 @@ import {
   factoryImageUpdate,
   moveRequest,
   placeRequest,
-  rotationRequest
+  rotationRequest,
+  sendScriptingToBackend
 } from '@/utils/backend-communication/postRequests'
 import { entityDeleteRequest } from '@/utils/backend-communication/deleteRequest'
 import { getAllEntities, getAllEntitiesInFactory } from '@/utils/backend-communication/getRequests'
@@ -43,6 +44,7 @@ import MenuBar from '@/components/factory-ui/MenuBar.vue'
 import FactoryMenu from '@/components/factory-ui/SideBar.vue'
 import { useSessionUser } from '@/utils/composition-functions/useSessionUser'
 import { useError } from '@/utils/composition-functions/useError'
+import ScriptContainer from '@/components/factory-ui/ScriptContainer.vue'
 
 /**
  * Config
@@ -94,6 +96,9 @@ let ccm: CameraControlsManager
 let previousTime: number = 0
 let currentMode: CameraMode | null
 let pivot: THREE.Object3D
+
+let showScripting = ref(false)
+let showMenuBar = ref(true)
 
 /**
  * Setup
@@ -227,6 +232,9 @@ const onChangeEntityClicked = (situation: string): void => {
 
     case 'script':
       console.log('scripting Entity')
+      showScripting.value = !showScripting.value
+      showMenuBar.value = false
+      console.log("ModelIDDDDDD: ", allPlacedEntities[currentObjectSelected.uuid].id)
       break
 
     case 'clone':
@@ -645,6 +653,24 @@ const animate = (timestamp: any) => {
  **/
 
 init()
+
+const saveAndCloseScript = (scriptContent: string) => {
+  showScripting.value = !showScripting.value
+  showMenuBar.value = true
+
+  let modelIdForSavingTheScript = allPlacedEntities[currentObjectSelected.uuid].id
+  console.log("objekt: " ,allPlacedEntities[currentObjectSelected.uuid])
+
+  // schicke den string mit den kompletten script an das backend (mit der zugehörigen modelId)
+  console.log("Das wird an ScriptContent ans BE geschickt: ", scriptContent);
+  sendScriptingToBackend(modelIdForSavingTheScript, scriptContent);
+}
+
+const closeScript = () => {
+  showScripting.value = !showScripting.value
+  showMenuBar.value = true
+}
+
 </script>
 
 <template>
@@ -691,6 +717,7 @@ init()
       "
     />
   </div>
+  <ScriptContainer v-if="showScripting" :model="allPlacedEntities[currentObjectSelected.uuid]" @saveAndClose="saveAndCloseScript" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
   <FactoryMenu
     :username="useSessionUser().sessionUser"
     :factory-name="factoryName"

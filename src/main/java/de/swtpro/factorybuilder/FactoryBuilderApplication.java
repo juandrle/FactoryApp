@@ -10,5 +10,4 @@ public class FactoryBuilderApplication {
     public static void main(String[] args) {
         SpringApplication.run(FactoryBuilderApplication.class, args);
     }
-
 }
