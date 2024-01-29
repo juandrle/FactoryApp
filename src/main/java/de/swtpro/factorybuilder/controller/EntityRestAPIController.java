@@ -8,30 +8,19 @@ import de.swtpro.factorybuilder.DTO.entity.saveScriptDTO;
 import de.swtpro.factorybuilder.DTO.factory.DeleteRequestDTO;
 import de.swtpro.factorybuilder.entity.Model;
 import de.swtpro.factorybuilder.entity.model.AbstractModel;
-import de.swtpro.factorybuilder.service.FactoryService;
 
 import de.swtpro.factorybuilder.service.ModelService;
 import de.swtpro.factorybuilder.service.model.AbstractModelService;
 import de.swtpro.factorybuilder.service.model.ManipulateAbstractModelService;
 import de.swtpro.factorybuilder.utility.ModelType;
 import de.swtpro.factorybuilder.utility.Position;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -119,19 +108,17 @@ public class EntityRestAPIController {
         LOGGER.info("ModelId: ", modelId);
         LOGGER.info("BE Funktion getScriptContent wurde aufgerufen LULE");
 
-        AbstractModel abstractModel = null;
-        String scriptContent = "";
+        AbstractModel abstractModel;
 
         try {
             abstractModel = abstractModelService.getPlacedModelById(modelId).orElseThrow();
-            if (placedModel.getScript() != null) {
-                scriptContent = abstractModel.getScript();
+            if (abstractModel.getScript() != null) {
+                String scriptContent = abstractModel.getScript();
                 LOGGER.info("Script wurde in DB gefunden: ", scriptContent);
+                return ResponseEntity.ok(scriptContent);
             } else {
                 LOGGER.info("Script ist null (in DB).");
             }
-
-            return ResponseEntity.ok(scriptContent);
             //return scriptContent;
 
         } catch(NoSuchElementException e) {
@@ -149,12 +136,12 @@ public class EntityRestAPIController {
         LOGGER.info("postScriptingContent() (RestAPI) erreicht. Script, das gespeichert werden soll: ", saveScriptRequest.scriptContent().toString());
         LOGGER.info(saveScriptRequest.toString());
 
-        AbstractModel abstractModel = null;
+        AbstractModel abstractModel;
 
         try {
             abstractModel = abstractModelService.getPlacedModelById(modelId).orElseThrow();
             abstractModel.setScript(saveScriptRequest.scriptContent());
-            abstractModelService.savePlacedModelWithNewScript(placedModel);
+            abstractModelService.savePlacedModelWithNewScript(abstractModel);
 
             LOGGER.info("Script wurde erfolgreich in DB gespeichert.");
         } catch (NoSuchElementException e) {

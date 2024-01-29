@@ -234,7 +234,7 @@ const onChangeEntityClicked = (situation: string): void => {
       console.log('scripting Entity')
       showScripting.value = !showScripting.value
       showMenuBar.value = false
-      console.log("ModelIDDDDDD: ", allPlacedEntities[currentObjectSelected.uuid].id)
+      console.log("ModelIDDDDDD: ", placedEntities.getByUUID(currentObjectSelected.uuid).id)
       break
 
     case 'clone':
@@ -658,8 +658,8 @@ const saveAndCloseScript = (scriptContent: string) => {
   showScripting.value = !showScripting.value
   showMenuBar.value = true
 
-  let modelIdForSavingTheScript = allPlacedEntities[currentObjectSelected.uuid].id
-  console.log("objekt: " ,allPlacedEntities[currentObjectSelected.uuid])
+  let modelIdForSavingTheScript = placedEntities.getByUUID(currentObjectSelected.uuid).id
+  console.log("objekt: " ,placedEntities.getByUUID(currentObjectSelected.uuid))
 
   // schicke den string mit den kompletten script an das backend (mit der zugehörigen modelId)
   console.log("Das wird an ScriptContent ans BE geschickt: ", scriptContent);
@@ -717,7 +717,7 @@ const closeScript = () => {
       "
     />
   </div>
-  <ScriptContainer v-if="showScripting" :model="allPlacedEntities[currentObjectSelected.uuid]" @saveAndClose="saveAndCloseScript" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
+  <ScriptContainer v-if="showScripting" :model="placedEntities.getByUUID(currentObjectSelected.uuid)" @saveAndClose="saveAndCloseScript" @closeScript="closeScript()"/> <!-- hier wird methode noch default weret für scriptContent mitgegeben -->
   <FactoryMenu
     :username="useSessionUser().sessionUser"
     :factory-name="factoryName"

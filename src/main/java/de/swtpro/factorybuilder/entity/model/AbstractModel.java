@@ -39,8 +39,6 @@ public abstract class AbstractModel implements Serializable {
     private List<Output> outputs;
 
     // where are we on the grid
-
-
     @OneToMany(cascade = ALL, mappedBy = "abstractModel")
     private List<Field> placedFields;
 
@@ -52,6 +50,7 @@ public abstract class AbstractModel implements Serializable {
     String modelGltf;
     String icon;
     ModelType type;
+    private String script;
 
     public AbstractModel(Factory factory, Position rootPos) {
         this.factory = factory;
@@ -149,6 +148,14 @@ public abstract class AbstractModel implements Serializable {
         this.inputs = inputs;
     }
 
+    public void setScript(String script) {
+        this.script = script;
+    }
+
+    public String getScript() {
+        return script;
+    }
+
     public void setOutputs(List<Output> outputs) {
         this.outputs = outputs;
     }
@@ -188,5 +195,6 @@ public abstract class AbstractModel implements Serializable {
     public void setType(ModelType type) {
         this.type = type;
     }
+
 }
 
