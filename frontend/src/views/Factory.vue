@@ -203,10 +203,10 @@ const onChangeEntityClicked = (situation: string): void => {
     case 'delete':
       entityDeleteRequest({
         factoryId: factoryID.value,
-        id: allPlacedEntities[currentObjectSelected.uuid].id
+        id: placedEntities.getByUUID(currentObjectSelected.uuid).id
       }).then((success) => {
         if (success) {
-          delete allPlacedEntities[currentObjectSelected.uuid]
+          placedEntities.deleteByUUID(currentObjectSelected.uuid)
           // Remove from scene
           scene.remove(currentObjectSelected)
           //if (currentObjectSelected.parent.type !== 'Scene')
