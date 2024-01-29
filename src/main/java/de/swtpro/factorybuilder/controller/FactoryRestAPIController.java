@@ -7,9 +7,11 @@ import de.swtpro.factorybuilder.DTO.factory.UpdateImageFactoryDTO;
 import de.swtpro.factorybuilder.DTO.entity.PlacedModelDTO;
 import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Model;
-import de.swtpro.factorybuilder.entity.PlacedModel;
+import de.swtpro.factorybuilder.entity.model.AbstractModel;
 import de.swtpro.factorybuilder.entity.User;
 import de.swtpro.factorybuilder.service.*;
+import de.swtpro.factorybuilder.service.model.AbstractModelService;
+import de.swtpro.factorybuilder.service.model.ManipulateAbstractModelService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,21 +26,23 @@ import java.util.List;
 public class FactoryRestAPIController {
     private static final Logger LOGGER = LoggerFactory.getLogger(FactoryRestAPIController.class);
     FactoryService factoryService;
-    PlacedModelService placedModelService;
+    AbstractModelService abstractModelService;
     ModelService modelService;
     FieldService fieldService;
     ImgConverterService imgConverterService;
     UserService userService;
+    ManipulateAbstractModelService manipulateAbstractModelService;
 
-    FactoryRestAPIController(FactoryService factoryService, PlacedModelService placedModelService,
+    FactoryRestAPIController(FactoryService factoryService, AbstractModelService abstractModelService,
                              ModelService modelService, FieldService fieldService, ImgConverterService imgConverterService,
-                             UserService userService) {
+                             UserService userService, ManipulateAbstractModelService manipulateAbstractModelService) {
         this.factoryService = factoryService;
-        this.placedModelService = placedModelService;
+        this.abstractModelService = abstractModelService;
         this.modelService = modelService;
         this.fieldService = fieldService;
         this.imgConverterService = imgConverterService;
         this.userService = userService;
+        this.manipulateAbstractModelService = manipulateAbstractModelService;
     }
 
     @PostMapping("/create")
@@ -63,12 +67,12 @@ public class FactoryRestAPIController {
     @PostMapping("/delete")
     public ResponseEntity<Boolean> delete(@RequestBody long idToDelete) {
         Factory f = factoryService.getFactoryById(idToDelete).orElseThrow();
-        List<PlacedModel> allPlacedModelsOfFactory = placedModelService.findAllByFactoryId(f);
+        List<AbstractModel> allAbstractModelsOfFactory = abstractModelService.findAllByFactoryId(f);
         new Thread(() -> {
             fieldService.deleteAllByFactoryID(idToDelete);
         }).start();
-        for (PlacedModel m: allPlacedModelsOfFactory) {
-            placedModelService.removeModelFromFactory(m.getId());
+        for (AbstractModel m: allAbstractModelsOfFactory) {
+            manipulateAbstractModelService.removeModelFromFactory(m.getId());
         }
         f.getAuthor().removeFactoryFromCreatedFactories(f);
         factoryService.deleteFactoryById(idToDelete);
@@ -135,25 +139,25 @@ public class FactoryRestAPIController {
 
     public List<PlacedModelDTO> getEntitiesFromFactory(Factory factory) {
         // Nimm alle aus modelRepository mit factoryId == factoryId
-        List<PlacedModel> placedModels = placedModelService.findAllByFactoryId(factory);
+        List<AbstractModel> abstractEntities = abstractModelService.findAllByFactoryId(factory);
         List<PlacedModelDTO> dtos = new ArrayList<>();
 
-        for (PlacedModel placedModel : placedModels) {
-            // TODO: NULL CHECK
-            Model m = modelService.getByID(placedModel.getModelId()).orElse(null);
-            assert m != null;
-            PlacedModelDTO dto = new PlacedModelDTO(
-                    placedModel.getFactoryID(),
-                    placedModel.getId(),
-                    placedModel.getOrientation(),
-                    placedModel.getRootPos().getX(),
-                    placedModel.getRootPos().getY(),
-                    placedModel.getRootPos().getZ(),
-                    m.getModelFile(), // Füge den Pfad hinzu, wie erforderlich
-                    m.getName()
-            );
-            dtos.add(dto);
-        }
+       for (AbstractModel abstractModel : abstractEntities) {
+           // TODO: NULL CHECK
+//           Model m = modelService.getByID(abstractModel.getModelId()).orElse(null);
+//           assert m != null;
+           PlacedModelDTO dto = new PlacedModelDTO(
+                   abstractModel.getFactory().getFactoryID(),
+                   abstractModel.getId(),
+                   abstractModel.getOrientation(),
+                   abstractModel.getRootPos().getX(),
+                   abstractModel.getRootPos().getY(),
+                   abstractModel.getRootPos().getZ(),
+                   abstractModel.getModelGltf(), // Füge den Pfad hinzu, wie erforderlich
+                   abstractModel.getName()
+           );
+           dtos.add(dto);
+       }
 
         return dtos;
     }

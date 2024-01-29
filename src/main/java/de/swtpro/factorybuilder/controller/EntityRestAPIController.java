@@ -4,23 +4,20 @@ import de.swtpro.factorybuilder.DTO.entity.PlaceRequestDTO;
 import de.swtpro.factorybuilder.DTO.entity.RotateRequestDTO;
 import de.swtpro.factorybuilder.DTO.factory.DeleteRequestDTO;
 import de.swtpro.factorybuilder.entity.Model;
-import de.swtpro.factorybuilder.entity.PlacedModel;
-import de.swtpro.factorybuilder.repository.ModelRepository;
-import de.swtpro.factorybuilder.repository.PlacedModelRepository;
+import de.swtpro.factorybuilder.entity.model.AbstractModel;
 import de.swtpro.factorybuilder.service.FactoryService;
 
 import de.swtpro.factorybuilder.service.ModelService;
-import de.swtpro.factorybuilder.service.PlacedModelService;
+import de.swtpro.factorybuilder.service.model.AbstractModelService;
+import de.swtpro.factorybuilder.service.model.ManipulateAbstractModelService;
 import de.swtpro.factorybuilder.utility.ModelType;
 import de.swtpro.factorybuilder.utility.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException.Conflict;
 
 import java.util.List;
 
@@ -30,21 +27,15 @@ import java.util.List;
 public class EntityRestAPIController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityRestAPIController.class);
-
-    // do we need the repos in here as well ?
-    @Autowired
     ModelService modelService;
+    AbstractModelService abstractModelService;
+    ManipulateAbstractModelService manipulateAbstractModelService;
 
-    @Autowired
-    FactoryService factoryService;
-
-    @Autowired
-    PlacedModelService placedModelService;
-
-    EntityRestAPIController(ModelService modelService, FactoryService factoryService, PlacedModelService placedModelService) {
+    EntityRestAPIController(ModelService modelService, AbstractModelService abstractModelService,
+                            ManipulateAbstractModelService manipulateAbstractModelService) {
         this.modelService = modelService;
-        this.factoryService = factoryService;
-        this.placedModelService = placedModelService;
+        this.abstractModelService = abstractModelService;
+        this.manipulateAbstractModelService = manipulateAbstractModelService;
     }
 
     @CrossOrigin
@@ -53,32 +44,32 @@ public class EntityRestAPIController {
 
         Position pos = new Position(placeRequestDTO.x(), placeRequestDTO.y(), placeRequestDTO.z());
         Model model = modelService.getByName(placeRequestDTO.modelId()).orElseThrow();
-        PlacedModel placedModel = placedModelService.createPlacedModel(model,pos,placeRequestDTO.factoryID());
+       AbstractModel abstractModel = abstractModelService.createPlacedModel(model,pos,placeRequestDTO.factoryID());
 
 
-        if (placedModel == null) {
-            // TODO: handle conflict status in frontend?
-            // return conflict status (HTTP 409) when placedModel is null
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+       if (abstractModel == null) {
 
-        LOGGER.info("placed Model with placedModelID: " + placedModel.getId() + " and modelID: " + placedModel.getModelId() + " ('" + placedModel.getModel().getName() + "')");
+           // return conflict status (HTTP 409) when placedModel is null
+           return ResponseEntity.status(HttpStatus.CONFLICT).build();
+       }
 
-        // Entity wir in Datenbank erzeugt, und id wird gesendet
-        return ResponseEntity.ok(placedModel.getId());
+       LOGGER.info("placed Model with placedModelID: " + abstractModel.getId() + " and modelID: " + model.getId() + " ('" + abstractModel.getName() + "')");
+
+       // Entity wir in Datenbank erzeugt, und id wird gesendet
+       return ResponseEntity.ok(abstractModel.getId());
     }
 
     @CrossOrigin
     @PostMapping("/delete")
     public ResponseEntity<Boolean> delete(@RequestBody DeleteRequestDTO deleteRequestDTO) {
-        boolean deleted = placedModelService.removeModelFromFactory(deleteRequestDTO.id());
+        boolean deleted = manipulateAbstractModelService.removeModelFromFactory(deleteRequestDTO.id());
         return ResponseEntity.ok(deleted);
     }
 
     @CrossOrigin
     @PostMapping("/rotate")
     public ResponseEntity<Boolean> rotate(@RequestBody RotateRequestDTO rotateRequestDTO) {
-        boolean rotated = placedModelService.rotateModel(rotateRequestDTO.id(), rotateRequestDTO.orientation());
+        boolean rotated = manipulateAbstractModelService.rotateModel(rotateRequestDTO.id(), rotateRequestDTO.orientation());
 
         LOGGER.info("rotate entity: " + String.valueOf(rotateRequestDTO.id()) + " is " + String.valueOf(rotated));
 
@@ -89,7 +80,7 @@ public class EntityRestAPIController {
     @PostMapping("/move")
     public ResponseEntity<Boolean> move(@RequestBody MoveRequestDTO moveRequestDTO) {
         Position pos = new Position(moveRequestDTO.x(), moveRequestDTO.y(), moveRequestDTO.z());
-        boolean moved = placedModelService.moveModel(moveRequestDTO.id(), pos);
+        boolean moved = manipulateAbstractModelService.moveModel(moveRequestDTO.id(), pos);
 
         //LOGGER.info(moveRequestDTO.toString());
         //LOGGER.info("move entity: " + String.valueOf(moveRequestDTO.id) + String.valueOf(moved));

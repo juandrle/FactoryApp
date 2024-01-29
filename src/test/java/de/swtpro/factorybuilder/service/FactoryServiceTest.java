@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Field;
 import de.swtpro.factorybuilder.repository.FactoryRepository;
-import de.swtpro.factorybuilder.repository.FieldRepository;
-import de.swtpro.factorybuilder.repository.PlacedModelRepository;
+import de.swtpro.factorybuilder.repository.AbstractModelRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,7 +23,7 @@ public class FactoryServiceTest {
     private FieldService fieldService;
     // for future tests
     @Mock
-    private PlacedModelRepository placedModelRepository;
+    private AbstractModelRepository abstractModelRepository;
 
     @Mock
     private FactoryRepository factoryRepository;

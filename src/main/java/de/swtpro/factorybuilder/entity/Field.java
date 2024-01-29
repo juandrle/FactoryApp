@@ -1,5 +1,6 @@
 package de.swtpro.factorybuilder.entity;
 
+import de.swtpro.factorybuilder.entity.model.AbstractModel;
 import de.swtpro.factorybuilder.utility.Position;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -14,14 +15,12 @@ public class Field implements Serializable {
     @GeneratedValue
     private long id;
     private long factoryID;
-
-
     @Column(unique = true, updatable = false, nullable = false)
     private Position pos;
 
     @Nullable
     @ManyToOne(cascade = ALL)
-    private PlacedModel placedModel;
+    private AbstractModel abstractModel;
 
 
     public Field(Position pos) {
@@ -31,7 +30,6 @@ public class Field implements Serializable {
     public Field() {
 
     }
-
 
     //Get and Set
 
@@ -47,11 +45,11 @@ public class Field implements Serializable {
         return id;
     }
 
-    public PlacedModel getPlacedModel() {
-        return placedModel;
+    public AbstractModel getPlacedModel() {
+        return abstractModel;
     }
 
-    public void setPlacedModel(PlacedModel placedModel) {
-        this.placedModel = placedModel;
+    public void setPlacedModel(AbstractModel abstractModel) {
+        this.abstractModel = abstractModel;
     }
 }

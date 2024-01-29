@@ -2,13 +2,13 @@ package de.swtpro.factorybuilder.service;
 
 import de.swtpro.factorybuilder.entity.Factory;
 import de.swtpro.factorybuilder.entity.Field;
-import de.swtpro.factorybuilder.entity.PlacedModel;
+import de.swtpro.factorybuilder.entity.model.AbstractModel;
 import de.swtpro.factorybuilder.repository.FieldRepository;
+import de.swtpro.factorybuilder.service.model.AbstractModelService;
 import de.swtpro.factorybuilder.utility.Position;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class FieldService {
     private final FieldRepository fieldRepository;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlacedModelService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModelService.class);
 
     FieldService(FieldRepository fieldRepository) {
         this.fieldRepository = fieldRepository;
@@ -54,8 +54,8 @@ public class FieldService {
         fieldRepository.saveAll(fields);
     }
     @Transactional
-    public void setPlacedModelOnField(PlacedModel placedModel, Field field) {
-        field.setPlacedModel(placedModel);
+    public void setPlacedModelOnField(AbstractModel abstractModel, Field field) {
+        field.setPlacedModel(abstractModel);
     }
     @Transactional
     public void deletePlacedModelOnField(Field field) {

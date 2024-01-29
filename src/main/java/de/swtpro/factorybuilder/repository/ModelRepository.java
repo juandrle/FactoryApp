@@ -1,7 +1,6 @@
 package de.swtpro.factorybuilder.repository;
 
 import de.swtpro.factorybuilder.entity.Model;
-import de.swtpro.factorybuilder.entity.PlacedModel;
 import de.swtpro.factorybuilder.utility.ModelType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
